@@ -10,14 +10,30 @@ const { createOrder, captureOrder } = require('./_lib/paypal');
 
 module.exports = async (req, res) => {
     // Parse the route from the URL
-    const url = new URL(req.url, `https://${req.headers.host || 'localhost'}`);
-    // Handle both cases: Vercel may pass /api/... or just /... depending on rewrite
+    // On Vercel with rewrites, use x-vercel-rewrite-path or the original URL
+    // req.url may be /api or /api/paypal/client-id depending on config
+    const originalUrl = req.headers['x-forwarded-uri'] || req.headers['x-invoke-path'] || req.url || '/';
+    const url = new URL(originalUrl, `https://${req.headers.host || 'localhost'}`);
     let pathname = url.pathname;
-    if (pathname.startsWith('/api')) {
-        pathname = pathname.replace('/api', '');
+    
+    // Strip /api prefix to get the route
+    if (pathname.startsWith('/api/')) {
+        pathname = pathname.slice(4); // remove "/api"
+    } else if (pathname === '/api') {
+        pathname = '/';
+    } else if (pathname.startsWith('/api')) {
+        pathname = pathname.slice(4);
     }
+    
     // Ensure pathname starts with /
     if (!pathname.startsWith('/')) pathname = '/' + pathname;
+    
+    // On Vercel rewrites, path params may be in query
+    if (pathname === '/' && req.query && req.query.path) {
+        const queryPath = Array.isArray(req.query.path) ? req.query.path.join('/') : req.query.path;
+        pathname = '/' + queryPath;
+    }
+    
     const method = req.method;
 
     // CORS
@@ -33,8 +49,11 @@ module.exports = async (req, res) => {
         // Debug route — check what the function receives
         if (pathname === '/debug' && method === 'GET') {
             return res.status(200).json({
-                receivedUrl: req.url,
+                rawUrl: req.url,
+                originalUrl: req.headers['x-forwarded-uri'] || 'not set',
+                invokePath: req.headers['x-invoke-path'] || 'not set',
                 parsedPathname: pathname,
+                queryPath: req.query?.path || 'not set',
                 paypalConfigured: !!process.env.PAYPAL_CLIENT_ID,
                 paypalClientIdLength: (process.env.PAYPAL_CLIENT_ID || '').length,
                 mode: process.env.PAYPAL_MODE || 'not set',
