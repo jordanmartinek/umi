@@ -7,8 +7,6 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const crypto = require('crypto');
-const { URL } = require('url');
 
 const PORT = process.env.PORT || 3000;
 
@@ -21,7 +19,7 @@ try {
             process.env[key.trim()] = val.join('=').trim();
         }
     });
-} catch (e) { /* No .env file, use system env */ }
+} catch (e) { /* No .env file */ }
 
 // Initialize default admin password if needed
 const { readSettings, writeSettings } = require('./api/_lib/db');
@@ -35,6 +33,9 @@ const { hashPassword } = require('./api/_lib/auth');
         console.log('✿ Default admin password set: umiumi2026');
     }
 })();
+
+// The consolidated API handler
+const apiHandler = require('./api/index.js');
 
 // MIME types
 const MIME = {
@@ -55,96 +56,52 @@ function serveFile(res, filepath) {
     return true;
 }
 
-function parseBody(req) {
-    return new Promise((resolve) => {
-        let body = '';
-        req.on('data', c => { body += c; });
-        req.on('end', () => {
-            try { resolve(JSON.parse(body)); }
-            catch { resolve({}); }
-        });
-    });
-}
-
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://localhost:${PORT}`);
     const pathname = url.pathname;
 
-    // CORS
-    if (req.method === 'OPTIONS') {
-        res.writeHead(204, {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    // API routes → pass to consolidated handler
+    if (pathname.startsWith('/api/') || pathname === '/api') {
+        // Parse body
+        let body = '';
+        await new Promise(resolve => {
+            req.on('data', c => { body += c; });
+            req.on('end', resolve);
         });
-        return res.end();
-    }
 
-    // API routes — resolve to serverless functions
-    if (pathname.startsWith('/api/')) {
-        const body = await parseBody(req);
+        let parsedBody = {};
+        try { parsedBody = JSON.parse(body); } catch (e) {}
 
-        // Build the mock req/res for Vercel-style handlers
+        // Mock Vercel-style req/res
         const mockReq = {
             method: req.method,
-            headers: req.headers,
-            body,
-            query: {},
+            url: req.url,
+            headers: Object.fromEntries(
+                Object.entries(req.headers).map(([k, v]) => [k, v])
+            ),
+            body: parsedBody,
         };
-
-        // Parse query params from URL path segments (e.g. [id])
-        const queryParams = Object.fromEntries(url.searchParams.entries());
-        mockReq.query = queryParams;
+        // Add .get() method for headers compatibility
+        mockReq.headers.get = (key) => mockReq.headers[key.toLowerCase()] || '';
 
         const mockRes = {
             statusCode: 200,
-            _headers: { 'Content-Type': 'application/json' },
-            status(code) { this.statusCode = code; return this; },
+            _headers: {},
             setHeader(key, val) { this._headers[key] = val; },
+            status(code) { this.statusCode = code; return this; },
             json(data) {
-                res.writeHead(this.statusCode, this._headers);
+                res.writeHead(this.statusCode, { 'Content-Type': 'application/json', ...this._headers });
                 res.end(JSON.stringify(data));
             },
+            end() { res.writeHead(this.statusCode, this._headers); res.end(); },
         };
 
-        // Resolve handler path
-        let handlerPath = pathname.replace('/api/', '');
-        let handler = null;
-
-        // Try exact file match first
-        const exactPath = path.join(__dirname, 'api', handlerPath + '.js');
-        if (fs.existsSync(exactPath)) {
-            handler = require(exactPath);
-        } else {
-            // Try dynamic route: check for [id].js pattern
-            const parts = handlerPath.split('/');
-            const lastPart = parts.pop();
-            const parentDir = path.join(__dirname, 'api', ...parts);
-            const dynamicPath = path.join(parentDir, '[id].js');
-
-            if (fs.existsSync(dynamicPath)) {
-                mockReq.query.id = lastPart;
-                handler = require(dynamicPath);
-            } else {
-                // Try index.js in directory
-                const indexPath = path.join(__dirname, 'api', handlerPath, 'index.js');
-                if (fs.existsSync(indexPath)) {
-                    handler = require(indexPath);
-                }
-            }
-        }
-
-        if (handler) {
-            try {
-                await handler(mockReq, mockRes);
-            } catch (err) {
-                console.error('API Error:', err);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: err.message }));
-            }
-        } else {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Not found' }));
+        try {
+            await apiHandler(mockReq, mockRes);
+        } catch (err) {
+            console.error('API Error:', err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
         }
         return;
     }
@@ -175,5 +132,5 @@ server.listen(PORT, () => {
     console.log(`   Storefront: http://localhost:${PORT}`);
     console.log(`   Admin:      http://localhost:${PORT}/admin`);
     console.log(`\n✿ Default admin password: umiumi2026`);
-    console.log(`\n💳 PayPal: ${process.env.PAYPAL_CLIENT_ID ? 'Configured ✓' : 'Not configured (add .env file)'}\n`);
+    console.log(`💳 PayPal: ${process.env.PAYPAL_CLIENT_ID ? 'Configured ✓' : 'Not configured (add .env file)'}\n`);
 });
