@@ -120,11 +120,11 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Store files
-    const storeFile = path.join(__dirname, 'public/store', pathname === '/' ? 'index.html' : pathname);
+    const storeFile = path.join(__dirname, 'public', pathname === '/' ? 'index.html' : pathname);
     if (serveFile(res, storeFile)) return;
 
     // Fallback
-    serveFile(res, path.join(__dirname, 'public/store/index.html'));
+    serveFile(res, path.join(__dirname, 'public/index.html'));
 });
 
 server.listen(PORT, () => {
