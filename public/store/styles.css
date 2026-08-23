@@ -1006,3 +1006,20 @@ button { font-family: var(--font-body); }
 .order-confirmation-content .btn {
     margin-top: 8px;
 }
+
+
+
+/* ============================================
+   Checkout Button Fallback
+   ============================================ */
+
+.paypal-loading {
+    text-align: center;
+    padding: 14px;
+    font-size: 0.82rem;
+    color: var(--medium-gray);
+}
+
+#fallbackCheckoutBtn {
+    margin-top: 8px;
+}

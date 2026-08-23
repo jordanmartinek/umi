@@ -195,7 +195,10 @@
                 <span>Total</span>
                 <span id="cartTotal">$0</span>
             </div>
-            <div id="paypal-button-container"></div>
+            <div id="paypal-button-container">
+                <div class="paypal-loading">Loading checkout...</div>
+            </div>
+            <button class="btn btn-primary btn-full" id="fallbackCheckoutBtn" style="display:none;">Checkout with PayPal</button>
             <p class="cart-note">✿ Free shipping on orders over $75</p>
         </div>
     </div>

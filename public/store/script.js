@@ -26,7 +26,8 @@ async function loadPayPal() {
         const { clientId, mode } = await res.json();
 
         if (!clientId) {
-            console.warn('PayPal client ID not configured');
+            console.warn('PayPal client ID not configured — showing fallback button');
+            showFallbackCheckout();
             return;
         }
 
@@ -35,15 +36,31 @@ async function loadPayPal() {
         script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=capture`;
         script.onload = () => {
             paypalLoaded = true;
+            // Hide fallback, show PayPal
+            document.getElementById('fallbackCheckoutBtn').style.display = 'none';
             renderPayPalButtons();
         };
         script.onerror = () => {
-            console.error('Failed to load PayPal SDK');
+            console.error('Failed to load PayPal SDK — showing fallback');
+            showFallbackCheckout();
         };
         document.head.appendChild(script);
     } catch (e) {
         console.error('PayPal init error:', e);
+        showFallbackCheckout();
     }
+}
+
+function showFallbackCheckout() {
+    const container = document.getElementById('paypal-button-container');
+    const fallbackBtn = document.getElementById('fallbackCheckoutBtn');
+    container.style.display = 'none';
+    fallbackBtn.style.display = 'block';
+
+    // Redirect to PayPal.me or show a message
+    fallbackBtn.onclick = () => {
+        alert('PayPal checkout is being configured. Please check back shortly or DM us on Instagram to place your order!');
+    };
 }
 
 function renderPayPalButtons() {
@@ -52,7 +69,8 @@ function renderPayPalButtons() {
     const container = document.getElementById('paypal-button-container');
     if (!container) return;
 
-    // Clear any existing buttons
+    // Make sure container is visible
+    container.style.display = 'block';
     container.innerHTML = '';
 
     // Don't render if cart is empty
