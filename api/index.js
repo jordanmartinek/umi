@@ -10,8 +10,14 @@ const { createOrder, captureOrder } = require('./_lib/paypal');
 
 module.exports = async (req, res) => {
     // Parse the route from the URL
-    const url = new URL(req.url, `https://${req.headers.host}`);
-    const pathname = url.pathname.replace('/api', '');
+    const url = new URL(req.url, `https://${req.headers.host || 'localhost'}`);
+    // Handle both cases: Vercel may pass /api/... or just /... depending on rewrite
+    let pathname = url.pathname;
+    if (pathname.startsWith('/api')) {
+        pathname = pathname.replace('/api', '');
+    }
+    // Ensure pathname starts with /
+    if (!pathname.startsWith('/')) pathname = '/' + pathname;
     const method = req.method;
 
     // CORS
@@ -24,6 +30,17 @@ module.exports = async (req, res) => {
     }
 
     try {
+        // Debug route — check what the function receives
+        if (pathname === '/debug' && method === 'GET') {
+            return res.status(200).json({
+                receivedUrl: req.url,
+                parsedPathname: pathname,
+                paypalConfigured: !!process.env.PAYPAL_CLIENT_ID,
+                paypalClientIdLength: (process.env.PAYPAL_CLIENT_ID || '').length,
+                mode: process.env.PAYPAL_MODE || 'not set',
+            });
+        }
+
         // ============================
         // PUBLIC ROUTES
         // ============================
