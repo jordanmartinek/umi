@@ -3,33 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Umi Umi — Where Petals Meet the Tide</title>
-    <meta name="description" content="Umi Umi — Ocean-woven, sun-kissed bracelets inspired by the beauty of coastal gardens and gentle tides.">
+    <title>Umi Umi — Shop Bracelets</title>
+    <meta name="description" content="Umi Umi — Handcrafted ocean-inspired bracelets. Shop our latest collection.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Quicksand:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Floating Petals Animation -->
-    <div class="petals-container" id="petals"></div>
-
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="#" class="logo">umi umi</a>
             <ul class="nav-links">
-                <li><a href="#shop">Shop</a></li>
-                <li><a href="#collections">Collections</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#testimonials">Stories</a></li>
+                <li><a href="#new" class="nav-link">New Arrivals</a></li>
+                <li><a href="#all" class="nav-link">All Bracelets</a></li>
+                <li><a href="#sets" class="nav-link">Sets</a></li>
             </ul>
             <div class="nav-actions">
                 <button class="nav-icon" aria-label="Search">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                 </button>
-                <button class="nav-icon" aria-label="Cart">
+                <button class="nav-icon cart-btn" aria-label="Cart">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                    <span class="cart-count">0</span>
                 </button>
             </div>
             <button class="mobile-toggle" aria-label="Menu">
@@ -38,311 +35,289 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-bg"></div>
-        <div class="hero-content">
-            <span class="hero-eyebrow">✿ Ocean-Born Jewelry ✿</span>
-            <h1 class="hero-title">umi umi</h1>
-            <p class="hero-tagline">where petals meet the tide</p>
-            <p class="hero-description">Handcrafted bracelets inspired by coastal gardens and the gentle rhythm of the sea. Each piece carries the calm of ocean waves and the grace of blooming flowers.</p>
-            <a href="#shop" class="btn btn-primary">Explore Collection</a>
-        </div>
-        <div class="hero-scroll">
-            <span>Scroll</span>
-            <div class="scroll-line"></div>
-        </div>
-    </section>
-
-    <!-- Wave Divider -->
-    <div class="wave-divider">
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-            <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,75 1440,60 L1440,120 L0,120 Z" fill="var(--sandy-cream)"/>
-        </svg>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        <p>✿ Free shipping on orders over $75 ✿ Use code <strong>BLOOM15</strong> for 15% off</p>
     </div>
 
-    <!-- Featured Collections -->
-    <section class="collections" id="collections">
+    <!-- Hero — Compact, product-focused -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-badge">New Collection</span>
+            <h1>Tidal Bloom</h1>
+            <p>Our latest drop — ocean-woven pieces for everyday wear</p>
+            <a href="#new" class="btn btn-primary">Shop Now</a>
+        </div>
+        <div class="hero-bg"></div>
+    </section>
+
+    <!-- Quick Category Filters -->
+    <section class="filters" id="new">
         <div class="container">
-            <div class="section-header">
-                <span class="section-eyebrow">Curated with love</span>
-                <h2 class="section-title">Our Collections</h2>
-                <p class="section-subtitle">Each collection tells a story of where the ocean meets the garden</p>
-            </div>
-            <div class="collections-grid">
-                <div class="collection-card">
-                    <div class="collection-image" style="background: linear-gradient(135deg, #E0F5F0, #B8E6DC);">
-                        <div class="collection-overlay">
-                            <span class="collection-icon">🐚</span>
-                        </div>
-                    </div>
-                    <h3>Coral Garden</h3>
-                    <p>Warm coral tones intertwined with delicate floral charms</p>
-                </div>
-                <div class="collection-card">
-                    <div class="collection-image" style="background: linear-gradient(135deg, #C8B8DB, #E8D5F0);">
-                        <div class="collection-overlay">
-                            <span class="collection-icon">🌸</span>
-                        </div>
-                    </div>
-                    <h3>Lavender Tide</h3>
-                    <p>Soft purple hues inspired by seaside lavender fields</p>
-                </div>
-                <div class="collection-card">
-                    <div class="collection-image" style="background: linear-gradient(135deg, #F7D1C4, #FFECD2);">
-                        <div class="collection-overlay">
-                            <span class="collection-icon">☀️</span>
-                        </div>
-                    </div>
-                    <h3>Golden Shore</h3>
-                    <p>Sun-kissed golds and sandy neutrals for everyday elegance</p>
-                </div>
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="new">New</button>
+                <button class="filter-btn" data-filter="bestseller">Bestsellers</button>
+                <button class="filter-btn" data-filter="sets">Sets</button>
+                <button class="filter-btn" data-filter="under40">Under $40</button>
             </div>
         </div>
     </section>
 
     <!-- Product Grid -->
-    <section class="products" id="shop">
+    <section class="products" id="all">
         <div class="container">
-            <div class="section-header">
-                <span class="section-eyebrow">Handcrafted with intention</span>
-                <h2 class="section-title">Bestsellers</h2>
-                <p class="section-subtitle">Our most loved pieces, carried by the current to you</p>
-            </div>
             <div class="products-grid">
-                <div class="product-card">
+
+                <div class="product-card" data-category="new">
                     <div class="product-image" style="background: linear-gradient(160deg, #E0F5F0 0%, #C8E6E0 50%, #E8B4B8 100%);">
                         <div class="product-badge">New</div>
-                        <div class="product-visual">
-                            <span>🌊</span>
+                        <div class="product-visual"><span>🌊</span></div>
+                        <div class="product-actions">
+                            <button class="quick-add" data-name="Seafoam Blossom" data-price="38">+ Quick Add</button>
                         </div>
                     </div>
                     <div class="product-info">
-                        <h4>Seafoam Blossom</h4>
-                        <p class="product-desc">Aqua beads with dried flower charms</p>
-                        <div class="product-footer">
-                            <span class="product-price">$38</span>
-                            <button class="btn btn-small">Add to Cart</button>
-                        </div>
+                        <h3>Seafoam Blossom</h3>
+                        <p class="product-desc">Aqua beads · Dried flower charms</p>
+                        <span class="product-price">$38</span>
                     </div>
                 </div>
-                <div class="product-card">
+
+                <div class="product-card" data-category="bestseller">
                     <div class="product-image" style="background: linear-gradient(160deg, #E8B4B8 0%, #F7D1C4 50%, #FFECD2 100%);">
-                        <div class="product-visual">
-                            <span>🌺</span>
+                        <div class="product-badge bestseller-badge">Bestseller</div>
+                        <div class="product-visual"><span>🌺</span></div>
+                        <div class="product-actions">
+                            <button class="quick-add" data-name="Coral Petal" data-price="42">+ Quick Add</button>
                         </div>
                     </div>
                     <div class="product-info">
-                        <h4>Coral Petal</h4>
-                        <p class="product-desc">Rose quartz & coral flower beads</p>
-                        <div class="product-footer">
-                            <span class="product-price">$42</span>
-                            <button class="btn btn-small">Add to Cart</button>
-                        </div>
+                        <h3>Coral Petal</h3>
+                        <p class="product-desc">Rose quartz · Coral flower beads</p>
+                        <span class="product-price">$42</span>
                     </div>
                 </div>
-                <div class="product-card">
+
+                <div class="product-card" data-category="new">
                     <div class="product-image" style="background: linear-gradient(160deg, #C8B8DB 0%, #DED0F0 50%, #F0E8F8 100%);">
-                        <div class="product-visual">
-                            <span>✿</span>
+                        <div class="product-badge">New</div>
+                        <div class="product-visual"><span>✿</span></div>
+                        <div class="product-actions">
+                            <button class="quick-add" data-name="Lavender Wave" data-price="45">+ Quick Add</button>
                         </div>
                     </div>
                     <div class="product-info">
-                        <h4>Lavender Wave</h4>
-                        <p class="product-desc">Amethyst stones & silver wave details</p>
-                        <div class="product-footer">
-                            <span class="product-price">$45</span>
-                            <button class="btn btn-small">Add to Cart</button>
-                        </div>
+                        <h3>Lavender Wave</h3>
+                        <p class="product-desc">Amethyst stones · Silver wave details</p>
+                        <span class="product-price">$45</span>
                     </div>
                 </div>
-                <div class="product-card">
+
+                <div class="product-card" data-category="bestseller under40">
                     <div class="product-image" style="background: linear-gradient(160deg, #FFECD2 0%, #F7D1C4 50%, #E8B4B8 100%);">
-                        <div class="product-badge">Bestseller</div>
-                        <div class="product-visual">
-                            <span>🐚</span>
+                        <div class="product-badge bestseller-badge">Bestseller</div>
+                        <div class="product-visual"><span>🐚</span></div>
+                        <div class="product-actions">
+                            <button class="quick-add" data-name="Driftwood Garden" data-price="35">+ Quick Add</button>
                         </div>
                     </div>
                     <div class="product-info">
-                        <h4>Driftwood Garden</h4>
-                        <p class="product-desc">Natural shell & wooden bead bracelet</p>
-                        <div class="product-footer">
-                            <span class="product-price">$35</span>
-                            <button class="btn btn-small">Add to Cart</button>
-                        </div>
+                        <h3>Driftwood Garden</h3>
+                        <p class="product-desc">Natural shell · Wooden beads</p>
+                        <span class="product-price">$35</span>
                     </div>
                 </div>
-                <div class="product-card">
+
+                <div class="product-card" data-category="new under40">
                     <div class="product-image" style="background: linear-gradient(160deg, #E0F5F0 0%, #B8E6DC 50%, #C8B8DB 100%);">
-                        <div class="product-visual">
-                            <span>🌿</span>
+                        <div class="product-badge">New</div>
+                        <div class="product-visual"><span>🌿</span></div>
+                        <div class="product-actions">
+                            <button class="quick-add" data-name="Tidal Bloom" data-price="40">+ Quick Add</button>
                         </div>
                     </div>
                     <div class="product-info">
-                        <h4>Tidal Bloom</h4>
-                        <p class="product-desc">Sea glass & eucalyptus charm bracelet</p>
-                        <div class="product-footer">
-                            <span class="product-price">$40</span>
-                            <button class="btn btn-small">Add to Cart</button>
-                        </div>
+                        <h3>Tidal Bloom</h3>
+                        <p class="product-desc">Sea glass · Eucalyptus charm</p>
+                        <span class="product-price">$40</span>
                     </div>
                 </div>
-                <div class="product-card">
+
+                <div class="product-card" data-category="new">
                     <div class="product-image" style="background: linear-gradient(160deg, #F7D1C4 0%, #E8B4B8 50%, #C8B8DB 100%);">
-                        <div class="product-badge">Limited</div>
-                        <div class="product-visual">
-                            <span>🦋</span>
+                        <div class="product-badge limited-badge">Limited</div>
+                        <div class="product-visual"><span>🦋</span></div>
+                        <div class="product-actions">
+                            <button class="quick-add" data-name="Sunset Orchid" data-price="52">+ Quick Add</button>
                         </div>
                     </div>
                     <div class="product-info">
-                        <h4>Sunset Orchid</h4>
-                        <p class="product-desc">Pink opal & butterfly wing charms</p>
-                        <div class="product-footer">
-                            <span class="product-price">$52</span>
-                            <button class="btn btn-small">Add to Cart</button>
-                        </div>
+                        <h3>Sunset Orchid</h3>
+                        <p class="product-desc">Pink opal · Butterfly wing charms</p>
+                        <span class="product-price">$52</span>
                     </div>
                 </div>
+
+                <div class="product-card" data-category="under40">
+                    <div class="product-image" style="background: linear-gradient(160deg, #B8E6DC 0%, #E0F5F0 50%, #FFECD2 100%);">
+                        <div class="product-visual"><span>🪸</span></div>
+                        <div class="product-actions">
+                            <button class="quick-add" data-name="Morning Reef" data-price="36">+ Quick Add</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Morning Reef</h3>
+                        <p class="product-desc">Jade beads · Gold reef charm</p>
+                        <span class="product-price">$36</span>
+                    </div>
+                </div>
+
+                <div class="product-card" data-category="bestseller">
+                    <div class="product-image" style="background: linear-gradient(160deg, #DED0F0 0%, #C8B8DB 50%, #E8B4B8 100%);">
+                        <div class="product-badge bestseller-badge">Bestseller</div>
+                        <div class="product-visual"><span>🌙</span></div>
+                        <div class="product-actions">
+                            <button class="quick-add" data-name="Moonlit Shore" data-price="44">+ Quick Add</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3>Moonlit Shore</h3>
+                        <p class="product-desc">Moonstone · Sterling silver waves</p>
+                        <span class="product-price">$44</span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- About / Story Section -->
-    <section class="about" id="about">
-        <div class="about-bg"></div>
-        <div class="container">
-            <div class="about-grid">
-                <div class="about-image">
-                    <div class="about-image-inner" style="background: linear-gradient(135deg, #E0F5F0, #C8B8DB, #F7D1C4);">
-                        <div class="about-decorative">
-                            <span>🌊🌸</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="about-content">
-                    <span class="section-eyebrow">Our Story</span>
-                    <h2 class="section-title">Born from the Sea</h2>
-                    <p>Umi Umi was born from a love of quiet mornings by the shore — where ocean mist meets wildflowers, and every shell tells a story.</p>
-                    <p>Each bracelet is handcrafted with ethically sourced stones, dried botanical elements, and ocean-inspired charms. We believe jewelry should feel like a gentle wave washing over you — calming, beautiful, and effortless.</p>
-                    <p>Our pieces are designed to be stacked, layered, and worn as daily reminders to find your flow.</p>
-                    <a href="#" class="btn btn-secondary">Read Our Story</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="testimonials" id="testimonials">
+    <!-- Sets / Bundle Section -->
+    <section class="sets-section" id="sets">
         <div class="container">
             <div class="section-header">
-                <span class="section-eyebrow">Loved by our community</span>
-                <h2 class="section-title">Wave Stories</h2>
+                <h2>Stack & Save</h2>
+                <p>Curated sets — save 20% when you bundle</p>
             </div>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="testimonial-quote">"</div>
-                    <p>I wear my Seafoam Blossom every single day. It's like carrying a piece of the ocean with me wherever I go. Absolutely magical craftsmanship.</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar" style="background: linear-gradient(135deg, #E0F5F0, #E8B4B8);">S</div>
-                        <div>
-                            <strong>Sarah M.</strong>
-                            <span>Seafoam Blossom</span>
+            <div class="sets-grid">
+                <div class="set-card">
+                    <div class="set-image" style="background: linear-gradient(135deg, #E0F5F0, #C8B8DB);">
+                        <div class="set-visual">🌊 + ✿ + 🌿</div>
+                        <div class="set-save">Save $25</div>
+                    </div>
+                    <div class="set-info">
+                        <h3>The Ocean Garden Set</h3>
+                        <p>Seafoam Blossom + Lavender Wave + Tidal Bloom</p>
+                        <div class="set-pricing">
+                            <span class="set-price">$98</span>
+                            <span class="set-original">$123</span>
                         </div>
+                        <button class="btn btn-primary btn-full">Add Set to Cart</button>
                     </div>
                 </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-quote">"</div>
-                    <p>The packaging alone made me tear up — so thoughtful. The bracelet itself is even more beautiful in person. Umi Umi is my new favorite brand.</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar" style="background: linear-gradient(135deg, #C8B8DB, #F7D1C4);">K</div>
-                        <div>
-                            <strong>Kaia L.</strong>
-                            <span>Lavender Wave</span>
-                        </div>
+                <div class="set-card">
+                    <div class="set-image" style="background: linear-gradient(135deg, #F7D1C4, #FFECD2);">
+                        <div class="set-visual">🌺 + 🐚 + 🦋</div>
+                        <div class="set-save">Save $27</div>
                     </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-quote">"</div>
-                    <p>I bought three for my bridesmaids and they were the perfect gift. Delicate, unique, and so meaningful. Everyone asked where they came from!</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar" style="background: linear-gradient(135deg, #F7D1C4, #FFECD2);">E</div>
-                        <div>
-                            <strong>Emma R.</strong>
-                            <span>Golden Shore Set</span>
+                    <div class="set-info">
+                        <h3>The Sunset Stack</h3>
+                        <p>Coral Petal + Driftwood Garden + Sunset Orchid</p>
+                        <div class="set-pricing">
+                            <span class="set-price">$103</span>
+                            <span class="set-original">$129</span>
                         </div>
+                        <button class="btn btn-primary btn-full">Add Set to Cart</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Newsletter -->
-    <section class="newsletter">
+    <!-- Trust Bar -->
+    <section class="trust-bar">
         <div class="container">
-            <div class="newsletter-content">
-                <h2>Join the Tide</h2>
-                <p>Be the first to know about new collections, exclusive drops, and ocean-inspired stories.</p>
-                <form class="newsletter-form" onsubmit="event.preventDefault();">
-                    <input type="email" placeholder="your@email.com" aria-label="Email address">
-                    <button type="submit" class="btn btn-primary">Subscribe</button>
-                </form>
-                <span class="newsletter-note">✿ No spam, just good waves ✿</span>
+            <div class="trust-items">
+                <div class="trust-item">
+                    <span class="trust-icon">🚚</span>
+                    <div>
+                        <strong>Free Shipping</strong>
+                        <p>Orders over $75</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">↩️</span>
+                    <div>
+                        <strong>Easy Returns</strong>
+                        <p>30-day guarantee</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">🌿</span>
+                    <div>
+                        <strong>Ethically Made</strong>
+                        <p>Sustainably sourced</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">💎</span>
+                    <div>
+                        <strong>Quality Promise</strong>
+                        <p>Handcrafted with care</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Minimal Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-grid">
+            <div class="footer-content">
                 <div class="footer-brand">
-                    <h3 class="logo">umi umi</h3>
-                    <p>Ocean-woven, sun-kissed jewelry for the free-spirited soul.</p>
-                    <div class="social-links">
-                        <a href="#" aria-label="Instagram">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
-                        </a>
-                        <a href="#" aria-label="Pinterest">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4"/><path d="M9 18l1.5-6"/></svg>
-                        </a>
-                        <a href="#" aria-label="TikTok">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
-                        </a>
-                    </div>
+                    <span class="logo">umi umi</span>
                 </div>
                 <div class="footer-links">
-                    <h4>Shop</h4>
-                    <ul>
-                        <li><a href="#">All Bracelets</a></li>
-                        <li><a href="#">New Arrivals</a></li>
-                        <li><a href="#">Bestsellers</a></li>
-                        <li><a href="#">Gift Sets</a></li>
-                    </ul>
+                    <a href="#">Shipping & Returns</a>
+                    <a href="#">Size Guide</a>
+                    <a href="#">Contact</a>
+                    <a href="#">FAQ</a>
                 </div>
-                <div class="footer-links">
-                    <h4>Info</h4>
-                    <ul>
-                        <li><a href="#">Our Story</a></li>
-                        <li><a href="#">Sustainability</a></li>
-                        <li><a href="#">Care Guide</a></li>
-                        <li><a href="#">Size Guide</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Help</h4>
-                    <ul>
-                        <li><a href="#">Shipping</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+                    </a>
+                    <a href="#" aria-label="TikTok">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
+                    </a>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>© 2026 Umi Umi. All rights reserved. Carried by the current. 🌊</p>
-            </div>
+            <p class="footer-copy">© 2026 Umi Umi</p>
         </div>
     </footer>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="cart-close" id="cartClose">✕</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <span>🌊</span>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cartTotal">$0</span>
+            </div>
+            <button class="btn btn-primary btn-full">Checkout</button>
+            <p class="cart-note">✿ Free shipping on orders over $75</p>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
