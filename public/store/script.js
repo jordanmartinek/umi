@@ -1,17 +1,154 @@
 /* ============================================
    UMI UMI — Storefront Scripts
-   Loads products dynamically from the API
+   With PayPal Checkout Integration
    ============================================ */
 
 let allProducts = [];
 let cart = [];
+let paypalLoaded = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     initNavbar();
     initCart();
     initSmoothScroll();
     loadStoreData();
+    loadPayPal();
 });
+
+// ============================================
+// Load PayPal SDK
+// ============================================
+
+async function loadPayPal() {
+    try {
+        // Get PayPal client ID from our API
+        const res = await fetch('/api/paypal/client-id');
+        const { clientId, mode } = await res.json();
+
+        if (!clientId) {
+            console.warn('PayPal client ID not configured');
+            return;
+        }
+
+        // Load PayPal JS SDK dynamically
+        const script = document.createElement('script');
+        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=capture`;
+        script.onload = () => {
+            paypalLoaded = true;
+            renderPayPalButtons();
+        };
+        script.onerror = () => {
+            console.error('Failed to load PayPal SDK');
+        };
+        document.head.appendChild(script);
+    } catch (e) {
+        console.error('PayPal init error:', e);
+    }
+}
+
+function renderPayPalButtons() {
+    if (!paypalLoaded || !window.paypal) return;
+
+    const container = document.getElementById('paypal-button-container');
+    if (!container) return;
+
+    // Clear any existing buttons
+    container.innerHTML = '';
+
+    // Don't render if cart is empty
+    if (cart.length === 0) return;
+
+    window.paypal.Buttons({
+        style: {
+            layout: 'vertical',
+            color: 'blue',
+            shape: 'pill',
+            label: 'paypal',
+            height: 45,
+        },
+
+        // Create order on PayPal
+        createOrder: async () => {
+            const items = cart.map(item => ({
+                name: item.name,
+                price: item.price,
+                quantity: 1,
+            }));
+
+            const res = await fetch('/api/paypal/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ items }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to create order');
+            }
+
+            return data.id;
+        },
+
+        // Capture order after buyer approves
+        onApprove: async (data) => {
+            const items = cart.map(item => ({
+                name: item.name,
+                price: item.price,
+                quantity: 1,
+            }));
+
+            const res = await fetch('/api/paypal/capture-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    orderID: data.orderID,
+                    items,
+                }),
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                // Clear cart and show confirmation
+                cart = [];
+                updateCartUI();
+                closeCart();
+                showOrderConfirmation(result.orderId);
+            } else {
+                alert('Payment was not completed. Please try again.');
+            }
+        },
+
+        // Handle errors
+        onError: (err) => {
+            console.error('PayPal error:', err);
+            alert('Something went wrong with the payment. Please try again.');
+        },
+
+        // Handle cancel
+        onCancel: () => {
+            // User closed PayPal window — do nothing, they stay on the cart
+        },
+    }).render('#paypal-button-container');
+}
+
+// ============================================
+// Order Confirmation
+// ============================================
+
+function showOrderConfirmation(orderId) {
+    const modal = document.getElementById('orderConfirmation');
+    document.getElementById('confirmOrderId').textContent = orderId;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeOrderConfirmation() {
+    const modal = document.getElementById('orderConfirmation');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
 
 // ============================================
 // Load data from API
@@ -184,6 +321,9 @@ function updateCartUI() {
         cartFooter.style.display = 'none';
         cartCount.classList.remove('visible');
         cartCount.textContent = '0';
+        // Clear PayPal buttons when cart is empty
+        const ppContainer = document.getElementById('paypal-button-container');
+        if (ppContainer) ppContainer.innerHTML = '';
     } else {
         const colors = [
             'linear-gradient(135deg, #E0F5F0, #E8B4B8)',
@@ -209,6 +349,9 @@ function updateCartUI() {
 
         cartCount.textContent = cart.length;
         cartCount.classList.add('visible');
+
+        // Re-render PayPal buttons with updated cart
+        renderPayPalButtons();
     }
 }
 

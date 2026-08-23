@@ -195,8 +195,20 @@
                 <span>Total</span>
                 <span id="cartTotal">$0</span>
             </div>
-            <button class="btn btn-primary btn-full">Checkout</button>
+            <div id="paypal-button-container"></div>
             <p class="cart-note">✿ Free shipping on orders over $75</p>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div class="order-confirmation" id="orderConfirmation" style="display:none;">
+        <div class="order-confirmation-content">
+            <span class="order-success-icon">🌊✿</span>
+            <h2>Thank You!</h2>
+            <p>Your order has been placed successfully.</p>
+            <p class="order-id-display">Order ID: <strong id="confirmOrderId"></strong></p>
+            <p class="order-email-note">A confirmation email will be sent from PayPal.</p>
+            <button class="btn btn-primary" onclick="closeOrderConfirmation()">Continue Shopping</button>
         </div>
     </div>
 

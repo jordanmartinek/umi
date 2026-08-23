@@ -923,3 +923,86 @@ button { font-family: var(--font-body); }
     color: var(--medium-gray);
     font-size: 0.95rem;
 }
+
+
+
+/* ============================================
+   PayPal Checkout & Order Confirmation
+   ============================================ */
+
+#paypal-button-container {
+    margin: 16px 0 8px;
+    min-height: 50px;
+}
+
+.order-confirmation {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.order-confirmation-content {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 48px 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    animation: modalIn 0.3s ease;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.order-success-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.order-confirmation-content h2 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--ocean-teal);
+    margin-bottom: 8px;
+}
+
+.order-confirmation-content > p {
+    color: var(--medium-gray);
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.order-id-display {
+    background: var(--seafoam);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    margin: 16px 0;
+    color: var(--ocean-teal);
+}
+
+.order-id-display strong {
+    font-family: monospace;
+    letter-spacing: 0.5px;
+}
+
+.order-email-note {
+    font-size: 0.8rem;
+    color: var(--medium-gray);
+    margin-bottom: 24px !important;
+}
+
+.order-confirmation-content .btn {
+    margin-top: 8px;
+}

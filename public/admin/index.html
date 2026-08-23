@@ -34,7 +34,10 @@
                 <span class="sidebar-badge">Admin</span>
             </div>
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" data-view="products">
+                <a href="#" class="nav-item active" data-view="orders">
+                    <span class="nav-icon">🧾</span> Orders
+                </a>
+                <a href="#" class="nav-item" data-view="products">
                     <span class="nav-icon">📦</span> Products
                 </a>
                 <a href="#" class="nav-item" data-view="categories">
@@ -56,8 +59,29 @@
 
         <!-- Main Content -->
         <main class="main-content">
+            <!-- Orders View -->
+            <div class="view active" id="view-orders">
+                <div class="view-header">
+                    <div>
+                        <h1>Orders</h1>
+                        <p class="view-subtitle">Track and manage customer orders</p>
+                    </div>
+                    <div class="order-stats" id="orderStats">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="order-filters">
+                    <button class="filter-btn active" data-order-filter="all">All</button>
+                    <button class="filter-btn" data-order-filter="paid">Paid</button>
+                    <button class="filter-btn" data-order-filter="fulfilled">Fulfilled</button>
+                </div>
+                <div class="orders-table" id="ordersTable">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
             <!-- Products View -->
-            <div class="view active" id="view-products">
+            <div class="view" id="view-products">
                 <div class="view-header">
                     <div>
                         <h1>Products</h1>

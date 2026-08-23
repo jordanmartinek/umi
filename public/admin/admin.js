@@ -4,6 +4,7 @@
 
 let products = [];
 let categories = [];
+let orders = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
@@ -11,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initNav();
     initModals();
     initForms();
+    initOrderFilters();
     document.getElementById('logoutBtn').addEventListener('click', logout);
 });
 
@@ -64,6 +66,7 @@ async function logout() {
 function showDashboard() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'grid';
+    loadOrders();
     loadProducts();
     loadCategories();
     loadSettings();
@@ -482,4 +485,123 @@ function showToast(message, type = 'success') {
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3000);
+}
+
+
+
+// ============================================
+// Orders
+// ============================================
+
+async function loadOrders() {
+    try {
+        const res = await fetch('/api/admin/orders');
+        orders = await res.json();
+        renderOrders(orders);
+        renderOrderStats();
+    } catch (e) {
+        console.error('Failed to load orders', e);
+    }
+}
+
+function renderOrderStats() {
+    const stats = document.getElementById('orderStats');
+    const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+    const paidCount = orders.filter(o => o.status === 'paid').length;
+    const fulfilledCount = orders.filter(o => o.status === 'fulfilled').length;
+
+    stats.innerHTML = `
+        <div class="stat-pills">
+            <span class="stat-pill">${orders.length} orders</span>
+            <span class="stat-pill revenue">$${totalRevenue.toFixed(2)} revenue</span>
+            <span class="stat-pill pending">${paidCount} to fulfill</span>
+        </div>
+    `;
+}
+
+function renderOrders(ordersToRender) {
+    const table = document.getElementById('ordersTable');
+
+    if (ordersToRender.length === 0) {
+        table.innerHTML = `<div class="empty-state"><span>🧾</span><p>No orders yet. They'll appear here once customers check out.</p></div>`;
+        return;
+    }
+
+    const header = `
+        <div class="order-row order-row-header">
+            <span>Order</span>
+            <span>Customer</span>
+            <span>Items</span>
+            <span>Total</span>
+            <span>Status</span>
+            <span>Actions</span>
+        </div>
+    `;
+
+    const rows = ordersToRender.map(order => {
+        const date = new Date(order.createdAt).toLocaleDateString('en-US', {
+            month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+        const itemNames = (order.items || []).map(i => i.name).join(', ') || '—';
+        const statusClass = order.status === 'fulfilled' ? 'status-fulfilled' : 'status-paid';
+        const statusLabel = order.status === 'fulfilled' ? 'Fulfilled' : 'Paid';
+
+        return `
+            <div class="order-row">
+                <div>
+                    <div class="order-id">${order.id}</div>
+                    <div class="order-date">${date}</div>
+                </div>
+                <div>
+                    <div class="order-customer">${order.payer?.name || '—'}</div>
+                    <div class="order-email">${order.payer?.email || ''}</div>
+                </div>
+                <div class="order-items-cell" title="${itemNames}">${itemNames}</div>
+                <div class="order-total">$${(order.total || 0).toFixed(2)}</div>
+                <div>
+                    <span class="order-status ${statusClass}">${statusLabel}</span>
+                </div>
+                <div class="row-actions">
+                    ${order.status === 'paid' ? `<button class="btn btn-small btn-primary" onclick="fulfillOrder('${order.id}')">Mark Fulfilled</button>` : `<span class="fulfilled-check">✓</span>`}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    table.innerHTML = header + rows;
+}
+
+function initOrderFilters() {
+    document.querySelectorAll('[data-order-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-order-filter]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.dataset.orderFilter;
+            if (filter === 'all') {
+                renderOrders(orders);
+            } else {
+                renderOrders(orders.filter(o => o.status === filter));
+            }
+        });
+    });
+}
+
+async function fulfillOrder(id) {
+    try {
+        const res = await fetch(`/api/admin/orders/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'fulfilled' }),
+        });
+
+        if (res.ok) {
+            loadOrders();
+            showToast('Order marked as fulfilled! 📦');
+        } else {
+            showToast('Error updating order', 'error');
+        }
+    } catch (e) {
+        showToast('Connection error', 'error');
+    }
 }
