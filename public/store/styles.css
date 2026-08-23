@@ -909,3 +909,17 @@ button { font-family: var(--font-body); }
 
     .trust-items { grid-template-columns: 1fr 1fr; }
 }
+
+
+
+/* ============================================
+   Loading State
+   ============================================ */
+
+.loading-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--medium-gray);
+    font-size: 0.95rem;
+}

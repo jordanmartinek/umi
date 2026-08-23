@@ -36,8 +36,8 @@
     </nav>
 
     <!-- Announcement Bar -->
-    <div class="announcement-bar">
-        <p>✿ Free shipping on orders over $75 ✿ Use code <strong>BLOOM15</strong> for 15% off</p>
+    <div class="announcement-bar" id="announcementBar">
+        <p id="announcementText">✿ Free shipping on orders over $75 ✿</p>
     </div>
 
     <!-- Hero — Compact, product-focused -->
@@ -54,140 +54,21 @@
     <!-- Quick Category Filters -->
     <section class="filters" id="new">
         <div class="container">
-            <div class="filter-bar">
+            <div class="filter-bar" id="filterBar">
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="new">New</button>
                 <button class="filter-btn" data-filter="bestseller">Bestsellers</button>
-                <button class="filter-btn" data-filter="sets">Sets</button>
-                <button class="filter-btn" data-filter="under40">Under $40</button>
+                <button class="filter-btn" data-filter="limited">Limited</button>
             </div>
         </div>
     </section>
 
-    <!-- Product Grid -->
+    <!-- Product Grid (dynamically populated) -->
     <section class="products" id="all">
         <div class="container">
-            <div class="products-grid">
-
-                <div class="product-card" data-category="new">
-                    <div class="product-image" style="background: linear-gradient(160deg, #E0F5F0 0%, #C8E6E0 50%, #E8B4B8 100%);">
-                        <div class="product-badge">New</div>
-                        <div class="product-visual"><span>🌊</span></div>
-                        <div class="product-actions">
-                            <button class="quick-add" data-name="Seafoam Blossom" data-price="38">+ Quick Add</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Seafoam Blossom</h3>
-                        <p class="product-desc">Aqua beads · Dried flower charms</p>
-                        <span class="product-price">$38</span>
-                    </div>
-                </div>
-
-                <div class="product-card" data-category="bestseller">
-                    <div class="product-image" style="background: linear-gradient(160deg, #E8B4B8 0%, #F7D1C4 50%, #FFECD2 100%);">
-                        <div class="product-badge bestseller-badge">Bestseller</div>
-                        <div class="product-visual"><span>🌺</span></div>
-                        <div class="product-actions">
-                            <button class="quick-add" data-name="Coral Petal" data-price="42">+ Quick Add</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Coral Petal</h3>
-                        <p class="product-desc">Rose quartz · Coral flower beads</p>
-                        <span class="product-price">$42</span>
-                    </div>
-                </div>
-
-                <div class="product-card" data-category="new">
-                    <div class="product-image" style="background: linear-gradient(160deg, #C8B8DB 0%, #DED0F0 50%, #F0E8F8 100%);">
-                        <div class="product-badge">New</div>
-                        <div class="product-visual"><span>✿</span></div>
-                        <div class="product-actions">
-                            <button class="quick-add" data-name="Lavender Wave" data-price="45">+ Quick Add</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Lavender Wave</h3>
-                        <p class="product-desc">Amethyst stones · Silver wave details</p>
-                        <span class="product-price">$45</span>
-                    </div>
-                </div>
-
-                <div class="product-card" data-category="bestseller under40">
-                    <div class="product-image" style="background: linear-gradient(160deg, #FFECD2 0%, #F7D1C4 50%, #E8B4B8 100%);">
-                        <div class="product-badge bestseller-badge">Bestseller</div>
-                        <div class="product-visual"><span>🐚</span></div>
-                        <div class="product-actions">
-                            <button class="quick-add" data-name="Driftwood Garden" data-price="35">+ Quick Add</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Driftwood Garden</h3>
-                        <p class="product-desc">Natural shell · Wooden beads</p>
-                        <span class="product-price">$35</span>
-                    </div>
-                </div>
-
-                <div class="product-card" data-category="new under40">
-                    <div class="product-image" style="background: linear-gradient(160deg, #E0F5F0 0%, #B8E6DC 50%, #C8B8DB 100%);">
-                        <div class="product-badge">New</div>
-                        <div class="product-visual"><span>🌿</span></div>
-                        <div class="product-actions">
-                            <button class="quick-add" data-name="Tidal Bloom" data-price="40">+ Quick Add</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Tidal Bloom</h3>
-                        <p class="product-desc">Sea glass · Eucalyptus charm</p>
-                        <span class="product-price">$40</span>
-                    </div>
-                </div>
-
-                <div class="product-card" data-category="new">
-                    <div class="product-image" style="background: linear-gradient(160deg, #F7D1C4 0%, #E8B4B8 50%, #C8B8DB 100%);">
-                        <div class="product-badge limited-badge">Limited</div>
-                        <div class="product-visual"><span>🦋</span></div>
-                        <div class="product-actions">
-                            <button class="quick-add" data-name="Sunset Orchid" data-price="52">+ Quick Add</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Sunset Orchid</h3>
-                        <p class="product-desc">Pink opal · Butterfly wing charms</p>
-                        <span class="product-price">$52</span>
-                    </div>
-                </div>
-
-                <div class="product-card" data-category="under40">
-                    <div class="product-image" style="background: linear-gradient(160deg, #B8E6DC 0%, #E0F5F0 50%, #FFECD2 100%);">
-                        <div class="product-visual"><span>🪸</span></div>
-                        <div class="product-actions">
-                            <button class="quick-add" data-name="Morning Reef" data-price="36">+ Quick Add</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Morning Reef</h3>
-                        <p class="product-desc">Jade beads · Gold reef charm</p>
-                        <span class="product-price">$36</span>
-                    </div>
-                </div>
-
-                <div class="product-card" data-category="bestseller">
-                    <div class="product-image" style="background: linear-gradient(160deg, #DED0F0 0%, #C8B8DB 50%, #E8B4B8 100%);">
-                        <div class="product-badge bestseller-badge">Bestseller</div>
-                        <div class="product-visual"><span>🌙</span></div>
-                        <div class="product-actions">
-                            <button class="quick-add" data-name="Moonlit Shore" data-price="44">+ Quick Add</button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3>Moonlit Shore</h3>
-                        <p class="product-desc">Moonstone · Sterling silver waves</p>
-                        <span class="product-price">$44</span>
-                    </div>
-                </div>
-
+            <div class="products-grid" id="productsGrid">
+                <!-- Products loaded from API -->
+                <div class="loading-state">Loading bracelets...</div>
             </div>
         </div>
     </section>
@@ -212,7 +93,7 @@
                             <span class="set-price">$98</span>
                             <span class="set-original">$123</span>
                         </div>
-                        <button class="btn btn-primary btn-full">Add Set to Cart</button>
+                        <button class="btn btn-primary btn-full set-add-btn">Add Set to Cart</button>
                     </div>
                 </div>
                 <div class="set-card">
@@ -227,7 +108,7 @@
                             <span class="set-price">$103</span>
                             <span class="set-original">$129</span>
                         </div>
-                        <button class="btn btn-primary btn-full">Add Set to Cart</button>
+                        <button class="btn btn-primary btn-full set-add-btn">Add Set to Cart</button>
                     </div>
                 </div>
             </div>

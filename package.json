@@ -1,0 +1,11 @@
+{
+  "name": "umi-umi",
+  "version": "1.0.0",
+  "description": "Umi Umi — Ocean-inspired bracelet storefront with admin dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {}
+}

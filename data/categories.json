@@ -1,0 +1,20 @@
+[
+  {
+    "id": "cat_001",
+    "name": "Ocean Collection",
+    "slug": "ocean-collection",
+    "order": 1
+  },
+  {
+    "id": "cat_002",
+    "name": "Floral Collection",
+    "slug": "floral-collection",
+    "order": 2
+  },
+  {
+    "id": "cat_003",
+    "name": "Earthy Collection",
+    "slug": "earthy-collection",
+    "order": 3
+  }
+]

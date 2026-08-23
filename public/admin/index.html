@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umi Umi — Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Quicksand:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <h1 class="login-logo">umi umi</h1>
+            <p class="login-subtitle">Admin Dashboard</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Enter admin password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                <p class="login-error" id="loginError"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard" style="display:none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2 class="logo">umi umi</h2>
+                <span class="sidebar-badge">Admin</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-view="products">
+                    <span class="nav-icon">📦</span> Products
+                </a>
+                <a href="#" class="nav-item" data-view="categories">
+                    <span class="nav-icon">🏷️</span> Categories
+                </a>
+                <a href="#" class="nav-item" data-view="settings">
+                    <span class="nav-icon">⚙️</span> Settings
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/" class="nav-item" target="_blank">
+                    <span class="nav-icon">🌊</span> View Store
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn">
+                    <span class="nav-icon">👋</span> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Products View -->
+            <div class="view active" id="view-products">
+                <div class="view-header">
+                    <div>
+                        <h1>Products</h1>
+                        <p class="view-subtitle">Manage your bracelet inventory</p>
+                    </div>
+                    <button class="btn btn-primary" id="addProductBtn">+ Add Product</button>
+                </div>
+                <div class="products-table" id="productsTable">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Categories View -->
+            <div class="view" id="view-categories">
+                <div class="view-header">
+                    <div>
+                        <h1>Categories</h1>
+                        <p class="view-subtitle">Organize your collections</p>
+                    </div>
+                    <button class="btn btn-primary" id="addCategoryBtn">+ Add Category</button>
+                </div>
+                <div class="categories-list" id="categoriesList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div class="view" id="view-settings">
+                <div class="view-header">
+                    <div>
+                        <h1>Settings</h1>
+                        <p class="view-subtitle">Store configuration</p>
+                    </div>
+                </div>
+                <div class="settings-form">
+                    <form id="settingsForm">
+                        <div class="form-section">
+                            <h3>Store Info</h3>
+                            <div class="form-group">
+                                <label>Store Name</label>
+                                <input type="text" id="settingStoreName">
+                            </div>
+                            <div class="form-group">
+                                <label>Announcement Bar Text</label>
+                                <input type="text" id="settingAnnouncement">
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <h3>Promotions</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Promo Code</label>
+                                    <input type="text" id="settingPromoCode">
+                                </div>
+                                <div class="form-group">
+                                    <label>Discount %</label>
+                                    <input type="number" id="settingPromoDiscount" min="0" max="100">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Free Shipping Threshold ($)</label>
+                                <input type="number" id="settingFreeShipping" min="0">
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <h3>Change Password</h3>
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" id="settingCurrentPw">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" id="settingNewPw">
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="changePasswordBtn">Update Password</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Settings</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="productModalTitle">Add Product</h2>
+                <button class="modal-close" id="productModalClose">✕</button>
+            </div>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="productName" required placeholder="e.g. Seafoam Blossom">
+                    </div>
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="productPrice" required min="0" step="0.01" placeholder="38">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="productDescription" placeholder="e.g. Aqua beads · Dried flower charms">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="productCategory">
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Badge</label>
+                        <select id="productBadge">
+                            <option value="">None</option>
+                            <option value="new">New</option>
+                            <option value="bestseller">Bestseller</option>
+                            <option value="limited">Limited</option>
+                            <option value="sale">Sale</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Emoji Icon</label>
+                        <input type="text" id="productEmoji" placeholder="🌊">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="productActive">
+                            <option value="true">Active</option>
+                            <option value="false">Hidden</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Background Gradient</label>
+                    <input type="text" id="productGradient" placeholder="linear-gradient(160deg, #E0F5F0 0%, #C8E6E0 50%, #E8B4B8 100%)">
+                    <div class="gradient-preview" id="gradientPreview"></div>
+                </div>
+                <div class="form-group">
+                    <label>Product Image (optional — overrides gradient)</label>
+                    <input type="file" id="productImage" accept="image/*">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="productModalCancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal-overlay" id="categoryModal">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2 id="categoryModalTitle">Add Category</h2>
+                <button class="modal-close" id="categoryModalClose">✕</button>
+            </div>
+            <form id="categoryForm">
+                <input type="hidden" id="categoryId">
+                <div class="form-group">
+                    <label>Category Name</label>
+                    <input type="text" id="categoryName" required placeholder="e.g. Ocean Collection">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="categoryModalCancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
