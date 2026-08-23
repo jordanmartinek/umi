@@ -1,7 +1,9 @@
 {
+  "buildCommand": "",
+  "outputDirectory": "public",
   "functions": {
     "api/index.js": {
-      "includeFiles": "data/**"
+      "includeFiles": "data/**,api/_lib/**"
     }
   },
   "rewrites": [
