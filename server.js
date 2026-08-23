@@ -35,7 +35,7 @@ const { hashPassword } = require('./api/_lib/auth');
 })();
 
 // The consolidated API handler
-const apiHandler = require('./api/index.js');
+const apiHandler = require('./api/[[...path]].js');
 
 // MIME types
 const MIME = {

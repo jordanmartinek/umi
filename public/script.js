@@ -23,7 +23,17 @@ async function loadPayPal() {
     try {
         // Get PayPal client ID from our API
         const res = await fetch('/api/paypal/client-id');
-        const { clientId, mode } = await res.json();
+        
+        // Check if we actually got JSON back (not an HTML error page)
+        const contentType = res.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+            console.error('PayPal API returned non-JSON response');
+            showFallbackCheckout();
+            return;
+        }
+
+        const data = await res.json();
+        const clientId = data.clientId;
 
         if (!clientId) {
             console.warn('PayPal client ID not configured — showing fallback button');
@@ -37,7 +47,10 @@ async function loadPayPal() {
         script.onload = () => {
             paypalLoaded = true;
             // Hide fallback, show PayPal
-            document.getElementById('fallbackCheckoutBtn').style.display = 'none';
+            const fallbackBtn = document.getElementById('fallbackCheckoutBtn');
+            if (fallbackBtn) fallbackBtn.style.display = 'none';
+            const container = document.getElementById('paypal-button-container');
+            if (container) container.style.display = 'block';
             renderPayPalButtons();
         };
         script.onerror = () => {
