@@ -1,59 +1,81 @@
 <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Umi Umi">
   <defs>
-    <linearGradient id="cordM" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#FF5A5A"/>
-      <stop offset="0.5" stop-color="#E23B3B"/>
-      <stop offset="1" stop-color="#C21F2E"/>
+    <!-- Soft pastel braided cord: pink -> lavender -->
+    <linearGradient id="cordK" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF9EC4"/>
+      <stop offset="0.5" stop-color="#F7A8D8"/>
+      <stop offset="1" stop-color="#C9A7F0"/>
     </linearGradient>
-    <linearGradient id="cordShineM" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
+    <linearGradient id="cordShineK" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.75"/>
       <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
-    <radialGradient id="beadWhiteM" cx="0.4" cy="0.35" r="0.75">
+    <!-- Pastel evil-eye bead -->
+    <radialGradient id="beadWhiteK" cx="0.4" cy="0.32" r="0.8">
       <stop offset="0" stop-color="#FFFFFF"/>
-      <stop offset="0.7" stop-color="#EAF6FF"/>
-      <stop offset="1" stop-color="#CFE6F5"/>
+      <stop offset="0.7" stop-color="#F3FAFF"/>
+      <stop offset="1" stop-color="#DCEEFB"/>
     </radialGradient>
-    <radialGradient id="beadBlueM" cx="0.4" cy="0.35" r="0.8">
-      <stop offset="0" stop-color="#3FA9F5"/>
-      <stop offset="0.6" stop-color="#1E6FD6"/>
-      <stop offset="1" stop-color="#0B3D91"/>
+    <radialGradient id="beadBlueK" cx="0.4" cy="0.32" r="0.85">
+      <stop offset="0" stop-color="#9BD3FF"/>
+      <stop offset="0.55" stop-color="#6FB6F5"/>
+      <stop offset="1" stop-color="#5A8FE0"/>
     </radialGradient>
-    <radialGradient id="beadPupilM" cx="0.4" cy="0.35" r="0.85">
-      <stop offset="0" stop-color="#2A2A38"/>
-      <stop offset="1" stop-color="#0A0A14"/>
+    <radialGradient id="beadPupilK" cx="0.4" cy="0.32" r="0.9">
+      <stop offset="0" stop-color="#6B5B95"/>
+      <stop offset="1" stop-color="#3D3163"/>
+    </radialGradient>
+    <radialGradient id="blossomK" cx="0.5" cy="0.4" r="0.7">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.5" stop-color="#FFC7E1"/>
+      <stop offset="1" stop-color="#FF9EC4"/>
     </radialGradient>
   </defs>
 
   <g transform="translate(60 56)">
-    <!-- cord tails + knots -->
-    <g stroke="url(#cordM)" stroke-width="5" stroke-linecap="round" fill="none">
+    <!-- cord tails + rounded knots -->
+    <g stroke="url(#cordK)" stroke-width="5.5" stroke-linecap="round" fill="none">
       <path d="M -30 30 q -12 9 -19 19"/>
       <path d="M 30 30 q 12 9 19 19"/>
     </g>
-    <circle cx="-49" cy="49" r="4.5" fill="url(#cordM)"/>
-    <circle cx="49" cy="49" r="4.5" fill="url(#cordM)"/>
+    <circle cx="-49" cy="49" r="5" fill="url(#cordK)"/>
+    <circle cx="49" cy="49" r="5" fill="url(#cordK)"/>
 
-    <!-- braided ring -->
-    <circle cx="0" cy="0" r="40" fill="none" stroke="url(#cordM)" stroke-width="13"/>
-    <circle cx="0" cy="0" r="40" fill="none" stroke="#8E1420" stroke-width="13"
-            stroke-dasharray="3 9" stroke-opacity="0.35" stroke-linecap="round" transform="rotate(12)"/>
-    <circle cx="0" cy="0" r="40" fill="none" stroke="#FFB3B3" stroke-width="4"
-            stroke-dasharray="5 9" stroke-opacity="0.7" stroke-linecap="round" transform="rotate(-8)"/>
-    <path d="M -28 -28 A 40 40 0 0 1 28 -28" fill="none" stroke="url(#cordShineM)"
+    <!-- soft braided ring -->
+    <circle cx="0" cy="0" r="40" fill="none" stroke="url(#cordK)" stroke-width="13"/>
+    <!-- gentle braid stitches -->
+    <circle cx="0" cy="0" r="40" fill="none" stroke="#FFFFFF" stroke-width="13"
+            stroke-dasharray="2.5 10" stroke-opacity="0.35" stroke-linecap="round" transform="rotate(12)"/>
+    <circle cx="0" cy="0" r="40" fill="none" stroke="#FFFFFF" stroke-width="4"
+            stroke-dasharray="5 10" stroke-opacity="0.75" stroke-linecap="round" transform="rotate(-8)"/>
+    <path d="M -28 -28 A 40 40 0 0 1 28 -28" fill="none" stroke="url(#cordShineK)"
           stroke-width="4.5" stroke-linecap="round"/>
 
-    <!-- evil-eye bead -->
+    <!-- friendly pastel evil-eye bead -->
     <g transform="translate(0 6)">
-      <circle cx="0" cy="0" r="20" fill="url(#beadWhiteM)"/>
-      <circle cx="0" cy="0" r="14.5" fill="url(#beadBlueM)"/>
-      <circle cx="0" cy="0" r="8" fill="#EAF6FF"/>
-      <circle cx="0" cy="0" r="5" fill="url(#beadPupilM)"/>
-      <circle cx="-2.4" cy="-2.4" r="1.7" fill="#FFFFFF"/>
-      <circle cx="6" cy="-6" r="2.6" fill="#FFFFFF" fill-opacity="0.85"/>
+      <circle cx="0" cy="0" r="20" fill="url(#beadWhiteK)"/>
+      <circle cx="0" cy="0" r="14.5" fill="url(#beadBlueK)"/>
+      <circle cx="0" cy="0" r="8" fill="#F3FAFF"/>
+      <circle cx="0" cy="0" r="5" fill="url(#beadPupilK)"/>
+      <!-- big cute catchlights -->
+      <circle cx="-2.2" cy="-2.4" r="1.9" fill="#FFFFFF"/>
+      <circle cx="6" cy="-6" r="2.8" fill="#FFFFFF" fill-opacity="0.9"/>
     </g>
 
-    <!-- sparkle -->
-    <path d="M 30 -34 l 1.6 4.4 4.4 1.6 -4.4 1.6 -1.6 4.4 -1.6 -4.4 -4.4 -1.6 4.4 -1.6 z" fill="#FFD98A"/>
+    <!-- cherry-blossom charm accent (top-right of the ring) -->
+    <g transform="translate(30 -30)">
+      <g fill="url(#blossomK)" stroke="#FF8FBE" stroke-width="0.8">
+        <ellipse cx="0" cy="-6" rx="3.4" ry="4.6"/>
+        <ellipse cx="5.7" cy="-1.9" rx="3.4" ry="4.6" transform="rotate(72 5.7 -1.9)"/>
+        <ellipse cx="3.5" cy="4.9" rx="3.4" ry="4.6" transform="rotate(144 3.5 4.9)"/>
+        <ellipse cx="-3.5" cy="4.9" rx="3.4" ry="4.6" transform="rotate(216 -3.5 4.9)"/>
+        <ellipse cx="-5.7" cy="-1.9" rx="3.4" ry="4.6" transform="rotate(288 -5.7 -1.9)"/>
+      </g>
+      <circle cx="0" cy="0" r="2" fill="#FFD98A"/>
+    </g>
+
+    <!-- twinkle stars -->
+    <path d="M -34 -30 l 1.4 3.8 3.8 1.4 -3.8 1.4 -1.4 3.8 -1.4 -3.8 -3.8 -1.4 3.8 -1.4 z" fill="#FFE29A"/>
+    <path d="M 34 30 l 1.1 3 3 1.1 -3 1.1 -1.1 3 -1.1 -3 -3 -1.1 3 -1.1 z" fill="#C9A7F0"/>
   </g>
 </svg>

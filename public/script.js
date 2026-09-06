@@ -220,7 +220,15 @@ async function loadStoreData() {
 function applySettings(settings) {
     if (settings.announcementText) {
         const el = document.getElementById('announcementText');
-        if (el) el.textContent = '✿ ' + settings.announcementText + ' ✿';
+        if (el) {
+            // Keep the evil-eye charm motif around the announcement text.
+            const charm = '<span class="announce-charm" aria-hidden="true">🧿</span>';
+            const safe = settings.announcementText
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            el.innerHTML = `${charm} ${safe} ${charm}`;
+        }
     }
 }
 
