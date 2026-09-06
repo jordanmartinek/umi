@@ -8,7 +8,7 @@ let cart = []; // { name, price, quantity }
 let paypalLoaded = false;
 
 // Featured hero product (falls back to the mock if API is empty)
-const HERO_FALLBACK = { name: 'Serenity Bracelet', price: 32 };
+const HERO_FALLBACK = { name: 'Butterfly Bloom Pendant', price: 32 };
 
 document.addEventListener('DOMContentLoaded', () => {
     initQtyStepper();
