@@ -67,7 +67,6 @@ async function loadStoreData() {
         console.error('Failed to load store data:', e);
         allProducts = [];
     }
-    renderCarousel();
     renderNewReleases();
     renderFinder();
 }
@@ -210,50 +209,6 @@ function heroProduct() {
         return { name: p.name, price: Number(p.price) };
     }
     return HERO_FALLBACK;
-}
-
-// ============================================ Carousel ============================================
-function renderCarousel() {
-    const track = document.getElementById('carTrack');
-    if (!track) return;
-
-    // "You might also like" — everything except the hero product, fall back to mocks
-    let items = (allProducts || []).slice(1, 9).map(p => ({
-        name: p.name, price: Number(p.price), gradient: p.gradient, emoji: p.emoji,
-    }));
-
-    if (items.length === 0) {
-        items = [
-            { name: 'Ocean Dream Necklace', price: 36, emoji: '🐚' },
-            { name: 'Sunflower Earrings',   price: 24, emoji: '🌻' },
-            { name: 'Tide Ring',            price: 28, emoji: '💍' },
-            { name: 'Blossom Anklet',       price: 26, emoji: '🌸' },
-        ];
-    }
-
-    const grads = [
-        'linear-gradient(160deg,#cfe6ff,#f3b9d4)',
-        'linear-gradient(160deg,#ffe0ef,#c3a9ef)',
-        'linear-gradient(160deg,#e7dcff,#a9c8ef)',
-        'linear-gradient(160deg,#ffd9c4,#f3b9d4)',
-    ];
-
-    track.innerHTML = items.map((it, i) => `
-        <div class="pcard">
-            <div class="pcard-img" style="background:${it.gradient || grads[i % grads.length]};">
-                <button class="pcard-add" data-name="${escapeHtml(it.name)}" data-price="${it.price}" aria-label="Add ${escapeHtml(it.name)}">🛍️</button>
-            </div>
-            <p class="pcard-name">${escapeHtml(it.name)}</p>
-            <p class="pcard-price">$${Number(it.price).toFixed(0)}.00</p>
-        </div>
-    `).join('');
-
-    track.querySelectorAll('.pcard-add').forEach(btn => {
-        btn.addEventListener('click', () => {
-            addToCart(btn.dataset.name, parseFloat(btn.dataset.price), 1);
-            showToast(`${btn.dataset.name} added 🛍️`);
-        });
-    });
 }
 
 // ============================================ Qty stepper (hero) ============================================
