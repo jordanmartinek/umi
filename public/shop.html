@@ -11,12 +11,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="i18n.js"></script>
 </head>
 <body>
 
     <!-- Announcement Bar -->
     <div class="announce">
-        <p><span class="tw">✦</span> FREE SHIPPING ON ORDERS OVER $75 <span class="tw">✦</span></p>
+        <p><span class="tw">✦</span> <span data-i18n="announce.shipping">FREE SHIPPING ON ORDERS OVER $75</span> <span class="tw">✦</span></p>
     </div>
 
     <!-- Navbar -->
@@ -30,10 +31,11 @@
                 </span>
             </a>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="shop.html" class="active">Shop</a></li>
+                <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                <li><a href="shop.html" class="active" data-i18n="nav.shop">Shop</a></li>
             </ul>
             <div class="nav-actions">
+                <button class="lang-toggle" id="langToggle" aria-label="Español">ES</button>
                 <span class="nav-flower blossom-ic" aria-hidden="true"></span>
                 <button class="icon-btn" aria-label="Search">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -52,9 +54,9 @@
     <!-- Collection banner -->
     <header class="shop-banner">
         <div class="shop-banner-inner">
-            <span class="shop-eyebrow"><span class="tw-ink"></span> Handmade with love <span class="tw-ink"></span></span>
-            <h1 class="shop-title">Shop the Collection <span class="blossom-ic" aria-hidden="true"></span></h1>
-            <p class="shop-sub">Little pieces of joy — beaded pendants, bracelets, rings &amp; more, each one made to make you smile.</p>
+            <span class="shop-eyebrow"><span class="tw-ink"></span> <span data-i18n="shop.eyebrow">Handmade with love</span> <span class="tw-ink"></span></span>
+            <h1 class="shop-title"><span data-i18n="shop.title">Shop the Collection</span> <span class="blossom-ic" aria-hidden="true"></span></h1>
+            <p class="shop-sub" data-i18n="shop.sub">Little pieces of joy — beaded pendants, bracelets, rings &amp; more, each one made to make you smile.</p>
         </div>
         <span class="shop-doodle shop-doodle-1">♥</span>
         <span class="shop-doodle shop-doodle-2 blossom-ic"></span>
@@ -64,12 +66,12 @@
     <!-- Filter chips -->
     <section class="shop-filters">
         <div class="filters-row" id="filtersRow">
-            <button class="chip active" data-filter="all">All</button>
-            <button class="chip" data-filter="bracelets">Bracelets</button>
-            <button class="chip" data-filter="pendants">Pendants</button>
-            <button class="chip" data-filter="rings">Rings</button>
-            <button class="chip" data-filter="anklets">Anklets</button>
-            <button class="chip" data-filter="earrings">Earrings</button>
+            <button class="chip active" data-filter="all" data-i18n="find.style.all">All</button>
+            <button class="chip" data-filter="bracelets" data-i18n="find.style.bracelets">Bracelets</button>
+            <button class="chip" data-filter="pendants" data-i18n="find.style.pendants">Pendants</button>
+            <button class="chip" data-filter="rings" data-i18n="find.style.rings">Rings</button>
+            <button class="chip" data-filter="anklets" data-i18n="find.style.anklets">Anklets</button>
+            <button class="chip" data-filter="earrings" data-i18n="find.style.earrings">Earrings</button>
         </div>
     </section>
 
@@ -88,12 +90,12 @@
                  onerror="this.classList.add('img-missing')">
         </div>
         <div class="foot-overlay">
-            <h2 class="foot-headline">Handmade<br>Jewelry for<br>a Brighter<br>You. <span class="heart">♥</span></h2>
+            <h2 class="foot-headline"><span data-i18n="foot.headline">Handmade<br>Jewelry for<br>a Brighter<br>You.</span> <span class="heart">♥</span></h2>
             <div class="foot-brand">
                 <img src="assets/logo-mark.svg" alt="" width="70" height="70">
                 <span class="foot-name">umi umi</span>
                 <span class="foot-sub">Accessories</span>
-                <a href="index.html" class="shop-collection">Back to Home <span>→</span></a>
+                <a href="index.html" class="shop-collection"><span data-i18n="foot.ctaHome">Back to Home</span> <span>→</span></a>
             </div>
         </div>
     </footer>
@@ -102,17 +104,17 @@
     <div class="cart-overlay" id="cartOverlay"></div>
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-head">
-            <h3>Your Cart 🛍️</h3>
+            <h3 data-i18n="cart.title">Your Cart 🛍️</h3>
             <button class="cart-close" id="cartClose">✕</button>
         </div>
         <div class="cart-items" id="cartItems">
-            <div class="cart-empty"><span>🌸</span><p>Your cart is empty</p></div>
+            <div class="cart-empty"><span>🌸</span><p data-i18n="cart.empty">Your cart is empty</p></div>
         </div>
         <div class="cart-foot" id="cartFooter" style="display:none;">
-            <div class="cart-total"><span>Total</span><span id="cartTotal">$0</span></div>
-            <div id="paypal-button-container"><div class="paypal-loading">Loading checkout...</div></div>
-            <button class="add-cart btn-full" id="fallbackCheckoutBtn" style="display:none;">Checkout with PayPal</button>
-            <p class="cart-note">✦ Free shipping on orders over $75 ✦</p>
+            <div class="cart-total"><span data-i18n="cart.total">Total</span><span id="cartTotal">$0</span></div>
+            <div id="paypal-button-container"><div class="paypal-loading" data-i18n="cart.loading">Loading checkout...</div></div>
+            <button class="add-cart btn-full" id="fallbackCheckoutBtn" style="display:none;" data-i18n="cart.fallback">Checkout with PayPal</button>
+            <p class="cart-note" data-i18n="cart.note">✦ Free shipping on orders over $75 ✦</p>
         </div>
     </div>
 
@@ -120,11 +122,11 @@
     <div class="order-confirmation" id="orderConfirmation" style="display:none;">
         <div class="order-confirmation-content">
             <span class="order-success-icon">🌸✨</span>
-            <h2>Thank You!</h2>
-            <p>Your order has been placed successfully.</p>
-            <p class="order-id-display">Order ID: <strong id="confirmOrderId"></strong></p>
-            <p class="order-email-note">A confirmation email will be sent from PayPal.</p>
-            <button class="add-cart" onclick="closeOrderConfirmation()">Continue Shopping</button>
+            <h2 data-i18n="order.title">Thank You!</h2>
+            <p data-i18n="order.body">Your order has been placed successfully.</p>
+            <p class="order-id-display"><span data-i18n="order.id">Order ID:</span> <strong id="confirmOrderId"></strong></p>
+            <p class="order-email-note" data-i18n="order.email">A confirmation email will be sent from PayPal.</p>
+            <button class="add-cart" onclick="closeOrderConfirmation()" data-i18n="order.continue">Continue Shopping</button>
         </div>
     </div>
 

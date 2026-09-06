@@ -11,12 +11,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="i18n.js"></script>
 </head>
 <body>
 
     <!-- Announcement Bar -->
     <div class="announce">
-        <p><span class="tw">✦</span> FREE SHIPPING ON ORDERS OVER $75 <span class="tw">✦</span></p>
+        <p><span class="tw">✦</span> <span data-i18n="announce.shipping">FREE SHIPPING ON ORDERS OVER $75</span> <span class="tw">✦</span></p>
     </div>
 
     <!-- Navbar -->
@@ -30,10 +31,11 @@
                 </span>
             </a>
             <ul class="nav-links">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="shop.html">Shop</a></li>
+                <li><a href="index.html" class="active" data-i18n="nav.home">Home</a></li>
+                <li><a href="shop.html" data-i18n="nav.shop">Shop</a></li>
             </ul>
             <div class="nav-actions">
+                <button class="lang-toggle" id="langToggle" aria-label="Español">ES</button>
                 <span class="nav-flower blossom-ic" aria-hidden="true"></span>
                 <button class="icon-btn" aria-label="Search">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -62,16 +64,16 @@
                     <img src="assets/product.png" alt="Handmade beaded pendant on the stones" class="polaroid-img"
                          onerror="this.classList.add('img-missing')">
                 </div>
-                <figcaption>Good things<br>take time <span class="heart">♥</span></figcaption>
+                <figcaption><span data-i18n="hero.polaroid">Good things<br>take time</span> <span class="heart">♥</span></figcaption>
                 <span class="pin">📌</span>
             </figure>
         </div>
 
         <!-- Right: product details -->
         <div class="hero-details">
-            <span class="badge-bestseller">BEST SELLER</span>
-            <h1 class="product-title">Butterfly Bloom Pendant <span class="blossom-ic" aria-hidden="true"></span></h1>
-            <p class="product-sub">Ocean Blue • Sky Cyan • Sunbeam Yellow</p>
+            <span class="badge-bestseller" data-i18n="hero.badge">BEST SELLER</span>
+            <h1 class="product-title"><span data-i18n="hero.title">Butterfly Bloom Pendant</span> <span class="blossom-ic" aria-hidden="true"></span></h1>
+            <p class="product-sub" data-i18n="hero.sub">Ocean Blue • Sky Cyan • Sunbeam Yellow</p>
             <div class="price-row">
                 <span class="price" id="productPrice">$32.00</span>
             </div>
@@ -85,7 +87,7 @@
                 </span>
                 <span class="review-count">(124)</span>
             </div>
-            <p class="product-desc">
+            <p class="product-desc" data-i18n="hero.desc">
                 A little burst of joy to carry with you. The Butterfly Bloom Pendant is hand-strung
                 from vibrant blue, cyan, and yellow beads into a cheerful butterfly, finished on a soft
                 adjustable cord — playful, lightweight, and made to make you smile.
@@ -94,15 +96,15 @@
             <ul class="features">
                 <li>
                     <span class="feat-icon">🦋</span>
-                    <div><strong>Hand-Beaded Butterfly</strong><small>Bright blue, cyan &amp; yellow beads</small></div>
+                    <div><strong data-i18n="hero.feat1.t">Hand-Beaded Butterfly</strong><small data-i18n="hero.feat1.s">Bright blue, cyan &amp; yellow beads</small></div>
                 </li>
                 <li>
                     <span class="feat-icon">🤍</span>
-                    <div><strong>Handmade with Love</strong><small>Each piece is unique</small></div>
+                    <div><strong data-i18n="hero.feat2.t">Handmade with Love</strong><small data-i18n="hero.feat2.s">Each piece is unique</small></div>
                 </li>
                 <li>
                     <span class="feat-icon">✨</span>
-                    <div><strong>Adjustable Cord</strong><small>Comfy, durable &amp; one-size-fits-all</small></div>
+                    <div><strong data-i18n="hero.feat3.t">Adjustable Cord</strong><small data-i18n="hero.feat3.s">Comfy, durable &amp; one-size-fits-all</small></div>
                 </li>
             </ul>
 
@@ -113,53 +115,108 @@
                     <button class="qty-btn" id="qtyPlus" aria-label="Increase">+</button>
                 </div>
                 <button class="add-cart" id="addToCart">
-                    <span class="cart-ic">🛒</span> Add to Cart
+                    <span class="cart-ic">🛒</span> <span data-i18n="hero.addToCart">Add to Cart</span>
                 </button>
             </div>
 
             <button class="shipping-toggle" id="shippingToggle">
-                <span>🚚 Shipping &amp; Returns</span>
+                <span data-i18n="hero.shipping">🚚 Shipping &amp; Returns</span>
                 <span class="chev">⌄</span>
             </button>
             <div class="shipping-body" id="shippingBody" hidden>
-                <p>Free shipping on orders over $75. Ships in 2–4 business days. 30-day easy returns — if it's not perfect, we'll make it right. 🤍</p>
+                <p data-i18n="hero.shippingBody">Free shipping on orders over $75. Ships in 2–4 business days. 30-day easy returns — if it's not perfect, we'll make it right. 🤍</p>
             </div>
+        </div>
+    </section>
+
+    <!-- New Releases carousel -->
+    <section class="new-releases">
+        <div class="nr-head">
+            <span class="shop-eyebrow"><span class="tw-ink"></span> <span data-i18n="nr.eyebrow">Fresh off the workbench</span> <span class="tw-ink"></span></span>
+            <h2 class="nr-title" data-i18n="nr.title">New Releases</h2>
+            <p class="nr-sub" data-i18n="nr.sub">The latest little joys — just added to the collection.</p>
+        </div>
+        <div class="nr-carousel">
+            <button class="car-arrow nr-prev" aria-label="Previous">‹</button>
+            <div class="nr-track" id="newReleasesTrack"><!-- filled by script.js --></div>
+            <button class="car-arrow nr-next" aria-label="Next">›</button>
+        </div>
+    </section>
+
+    <!-- Find Your Piece — Style + Color finder -->
+    <section class="finder">
+        <div class="finder-head">
+            <span class="shop-eyebrow"><span class="tw-ink"></span> <span data-i18n="find.eyebrow">Customize your search</span> <span class="tw-ink"></span></span>
+            <h2 class="finder-title" data-i18n="find.title">Find Your Piece</h2>
+            <p class="finder-sub" data-i18n="find.sub">Tell us your vibe and we'll match you with something special.</p>
+        </div>
+
+        <div class="finder-controls">
+            <div class="finder-group">
+                <span class="finder-label" data-i18n="find.styleLabel">Style</span>
+                <div class="finder-chips" id="styleChips">
+                    <button class="chip active" data-style="all" data-i18n="find.style.all">All</button>
+                    <button class="chip" data-style="bracelets" data-i18n="find.style.bracelets">Bracelets</button>
+                    <button class="chip" data-style="pendants" data-i18n="find.style.pendants">Pendants</button>
+                    <button class="chip" data-style="rings" data-i18n="find.style.rings">Rings</button>
+                    <button class="chip" data-style="anklets" data-i18n="find.style.anklets">Anklets</button>
+                    <button class="chip" data-style="earrings" data-i18n="find.style.earrings">Earrings</button>
+                </div>
+            </div>
+            <div class="finder-group">
+                <span class="finder-label" data-i18n="find.colorLabel">Color</span>
+                <div class="finder-swatches" id="colorSwatches">
+                    <button class="swatch active" data-color="all" title="All" data-i18n-attr="title:find.color.all"><span class="swatch-all">✦</span></button>
+                    <button class="swatch" data-color="pink" title="Pink" data-i18n-attr="title:find.color.pink" style="--sw:#F7A8D8"></button>
+                    <button class="swatch" data-color="blue" title="Blue" data-i18n-attr="title:find.color.blue" style="--sw:#6FB6F5"></button>
+                    <button class="swatch" data-color="lavender" title="Lavender" data-i18n-attr="title:find.color.lavender" style="--sw:#C9A7F0"></button>
+                    <button class="swatch" data-color="gold" title="Gold" data-i18n-attr="title:find.color.gold" style="--sw:#E9B949"></button>
+                    <button class="swatch" data-color="cyan" title="Cyan" data-i18n-attr="title:find.color.cyan" style="--sw:#7FE3E0"></button>
+                    <button class="swatch" data-color="multi" title="Multi" data-i18n-attr="title:find.color.multi"><span class="swatch-multi"></span></button>
+                </div>
+            </div>
+        </div>
+
+        <p class="finder-count"><span id="finderCount">0</span> <span id="finderCountLabel" data-i18n="find.countPlural">matches</span></p>
+        <div class="finder-grid" id="finderGrid"><!-- filled by script.js --></div>
+        <div class="finder-foot">
+            <a href="shop.html" class="finder-seeall" data-i18n="find.seeAll">See all in Shop →</a>
         </div>
     </section>
 
     <!-- More than just jewelry band -->
     <section class="band">
         <div class="band-bubble">
-            <span>MORE<br>THAN JUST<br>JEWELRY...</span>
+            <span data-i18n="band.bubble">MORE<br>THAN JUST<br>JEWELRY...</span>
             <span class="bubble-heart">♥</span>
         </div>
         <div class="band-features">
             <div class="bf">
                 <span class="bf-ic">💠</span>
-                <p>Natural<br>Gemstones</p>
+                <p data-i18n="band.f1">Natural<br>Gemstones</p>
             </div>
             <div class="bf">
                 <span class="bf-ic">🤚</span>
-                <p>Handmade<br>with Love</p>
+                <p data-i18n="band.f2">Handmade<br>with Love</p>
             </div>
             <div class="bf">
                 <span class="bf-ic">🌊</span>
-                <p>Inspired by<br>Nature</p>
+                <p data-i18n="band.f3">Inspired by<br>Nature</p>
             </div>
             <div class="bf">
                 <span class="bf-ic">☀️</span>
-                <p>Made for<br>Your Journey</p>
+                <p data-i18n="band.f4">Made for<br>Your Journey</p>
             </div>
         </div>
         <div class="band-cat">
-            <div class="cat-bubble">Good<br>Vibes<br>Only</div>
+            <div class="cat-bubble" data-i18n="band.cat">Good<br>Vibes<br>Only</div>
             <span class="cat">🐱</span>
         </div>
     </section>
 
     <!-- You might also like -->
     <section class="also">
-        <h2 class="also-title"><span class="tw-ink"></span> You Might Also Like <span class="tw-ink"></span></h2>
+        <h2 class="also-title"><span class="tw-ink"></span> <span data-i18n="also.title">You Might Also Like</span> <span class="tw-ink"></span></h2>
         <div class="carousel">
             <button class="car-arrow car-prev" aria-label="Previous">‹</button>
             <div class="car-track" id="carTrack"><!-- filled by JS --></div>
@@ -174,12 +231,12 @@
                  onerror="this.classList.add('img-missing')">
         </div>
         <div class="foot-overlay">
-            <h2 class="foot-headline">Handmade<br>Jewelry for<br>a Brighter<br>You. <span class="heart">♥</span></h2>
+            <h2 class="foot-headline"><span data-i18n="foot.headline">Handmade<br>Jewelry for<br>a Brighter<br>You.</span> <span class="heart">♥</span></h2>
             <div class="foot-brand">
                 <img src="assets/logo-mark.svg" alt="" width="70" height="70">
                 <span class="foot-name">umi umi</span>
                 <span class="foot-sub">Accessories</span>
-                <a href="shop.html" class="shop-collection">Shop the Collection <span>→</span></a>
+                <a href="shop.html" class="shop-collection"><span data-i18n="foot.cta">Shop the Collection</span> <span>→</span></a>
             </div>
         </div>
     </footer>
@@ -188,17 +245,17 @@
     <div class="cart-overlay" id="cartOverlay"></div>
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-head">
-            <h3>Your Cart 🛍️</h3>
+            <h3 data-i18n="cart.title">Your Cart 🛍️</h3>
             <button class="cart-close" id="cartClose">✕</button>
         </div>
         <div class="cart-items" id="cartItems">
-            <div class="cart-empty"><span>🌸</span><p>Your cart is empty</p></div>
+            <div class="cart-empty"><span>🌸</span><p data-i18n="cart.empty">Your cart is empty</p></div>
         </div>
         <div class="cart-foot" id="cartFooter" style="display:none;">
-            <div class="cart-total"><span>Total</span><span id="cartTotal">$0</span></div>
-            <div id="paypal-button-container"><div class="paypal-loading">Loading checkout...</div></div>
-            <button class="add-cart btn-full" id="fallbackCheckoutBtn" style="display:none;">Checkout with PayPal</button>
-            <p class="cart-note">✦ Free shipping on orders over $75 ✦</p>
+            <div class="cart-total"><span data-i18n="cart.total">Total</span><span id="cartTotal">$0</span></div>
+            <div id="paypal-button-container"><div class="paypal-loading" data-i18n="cart.loading">Loading checkout...</div></div>
+            <button class="add-cart btn-full" id="fallbackCheckoutBtn" style="display:none;" data-i18n="cart.fallback">Checkout with PayPal</button>
+            <p class="cart-note" data-i18n="cart.note">✦ Free shipping on orders over $75 ✦</p>
         </div>
     </div>
 
@@ -206,11 +263,11 @@
     <div class="order-confirmation" id="orderConfirmation" style="display:none;">
         <div class="order-confirmation-content">
             <span class="order-success-icon">🌸✨</span>
-            <h2>Thank You!</h2>
-            <p>Your order has been placed successfully.</p>
-            <p class="order-id-display">Order ID: <strong id="confirmOrderId"></strong></p>
-            <p class="order-email-note">A confirmation email will be sent from PayPal.</p>
-            <button class="add-cart" onclick="closeOrderConfirmation()">Continue Shopping</button>
+            <h2 data-i18n="order.title">Thank You!</h2>
+            <p data-i18n="order.body">Your order has been placed successfully.</p>
+            <p class="order-id-display"><span data-i18n="order.id">Order ID:</span> <strong id="confirmOrderId"></strong></p>
+            <p class="order-email-note" data-i18n="order.email">A confirmation email will be sent from PayPal.</p>
+            <button class="add-cart" onclick="closeOrderConfirmation()" data-i18n="order.continue">Continue Shopping</button>
         </div>
     </div>
 
