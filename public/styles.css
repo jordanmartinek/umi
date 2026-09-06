@@ -129,7 +129,7 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 /* ============================================ Hero =================== */
 .hero {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 45fr 55fr;
     align-items: stretch;
     background:
         linear-gradient(180deg, rgba(191,227,255,0.45), rgba(253,231,241,0.55)),
@@ -149,13 +149,17 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
 }
-/* Real images cover their container; if a file is missing the underlying
-   gradient shows through gracefully (see .img-missing). */
+/* Show the WHOLE illustration (no cropping) on a soft pastel matte.
+   The image is inset a little so the pastel frame breathes around it,
+   and it never competes with the product column for attention. */
 .art-img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center top;
+    position: absolute;
+    inset: 18px;
+    width: calc(100% - 36px);
+    height: calc(100% - 36px);
+    object-fit: contain;
+    object-position: center;
+    border-radius: 18px;
 }
 .img-missing { display: none !important; }
 .art-label {
