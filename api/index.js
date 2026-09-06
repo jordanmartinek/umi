@@ -62,6 +62,27 @@ module.exports = async (req, res) => {
         return res.status(204).end();
     }
 
+    // ---- Ensure req.body is populated (Vercel may not parse it for rewritten
+    // routes, and the local dev server passes it pre-parsed). If it's missing
+    // on a POST/PUT, read the raw stream and JSON-parse it ourselves. ----
+    if ((method === 'POST' || method === 'PUT') &&
+        (req.body === undefined || req.body === null || req.body === '')) {
+        try {
+            const raw = await new Promise((resolve, reject) => {
+                let d = '';
+                req.on('data', c => { d += c; });
+                req.on('end', () => resolve(d));
+                req.on('error', reject);
+            });
+            req.body = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            req.body = {};
+        }
+    } else if (typeof req.body === 'string') {
+        // Vercel sometimes hands the body through as an unparsed string.
+        try { req.body = JSON.parse(req.body); } catch (e) { /* leave as-is */ }
+    }
+
     // Unconditional diagnostic: fires for ANY request whose raw URL or resolved
     // path mentions "debug", regardless of how Vercel shaped the request. This
     // dumps exactly what the function receives so route parsing can be verified.
@@ -142,7 +163,11 @@ module.exports = async (req, res) => {
         if (pathname === '/paypal/create-order' && method === 'POST') {
             const { items } = req.body || {};
             if (!items || !Array.isArray(items) || items.length === 0) {
-                return res.status(400).json({ error: 'No items provided' });
+                return res.status(400).json({
+                    error: 'No items provided',
+                    debug_receivedBodyType: typeof req.body,
+                    debug_receivedBody: req.body,
+                });
             }
 
             const products = readData('products.json');
