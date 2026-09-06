@@ -724,3 +724,116 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 @media (max-width: 1024px) { .collection-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 720px)  { .collection-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
 @media (max-width: 420px)  { .collection-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } .pcard-name { font-size: 0.85rem; } }
+
+
+
+/* ============================================ Language toggle ============================================ */
+.lang-toggle {
+    border: 1.5px solid var(--lav-soft);
+    background: var(--white);
+    color: var(--lav);
+    font-weight: 700; font-size: 0.72rem; letter-spacing: 0.5px;
+    padding: 6px 12px; border-radius: 30px; cursor: pointer;
+    transition: all 0.2s; min-width: 40px;
+}
+.lang-toggle:hover { border-color: var(--pink); color: var(--pink); transform: translateY(-1px); }
+.lang-toggle:active { transform: scale(0.94); }
+
+/* ============================================ New Releases carousel ============================================ */
+.new-releases {
+    padding: 44px 20px 40px;
+    background:
+        radial-gradient(circle at 85% 15%, rgba(191,227,255,0.5) 0%, transparent 45%),
+        linear-gradient(120deg, #FFF6FA 0%, #FDE7F1 100%);
+}
+.nr-head { text-align: center; max-width: 640px; margin: 0 auto 26px; }
+.nr-title {
+    font-family: var(--font-round); font-weight: 800;
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    background: linear-gradient(90deg, var(--pink), var(--lav));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    color: var(--pink); margin-bottom: 8px;
+}
+.nr-sub { color: var(--ink); font-size: 0.95rem; }
+.nr-carousel { display: flex; align-items: center; gap: 12px; max-width: 1180px; margin: 0 auto; }
+.nr-track {
+    display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 8px 4px 16px; flex: 1;
+    scrollbar-width: none;
+}
+.nr-track::-webkit-scrollbar { display: none; }
+.nr-cell { flex: 0 0 auto; width: clamp(180px, 24%, 230px); scroll-snap-align: start; }
+.nr-cell .pcard { opacity: 1; transform: none; }  /* always visible in carousel */
+
+/* ============================================ Find Your Piece finder ============================================ */
+.finder {
+    padding: 48px 20px 54px;
+    max-width: 1180px; margin: 0 auto;
+}
+.finder-head { text-align: center; max-width: 640px; margin: 0 auto 22px; }
+.finder-title {
+    font-family: var(--font-round); font-weight: 800;
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    background: linear-gradient(90deg, var(--lav), var(--pink));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    color: var(--lav); margin-bottom: 8px;
+}
+.finder-sub { color: var(--ink); font-size: 0.95rem; }
+
+.finder-controls {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 22px 24px;
+    display: flex; flex-wrap: wrap; gap: 22px 40px; justify-content: center;
+    margin-bottom: 20px;
+}
+.finder-group { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.finder-label {
+    font-family: var(--font-round); font-weight: 700; color: var(--ink);
+    font-size: 0.9rem; letter-spacing: 0.5px;
+}
+.finder-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.finder-swatches { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+
+/* Color swatches */
+.swatch {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 2px solid var(--white);
+    background: var(--sw, var(--lav-soft));
+    box-shadow: 0 2px 6px rgba(107,91,119,0.18), 0 0 0 1.5px rgba(185,139,234,0.25);
+    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--lav); font-size: 0.9rem;
+}
+.swatch:hover { transform: scale(1.12); }
+.swatch.active {
+    box-shadow: 0 2px 6px rgba(107,91,119,0.2), 0 0 0 2.5px var(--pink);
+    transform: scale(1.08);
+}
+.swatch-all { color: var(--lav); }
+.swatch-multi {
+    display: block; width: 100%; height: 100%; border-radius: 50%;
+    background: conic-gradient(#F7A8D8, #6FB6F5, #C9A7F0, #E9B949, #7FE3E0, #F7A8D8);
+}
+
+.finder-count { text-align: center; color: var(--ink-soft); font-size: 0.85rem; margin-bottom: 16px; }
+.finder-count #finderCount { color: var(--pink); font-weight: 700; }
+.finder-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+}
+.finder-grid .pcard { opacity: 1; transform: none; }
+.finder-empty { grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--ink-soft); }
+.finder-empty span { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+.finder-foot { text-align: center; margin-top: 24px; }
+.finder-seeall {
+    display: inline-block; font-weight: 700; color: var(--pink);
+    padding: 11px 26px; border-radius: 30px;
+    border: 1.5px solid var(--pink);
+    transition: all 0.2s;
+}
+.finder-seeall:hover { background: linear-gradient(90deg, var(--pink), var(--lav)); color: var(--white); border-color: transparent; transform: translateY(-2px); }
+
+@media (max-width: 1024px) { .finder-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 720px)  { .finder-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+@media (max-width: 420px)  { .finder-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }

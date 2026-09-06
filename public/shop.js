@@ -33,6 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPayPal();
 });
 
+// Re-render the grid + refresh cart when language changes
+document.addEventListener('umi:langchange', () => {
+    renderCollection();
+    if (cart.length) updateCartUI();
+});
+
+// i18n shorthand (safe if i18n.js loads after this file's parse)
+function T(key, fallback) {
+    return (window.UmiI18n && window.UmiI18n.t) ? window.UmiI18n.t(key) : (fallback || key);
+}
+
 // ============================================ Data ============================================
 async function loadCollection() {
     try {
@@ -103,7 +114,7 @@ function renderCollection() {
                     ${badge}
                     ${media}
                     <button class="pcard-add" data-name="${escapeHtml(p.name)}" data-price="${p.price}">
-                        <span class="cart-ic">🛍️</span> Quick Add
+                        <span class="cart-ic">🛍️</span> ${escapeHtml(T('cart.quickAdd', 'Quick Add'))}
                     </button>
                 </div>
                 <div class="pcard-body">
@@ -193,7 +204,7 @@ function updateCartUI() {
     const totalQty = cart.reduce((s, i) => s + i.quantity, 0);
 
     if (cart.length === 0) {
-        items.innerHTML = `<div class="cart-empty"><span>🌸</span><p>Your cart is empty</p></div>`;
+        items.innerHTML = `<div class="cart-empty"><span>🌸</span><p>${escapeHtml(T('cart.empty','Your cart is empty'))}</p></div>`;
         foot.style.display = 'none';
         if (count) count.textContent = '0';
         const pp = document.getElementById('paypal-button-container');
