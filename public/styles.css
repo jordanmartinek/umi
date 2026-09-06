@@ -149,16 +149,14 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
 }
-/* The uploaded girl image is a COMPOSITE (girl on the left, a baked-in
-   polaroid + thumbnails on the right). We crop to the LEFT portion so only
-   the girl shows as the background, then overlay our own product polaroid
-   on top (mockup style). object-position:left keeps the girl anchored; the
-   scale pushes the baked-in polaroid off the right edge of the panel. */
+/* Clean girl-only illustration (wide image: girl on the left, coastal scene
+   on the right, "Small Details. Big Energy." baked in). Fill the panel and
+   anchor left so the girl is featured; the scenery bleeds off to the right. */
 .art-img {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     object-fit: cover;
-    object-position: 2% top;
+    object-position: 22% center;
 }
 .img-missing { display: none !important; }
 .art-label {
@@ -181,16 +179,17 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .doodle-crown { top: 210px; right: 60px; font-size: 1.5rem; transform: rotate(12deg); }
 .doodle-spark { top: 120px; right: 150px; color: #fff; }
 
-/* Polaroid */
+/* Polaroid — anchored to the lower-right of the art panel so it sits over the
+   coastal scenery and does NOT cover the girl's face or the baked-in quote. */
 .polaroid {
     position: absolute;
-    left: 50%; top: 52%;
-    transform: translate(-46%, -46%) rotate(-4deg);
+    right: 20px; bottom: 20px;
+    transform: rotate(-4deg);
     background: var(--white);
     padding: 12px 12px 40px;
     border-radius: 6px;
     box-shadow: 0 18px 40px rgba(107,91,119,0.28);
-    width: 66%;
+    width: 52%;
     z-index: 4;
 }
 .polaroid-photo {
