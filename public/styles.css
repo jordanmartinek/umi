@@ -149,17 +149,16 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
 }
-/* Show the WHOLE illustration (no cropping) on a soft pastel matte.
-   The image is inset a little so the pastel frame breathes around it,
-   and it never competes with the product column for attention. */
+/* The uploaded girl image is a COMPOSITE (girl on the left, a baked-in
+   polaroid + thumbnails on the right). We crop to the LEFT portion so only
+   the girl shows as the background, then overlay our own product polaroid
+   on top (mockup style). object-position:left keeps the girl anchored; the
+   scale pushes the baked-in polaroid off the right edge of the panel. */
 .art-img {
-    position: absolute;
-    inset: 18px;
-    width: calc(100% - 36px);
-    height: calc(100% - 36px);
-    object-fit: contain;
-    object-position: center;
-    border-radius: 18px;
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 2% top;
 }
 .img-missing { display: none !important; }
 .art-label {
