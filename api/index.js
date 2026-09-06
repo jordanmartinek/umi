@@ -48,6 +48,25 @@ module.exports = async (req, res) => {
         return res.status(204).end();
     }
 
+    // Unconditional diagnostic: fires for ANY request whose raw URL or resolved
+    // path mentions "debug", regardless of how Vercel shaped the request. This
+    // dumps exactly what the function receives so route parsing can be verified.
+    if ((req.url && req.url.indexOf('debug') !== -1) || pathname.indexOf('debug') !== -1) {
+        return res.status(200).json({
+            ok: true,
+            note: 'diagnostic',
+            method,
+            rawUrl: req.url || null,
+            resolvedPathname: pathname,
+            queryPath: (req.query && req.query.path) || 'not set',
+            forwardedUri: req.headers['x-forwarded-uri'] || 'not set',
+            paypalConfigured: !!process.env.PAYPAL_CLIENT_ID,
+            paypalClientIdLength: (process.env.PAYPAL_CLIENT_ID || '').length,
+            paypalSecretConfigured: !!process.env.PAYPAL_CLIENT_SECRET,
+            mode: process.env.PAYPAL_MODE || 'not set (defaults to sandbox)',
+        });
+    }
+
     try {
         // Debug route — check what the function receives + whether PayPal is configured
         if (pathname === '/debug' && method === 'GET') {
