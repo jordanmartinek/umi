@@ -74,6 +74,11 @@ module.exports = async (req, res) => {
             return res.status(200).json(categories);
         }
 
+        if (pathname === '/sets' && method === 'GET') {
+            const sets = readData('sets.json').filter(s => s.active);
+            return res.status(200).json(sets);
+        }
+
         if (pathname === '/settings/public' && method === 'GET') {
             const settings = readSettings();
             return res.status(200).json({
@@ -103,13 +108,30 @@ module.exports = async (req, res) => {
             }
 
             const products = readData('products.json');
+            const sets = readData('sets.json');
+
+            // Validate every incoming line against the catalog (products OR sets).
+            // Prices come from the server — never trust prices sent by the client.
             const validatedItems = items.map(item => {
+                const qty = Math.max(1, parseInt(item.quantity, 10) || 1);
                 const product = products.find(p => p.name === item.name && p.active);
-                if (!product) throw new Error(`Product not found: ${item.name}`);
-                return { name: product.name, price: product.price, quantity: item.quantity || 1 };
+                if (product) {
+                    return { name: product.name, price: Number(product.price), quantity: qty };
+                }
+                const set = sets.find(s => s.name === item.name && s.active);
+                if (set) {
+                    return { name: set.name, price: Number(set.price), quantity: qty };
+                }
+                throw new Error(`Product not found: ${item.name}`);
             });
 
-            const total = validatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            // Round each line to cents to avoid floating point drift when PayPal
+            // reconciles the breakdown against the order total.
+            const round2 = n => Math.round(n * 100) / 100;
+            const total = round2(
+                validatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+            );
+
             const order = await createOrder(validatedItems, total);
             return res.status(200).json({ id: order.id, status: order.status });
         }

@@ -74,63 +74,53 @@ When ready to accept real payments:
 
 ## Project Structure
 
+All API routes are handled by a **single serverless function** (`api/index.js`).
+This keeps the project under Vercel's Hobby-plan function limit — `vercel.json`
+rewrites every `/api/*` request to that one handler, which dispatches internally
+based on the path and method.
+
 ```
 umi/
-├── api/                    # Vercel serverless functions
-│   ├── _lib/              # Shared utilities (not exposed as routes)
-│   │   ├── auth.js        # JWT auth, password hashing
-│   │   ├── db.js          # JSON file database helpers
-│   │   └── paypal.js      # PayPal API integration
-│   ├── admin/             # Protected admin endpoints
-│   │   ├── categories.js
-│   │   ├── categories/[id].js
-│   │   ├── orders.js
-│   │   ├── orders/[id].js
-│   │   ├── products.js
-│   │   ├── products/[id].js
-│   │   └── settings.js
-│   ├── auth/              # Authentication endpoints
-│   │   ├── check.js
-│   │   ├── change-password.js
-│   │   ├── login.js
-│   │   └── logout.js
-│   ├── paypal/            # PayPal checkout endpoints
-│   │   ├── client-id.js
-│   │   ├── create-order.js
-│   │   └── capture-order.js
-│   ├── categories.js      # Public categories
-│   ├── products.js        # Public products
-│   └── settings/
-│       └── public.js      # Public store settings
-├── data/                   # JSON database
-│   ├── products.json
-│   ├── categories.json
-│   ├── orders.json
-│   └── settings.json
+├── api/
+│   ├── _lib/               # Shared utilities (not exposed as routes)
+│   │   ├── auth.js         # JWT auth, password hashing
+│   │   ├── db.js           # JSON file database helpers
+│   │   └── paypal.js       # PayPal Orders API v2 integration
+│   └── index.js            # Single handler for ALL /api routes
+│                           #   (public, paypal, auth, and admin)
+├── data/                   # JSON "database" (committed to the repo)
+│   ├── products.json       # Product catalog
+│   ├── categories.json     # Product categories
+│   ├── sets.json           # Curated bundle sets (validated at checkout)
+│   ├── orders.json         # Captured orders
+│   └── settings.json       # Store settings + hashed admin password
 ├── public/
-│   ├── store/             # Customer storefront
-│   │   ├── index.html
-│   │   ├── styles.css
-│   │   └── script.js
-│   └── admin/             # Admin dashboard
+│   ├── index.html          # Customer storefront
+│   ├── styles.css          # Storefront styles
+│   ├── script.js           # Storefront logic (cart, PayPal, animations)
+│   └── admin/              # Admin dashboard
 │       ├── index.html
 │       ├── admin.css
 │       └── admin.js
-├── server.js              # Local dev server (mimics Vercel routing)
-├── vercel.json            # Vercel deployment config
-├── .env.example           # Environment variable template
+├── uploads/                # Product image uploads
+├── server.js               # Local dev server (mimics Vercel routing)
+├── vercel.json             # Vercel deployment config (rewrites → api/index.js)
+├── .env.example            # Environment variable template
 └── package.json
 ```
 
 ## Checkout Flow
 
-1. Customer adds items to cart
+1. Customer adds items to cart (individual bracelets and/or bundle **sets**)
 2. Customer clicks PayPal button in cart drawer
-3. PayPal popup opens → customer approves payment
-4. Our API captures the payment via PayPal Orders API v2
-5. Order is saved to `data/orders.json`
-6. Customer sees success confirmation with order ID
-7. Order appears in admin dashboard → owner marks as fulfilled when shipped
+3. `/api/paypal/create-order` validates every line against the catalog —
+   both `products.json` and `sets.json` — and resolves prices **server-side**
+   so client-supplied prices can't be tampered with
+4. PayPal popup opens → customer approves payment
+5. `/api/paypal/capture-order` captures the payment via PayPal Orders API v2
+6. Order is saved to `data/orders.json`
+7. Customer sees success confirmation with order ID
+8. Order appears in admin dashboard → owner marks as fulfilled when shipped
 
 ## API Endpoints
 
@@ -139,6 +129,7 @@ umi/
 |--------|----------|-------------|
 | GET | `/api/products` | All active products |
 | GET | `/api/categories` | All categories |
+| GET | `/api/sets` | Curated bundle sets |
 | GET | `/api/settings/public` | Store settings |
 | GET | `/api/paypal/client-id` | PayPal client ID for frontend |
 | POST | `/api/paypal/create-order` | Create PayPal order |

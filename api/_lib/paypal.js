@@ -66,16 +66,24 @@ async function getAccessToken() {
 async function createOrder(items, total, currency = 'USD') {
     const accessToken = await getAccessToken();
 
+    // Compute the item_total from the line items so the breakdown always
+    // reconciles with amount.value — PayPal rejects orders where it doesn't.
+    const itemTotal = items.reduce(
+        (sum, item) => sum + Number(item.price) * (parseInt(item.quantity, 10) || 1),
+        0
+    );
+    const amountValue = (typeof total === 'number' ? total : itemTotal).toFixed(2);
+
     const orderPayload = {
         intent: 'CAPTURE',
         purchase_units: [{
             amount: {
                 currency_code: currency,
-                value: total.toFixed(2),
+                value: amountValue,
                 breakdown: {
                     item_total: {
                         currency_code: currency,
-                        value: total.toFixed(2),
+                        value: itemTotal.toFixed(2),
                     }
                 }
             },
@@ -83,9 +91,9 @@ async function createOrder(items, total, currency = 'USD') {
                 name: item.name,
                 unit_amount: {
                     currency_code: currency,
-                    value: item.price.toFixed(2),
+                    value: Number(item.price).toFixed(2),
                 },
-                quantity: String(item.quantity || 1),
+                quantity: String(parseInt(item.quantity, 10) || 1),
             })),
         }],
     };
