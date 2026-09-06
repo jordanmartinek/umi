@@ -575,8 +575,12 @@ function renderPayPalButtons() {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ items: cartPayload() }),
             });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Failed to create order');
+            const data = await res.json().catch(() => ({}));
+            console.log('[create-order]', res.status, data);
+            if (!res.ok) {
+                showToast('Checkout error: ' + (data.error || res.status));
+                throw new Error(data.error || 'Failed to create order');
+            }
             return data.id;
         },
         onApprove: async (data) => {
@@ -584,14 +588,15 @@ function renderPayPalButtons() {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ orderID: data.orderID, items: cartPayload() }),
             });
-            const result = await res.json();
+            const result = await res.json().catch(() => ({}));
+            console.log('[capture-order]', res.status, result);
             if (result.success) {
                 cart = []; updateCartUI(); closeCart(); showOrderConfirmation(result.orderId);
             } else {
-                showToast('Payment was not completed. Please try again.');
+                showToast('Payment error: ' + (result.error || result.status || res.status));
             }
         },
-        onError: (err) => { console.error('PayPal error:', err); showToast('Something went wrong with the payment.'); },
+        onError: (err) => { console.error('PayPal error:', err); showToast('PayPal error: ' + (err && err.message ? err.message : err)); },
         onCancel: () => {},
     }).render('#paypal-button-container');
 }
