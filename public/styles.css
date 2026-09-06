@@ -837,3 +837,70 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 @media (max-width: 1024px) { .finder-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 720px)  { .finder-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
 @media (max-width: 420px)  { .finder-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+
+
+
+/* ============================================ Hero product carousel ============================================ */
+/* Prev/next arrows floating over the art panel, flanking the polaroid */
+.hero-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    z-index: 6;
+    width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(255,255,255,0.92); color: var(--pink);
+    font-size: 1.6rem; line-height: 1; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 16px rgba(107,91,119,0.28);
+    cursor: pointer; transition: transform 0.2s, background 0.2s, color 0.2s;
+}
+.hero-nav:hover { background: var(--white); transform: translateY(-50%) scale(1.1); color: var(--lav); }
+.hero-nav:active { transform: translateY(-50%) scale(0.94); }
+.hero-prev { left: 14px; }
+.hero-next { right: 14px; }
+
+/* Dot indicators under the polaroid */
+.hero-dots {
+    position: absolute; left: 0; right: 0; bottom: 14px;
+    z-index: 6; display: flex; gap: 8px; justify-content: center;
+}
+.hero-dot {
+    width: 9px; height: 9px; border-radius: 50%; cursor: pointer;
+    border: none; background: rgba(255,255,255,0.7);
+    box-shadow: 0 1px 4px rgba(107,91,119,0.35);
+    transition: transform 0.2s, background 0.2s, width 0.2s;
+}
+.hero-dot:hover { transform: scale(1.2); }
+.hero-dot.active { background: var(--pink); width: 22px; border-radius: 6px; }
+
+/* The polaroid is now interactive */
+.polaroid { cursor: grab; outline: none; }
+.polaroid:focus-visible { box-shadow: 0 0 0 3px var(--lav), 0 18px 40px rgba(107,91,119,0.28); }
+
+/* Slide/fade swap when the product changes.
+   Note: keyframes never end (or rest) at opacity:0, so nothing can get
+   "stuck" invisible if a screenshot / paint lands mid-animation. */
+@keyframes heroSwapIn {
+    0%   { opacity: 0.35; transform: translateY(8px); }
+    100% { opacity: 1; transform: none; }
+}
+.polaroid.hero-swap { animation: heroSwapPolaroid 0.4s cubic-bezier(0.22,1,0.36,1); }
+@keyframes heroSwapPolaroid {
+    0%   { opacity: 0.5; transform: rotate(-4deg) scale(0.96); }
+    100% { opacity: 1; transform: rotate(-4deg) scale(1); }
+}
+/* Only animate the title + description block; leave everything else static
+   so the panel is never blank. */
+.hero-details.hero-swap #heroTitle,
+.hero-details.hero-swap #heroSub,
+.hero-details.hero-swap #heroDesc,
+.hero-details.hero-swap #heroFeatures {
+    animation: heroSwapIn 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+/* Emoji placeholder fills the polaroid photo when there is no real image */
+.polaroid-photo .pcard-emoji {
+    width: auto; height: auto; background: transparent; box-shadow: none;
+    font-size: 4.4rem;
+}
+
+@media (max-width: 900px) {
+    .hero-nav { width: 36px; height: 36px; font-size: 1.3rem; }
+}

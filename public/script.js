@@ -7,8 +7,101 @@ let allProducts = [];
 let cart = []; // { name, price, quantity }
 let paypalLoaded = false;
 
-// Featured hero product (falls back to the mock if API is empty)
-const HERO_FALLBACK = { name: 'Butterfly Bloom Pendant', price: 32 };
+// ============================================ Hero carousel products ============================================
+// Each featured product carries EN + ES copy so the whole detail panel can be
+// swapped per slide and re-translated by the language toggle. `photo` uses a
+// pastel gradient + emoji placeholder for now — swap in a real image via `img`.
+const HERO_PRODUCTS = [
+    {
+        id: 'butterfly-bloom', price: 32, img: 'assets/product.png',
+        gradient: 'linear-gradient(160deg,#BFE3FF,#FFE29A)', emoji: '🦋',
+        en: {
+            badge: 'BEST SELLER', title: 'Butterfly Bloom Pendant', sub: 'Ocean Blue • Sky Cyan • Sunbeam Yellow',
+            desc: 'A little burst of joy to carry with you. Hand-strung from vibrant blue, cyan, and yellow beads into a cheerful butterfly, finished on a soft adjustable cord — playful, lightweight, and made to make you smile.',
+            feats: [['🦋', 'Hand-Beaded Butterfly', 'Bright blue, cyan & yellow beads'], ['🤍', 'Handmade with Love', 'Each piece is unique'], ['✨', 'Adjustable Cord', 'Comfy, durable & one-size-fits-all']],
+            caption: 'Good things<br>take time',
+        },
+        es: {
+            badge: 'MÁS VENDIDO', title: 'Colgante Mariposa en Flor', sub: 'Azul Océano • Cian Cielo • Amarillo Sol',
+            desc: 'Una pequeña dosis de alegría para llevar contigo. Tejido a mano con vibrantes cuentas azules, cian y amarillas en forma de una alegre mariposa, rematado con un suave cordón ajustable: divertido, ligero y hecho para sacarte una sonrisa.',
+            feats: [['🦋', 'Mariposa de Cuentas', 'Cuentas azules, cian y amarillas'], ['🤍', 'Hecho a Mano con Amor', 'Cada pieza es única'], ['✨', 'Cordón Ajustable', 'Cómodo, resistente y talla única']],
+            caption: 'Las cosas buenas<br>toman tiempo',
+        },
+    },
+    {
+        id: 'ocean-dream', price: 28, img: null,
+        gradient: 'linear-gradient(160deg,#CDE7FF,#C9A7F0)', emoji: '🌊',
+        en: {
+            badge: 'NEW', title: 'Ocean Dream Bracelet', sub: 'Deep Blue • Seafoam • Silver Shimmer',
+            desc: 'Wear a calm little wave on your wrist. Cool blue and seafoam beads flow together with a tiny silver shell, strung on a stretch cord that slips on in a second — your daily dose of seaside serenity.',
+            feats: [['🌊', 'Ocean-Toned Beads', 'Deep blue & soft seafoam'], ['🐚', 'Silver Shell Charm', 'A dainty coastal accent'], ['💧', 'Stretch Fit', 'Slips on — no clasp needed']],
+            caption: 'Made by<br>the sea',
+        },
+        es: {
+            badge: 'NUEVO', title: 'Pulsera Sueño de Mar', sub: 'Azul Profundo • Espuma de Mar • Brillo Plata',
+            desc: 'Lleva una pequeña ola de calma en tu muñeca. Cuentas azules y verde espuma fluyen junto a una diminuta concha plateada, en un cordón elástico que se pone en un segundo: tu dosis diaria de serenidad marina.',
+            feats: [['🌊', 'Cuentas Tono Océano', 'Azul profundo y espuma suave'], ['🐚', 'Dije de Concha Plateada', 'Un delicado acento costero'], ['💧', 'Ajuste Elástico', 'Se desliza — sin broche']],
+            caption: 'Hecho junto<br>al mar',
+        },
+    },
+    {
+        id: 'sunbeam-charm', price: 26, img: null,
+        gradient: 'linear-gradient(160deg,#FFECD2,#F7A8D8)', emoji: '☀️',
+        en: {
+            badge: '', title: 'Sunbeam Charm Bracelet', sub: 'Golden Honey • Warm Coral • Cream',
+            desc: 'Sunshine you can wear. Warm honey-gold beads and a tiny sun charm bring a cozy glow to any outfit — the little pick-me-up your wrist has been waiting for.',
+            feats: [['☀️', 'Sun Charm', 'Gold-toned & cheerful'], ['🍯', 'Honey-Gold Beads', 'Warm, glowing tones'], ['🤍', 'Handmade with Love', 'Each piece is unique']],
+            caption: 'A little<br>sunshine',
+        },
+        es: {
+            badge: '', title: 'Pulsera Rayo de Sol', sub: 'Miel Dorada • Coral Cálido • Crema',
+            desc: 'Sol que puedes llevar puesto. Cálidas cuentas color miel y un pequeño dije de sol aportan un brillo acogedor a cualquier atuendo: el pequeño mimo que tu muñeca estaba esperando.',
+            feats: [['☀️', 'Dije de Sol', 'Tono dorado y alegre'], ['🍯', 'Cuentas Miel-Oro', 'Tonos cálidos y radiantes'], ['🤍', 'Hecho a Mano con Amor', 'Cada pieza es única']],
+            caption: 'Un poquito<br>de sol',
+        },
+    },
+    {
+        id: 'seashell-whisper', price: 34, img: null,
+        gradient: 'linear-gradient(160deg,#F7D1C4,#BFE3FF)', emoji: '🐚',
+        en: {
+            badge: '', title: 'Seashell Whisper Pendant', sub: 'Blush Pink • Pearl • Sky',
+            desc: 'A soft secret from the shore. A hand-picked shell rests among blush and pearl beads, hung on a delicate chain — quiet, romantic, and endlessly wearable.',
+            feats: [['🐚', 'Real Shell Accent', 'Each one naturally unique'], ['🩷', 'Blush & Pearl Beads', 'Soft, romantic tones'], ['✨', 'Delicate Chain', 'Gold-filled & long lasting']],
+            caption: 'Whispers<br>of the shore',
+        },
+        es: {
+            badge: '', title: 'Colgante Susurro de Concha', sub: 'Rosa Suave • Perla • Cielo',
+            desc: 'Un dulce secreto de la orilla. Una concha elegida a mano descansa entre cuentas rosadas y perladas, colgada de una cadena delicada: discreto, romántico e infinitamente combinable.',
+            feats: [['🐚', 'Acento de Concha Real', 'Cada una naturalmente única'], ['🩷', 'Cuentas Rosa y Perla', 'Tonos suaves y románticos'], ['✨', 'Cadena Delicada', 'Chapada en oro y duradera']],
+            caption: 'Susurros<br>de la orilla',
+        },
+    },
+    {
+        id: 'tide-pool-ring', price: 22, img: null,
+        gradient: 'linear-gradient(160deg,#B8E6DC,#C9A7F0)', emoji: '💍',
+        en: {
+            badge: 'NEW', title: 'Tide Pool Ring', sub: 'Cyan • Lavender • Glass Bead',
+            desc: 'Tiny treasures from a tide pool, wrapped around your finger. Cyan and lavender glass beads on a bendy wire band that adjusts to any finger — a playful stack-it-up favorite.',
+            feats: [['💍', 'Adjustable Band', 'Fits any finger'], ['🫧', 'Glass Beads', 'Cyan & lavender shimmer'], ['🌿', 'Stackable', 'Mix, match & layer']],
+            caption: 'Tiny<br>treasures',
+        },
+        es: {
+            badge: 'NUEVO', title: 'Anillo Poza de Marea', sub: 'Cian • Lavanda • Cuenta de Vidrio',
+            desc: 'Pequeños tesoros de una poza de marea, envueltos en tu dedo. Cuentas de vidrio cian y lavanda sobre una banda de alambre flexible que se ajusta a cualquier dedo: un favorito juguetón para apilar.',
+            feats: [['💍', 'Banda Ajustable', 'Se adapta a cualquier dedo'], ['🫧', 'Cuentas de Vidrio', 'Brillo cian y lavanda'], ['🌿', 'Apilable', 'Combina y superpone']],
+            caption: 'Pequeños<br>tesoros',
+        },
+    },
+];
+
+let heroIndex = 0;
+let heroAutoTimer = null;
+
+// Current hero product's copy in the active language
+function heroCopy(p) {
+    const lang = (window.UmiI18n && window.UmiI18n.getLang) ? window.UmiI18n.getLang() : 'en';
+    return p[lang] || p.en;
+}
 
 // Placeholder catalog for New Releases + Find Your Piece (used when the API
 // has no products). Each item carries category (style) + color for filtering.
@@ -31,10 +124,9 @@ let finderStyle = 'all';
 let finderColor = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
-    initQtyStepper();
+    initHeroCarousel();
     initShippingToggle();
     initCart();
-    initHeroAddToCart();
     initNewReleases();
     initFinder();
     loadStoreData();
@@ -43,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Re-render dynamic bits + refresh open cart when the language switches
 document.addEventListener('umi:langchange', () => {
+    renderHeroSlide();       // re-translate the current hero product
     renderNewReleases();
     renderFinder();
     if (cart.length) updateCartUI();
@@ -202,41 +295,138 @@ function applySettings(settings) {
     }
 }
 
-// The featured product for the hero: first product from API, else fallback
-function heroProduct() {
-    if (allProducts && allProducts.length) {
-        const p = allProducts[0];
-        return { name: p.name, price: Number(p.price) };
-    }
-    return HERO_FALLBACK;
-}
+// ============================================ Hero product carousel ============================================
+function initHeroCarousel() {
+    const stage = document.getElementById('heroStage');
+    if (!stage) return; // hero markup not present
 
-// ============================================ Qty stepper (hero) ============================================
-function initQtyStepper() {
+    // Build dot indicators
+    const dots = document.getElementById('heroDots');
+    if (dots) {
+        dots.innerHTML = HERO_PRODUCTS.map((_, i) =>
+            `<button class="hero-dot${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="Product ${i + 1}"></button>`
+        ).join('');
+        dots.querySelectorAll('.hero-dot').forEach(d =>
+            d.addEventListener('click', () => goHero(parseInt(d.dataset.idx, 10), true)));
+    }
+
+    // Arrows
+    const prev = document.getElementById('heroPrev');
+    const next = document.getElementById('heroNext');
+    if (prev) prev.addEventListener('click', () => goHero(heroIndex - 1, true));
+    if (next) next.addEventListener('click', () => goHero(heroIndex + 1, true));
+
+    // Qty stepper
     const val = document.getElementById('qtyVal');
     const minus = document.getElementById('qtyMinus');
     const plus = document.getElementById('qtyPlus');
-    if (!val) return;
-    let q = 1;
-    const render = () => { val.textContent = q; };
-    minus.addEventListener('click', () => { q = Math.max(1, q - 1); render(); });
-    plus.addEventListener('click', () => { q += 1; render(); });
+    if (val && minus && plus) {
+        const setQ = q => { val.textContent = Math.max(1, q); };
+        minus.addEventListener('click', () => setQ((parseInt(val.textContent, 10) || 1) - 1));
+        plus.addEventListener('click', () => setQ((parseInt(val.textContent, 10) || 1) + 1));
+    }
+
+    // Add current product to cart
+    const addBtn = document.getElementById('addToCart');
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            const p = HERO_PRODUCTS[heroIndex];
+            const qty = parseInt(document.getElementById('qtyVal').textContent, 10) || 1;
+            addToCart(heroCopy(p).title, p.price, qty);
+            addBtn.classList.add('added');
+            const orig = addBtn.innerHTML;
+            addBtn.innerHTML = T('hero.added', '✓ Added to Cart');
+            setTimeout(() => { addBtn.classList.remove('added'); addBtn.innerHTML = orig; }, 1500);
+            openCart();
+        });
+    }
+
+    // Swipe on the polaroid
+    let startX = null;
+    stage.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener('touchend', e => {
+        if (startX === null) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) goHero(heroIndex + (dx < 0 ? 1 : -1), true);
+        startX = null;
+    });
+
+    // Gentle auto-rotate, paused on hover/focus
+    const startAuto = () => { stopAuto(); heroAutoTimer = setInterval(() => goHero(heroIndex + 1, false), 6000); };
+    const stopAuto = () => { if (heroAutoTimer) { clearInterval(heroAutoTimer); heroAutoTimer = null; } };
+    stage.addEventListener('mouseenter', stopAuto);
+    stage.addEventListener('mouseleave', startAuto);
+    stage.addEventListener('focusin', stopAuto);
+    document.querySelector('.hero-details')?.addEventListener('mouseenter', stopAuto);
+    document.querySelector('.hero-details')?.addEventListener('mouseleave', startAuto);
+
+    renderHeroSlide();
+    startAuto();
 }
 
-function initHeroAddToCart() {
-    const btn = document.getElementById('addToCart');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-        const qty = parseInt(document.getElementById('qtyVal').textContent, 10) || 1;
-        const p = heroProduct();
-        addToCart(p.name, p.price, qty);
-        btn.classList.add('added');
-        const orig = btn.innerHTML;
-        btn.innerHTML = '✓ Added to Cart';
-        setTimeout(() => { btn.classList.remove('added'); btn.innerHTML = orig; }, 1500);
-        openCart();
-    });
+// Navigate the hero carousel (wraps around). userInitiated resets the timer.
+function goHero(idx, userInitiated) {
+    const n = HERO_PRODUCTS.length;
+    heroIndex = ((idx % n) + n) % n;
+    renderHeroSlide(true);
+    if (userInitiated && heroAutoTimer) {
+        clearInterval(heroAutoTimer);
+        heroAutoTimer = setInterval(() => goHero(heroIndex + 1, false), 6000);
+    }
 }
+
+// Paint the current hero product into the polaroid + detail panel
+function renderHeroSlide(animate) {
+    const p = HERO_PRODUCTS[heroIndex];
+    if (!p) return;
+    const c = heroCopy(p);
+
+    // Polaroid photo (real image or gradient+emoji placeholder)
+    const photo = document.getElementById('heroPhoto');
+    if (photo) {
+        photo.style.background = p.gradient;
+        photo.innerHTML = p.img
+            ? `<img class="polaroid-img" src="${escapeHtml(p.img)}" alt="${escapeHtml(c.title)}" onerror="this.parentNode.innerHTML='<span class=\\'pcard-emoji\\'>${p.emoji}</span>'">`
+            : `<span class="pcard-emoji" aria-hidden="true">${p.emoji}</span>`;
+    }
+    const cap = document.getElementById('heroCaption');
+    if (cap) cap.innerHTML = c.caption;
+
+    // Detail panel
+    const badge = document.getElementById('heroBadge');
+    if (badge) { badge.textContent = c.badge; badge.style.display = c.badge ? '' : 'none'; }
+    setText('heroTitle', c.title);
+    setText('heroSub', c.sub);
+    setText('productPrice', `$${p.price.toFixed(2)}`);
+    setHTML('heroDesc', c.desc);
+
+    const feats = document.getElementById('heroFeatures');
+    if (feats) {
+        feats.innerHTML = c.feats.map(f => `
+            <li>
+                <span class="feat-icon">${f[0]}</span>
+                <div><strong>${escapeHtml(f[1])}</strong><small>${escapeHtml(f[2])}</small></div>
+            </li>`).join('');
+    }
+
+    // Dots
+    document.querySelectorAll('.hero-dot').forEach((d, i) => d.classList.toggle('active', i === heroIndex));
+
+    // Slide/fade animation
+    if (animate) {
+        const stage = document.getElementById('heroStage');
+        const panel = document.querySelector('.hero-details');
+        [stage, panel].forEach(el => {
+            if (!el) return;
+            el.classList.remove('hero-swap');
+            void el.offsetWidth;
+            el.classList.add('hero-swap');
+        });
+    }
+}
+
+function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+function setHTML(id, v) { const el = document.getElementById(id); if (el) el.innerHTML = v; }
 
 function initShippingToggle() {
     const toggle = document.getElementById('shippingToggle');
