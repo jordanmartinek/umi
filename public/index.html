@@ -43,12 +43,21 @@
     <!-- Hero — Compact, product-focused -->
     <section class="hero">
         <div class="hero-content">
-            <span class="hero-badge">New Collection</span>
-            <h1>Tidal Bloom</h1>
-            <p>Our latest drop — ocean-woven pieces for everyday wear</p>
-            <a href="#new" class="btn btn-primary">Shop Now</a>
+            <span class="hero-badge hero-anim" style="--d:0ms">New Collection</span>
+            <h1 class="hero-anim" style="--d:120ms">Tidal Bloom</h1>
+            <p class="hero-anim" style="--d:240ms">Our latest drop — ocean-woven pieces for everyday wear</p>
+            <a href="#new" class="btn btn-primary hero-anim" style="--d:360ms">Shop Now</a>
         </div>
         <div class="hero-bg"></div>
+        <div class="hero-float hero-float-1">🐚</div>
+        <div class="hero-float hero-float-2">✿</div>
+        <div class="hero-float hero-float-3">🌊</div>
+        <div class="hero-float hero-float-4">🌿</div>
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0,64 C240,120 480,0 720,48 C960,96 1200,32 1440,72 L1440,120 L0,120 Z"></path>
+            </svg>
+        </div>
     </section>
 
     <!-- Quick Category Filters -->
@@ -76,41 +85,12 @@
     <!-- Sets / Bundle Section -->
     <section class="sets-section" id="sets">
         <div class="container">
-            <div class="section-header">
-                <h2>Stack & Save</h2>
+            <div class="section-header reveal">
+                <h2>Stack &amp; Save</h2>
                 <p>Curated sets — save 20% when you bundle</p>
             </div>
-            <div class="sets-grid">
-                <div class="set-card">
-                    <div class="set-image" style="background: linear-gradient(135deg, #E0F5F0, #C8B8DB);">
-                        <div class="set-visual">🌊 + ✿ + 🌿</div>
-                        <div class="set-save">Save $25</div>
-                    </div>
-                    <div class="set-info">
-                        <h3>The Ocean Garden Set</h3>
-                        <p>Seafoam Blossom + Lavender Wave + Tidal Bloom</p>
-                        <div class="set-pricing">
-                            <span class="set-price">$98</span>
-                            <span class="set-original">$123</span>
-                        </div>
-                        <button class="btn btn-primary btn-full set-add-btn">Add Set to Cart</button>
-                    </div>
-                </div>
-                <div class="set-card">
-                    <div class="set-image" style="background: linear-gradient(135deg, #F7D1C4, #FFECD2);">
-                        <div class="set-visual">🌺 + 🐚 + 🦋</div>
-                        <div class="set-save">Save $27</div>
-                    </div>
-                    <div class="set-info">
-                        <h3>The Sunset Stack</h3>
-                        <p>Coral Petal + Driftwood Garden + Sunset Orchid</p>
-                        <div class="set-pricing">
-                            <span class="set-price">$103</span>
-                            <span class="set-original">$129</span>
-                        </div>
-                        <button class="btn btn-primary btn-full set-add-btn">Add Set to Cart</button>
-                    </div>
-                </div>
+            <div class="sets-grid" id="setsGrid">
+                <div class="loading-state">Loading sets...</div>
             </div>
         </div>
     </section>
@@ -119,28 +99,28 @@
     <section class="trust-bar">
         <div class="container">
             <div class="trust-items">
-                <div class="trust-item">
+                <div class="trust-item reveal" style="--stagger:0ms">
                     <span class="trust-icon">🚚</span>
                     <div>
                         <strong>Free Shipping</strong>
                         <p>Orders over $75</p>
                     </div>
                 </div>
-                <div class="trust-item">
+                <div class="trust-item reveal" style="--stagger:80ms">
                     <span class="trust-icon">↩️</span>
                     <div>
                         <strong>Easy Returns</strong>
                         <p>30-day guarantee</p>
                     </div>
                 </div>
-                <div class="trust-item">
+                <div class="trust-item reveal" style="--stagger:160ms">
                     <span class="trust-icon">🌿</span>
                     <div>
                         <strong>Ethically Made</strong>
                         <p>Sustainably sourced</p>
                     </div>
                 </div>
-                <div class="trust-item">
+                <div class="trust-item reveal" style="--stagger:240ms">
                     <span class="trust-icon">💎</span>
                     <div>
                         <strong>Quality Promise</strong>

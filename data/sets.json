@@ -1,0 +1,20 @@
+[
+  {
+    "id": "set_001",
+    "name": "The Ocean Garden Set",
+    "description": "Seafoam Blossom + Lavender Wave + Tidal Bloom",
+    "price": 98,
+    "originalPrice": 123,
+    "items": ["Seafoam Blossom", "Lavender Wave", "Tidal Bloom"],
+    "active": true
+  },
+  {
+    "id": "set_002",
+    "name": "The Sunset Stack",
+    "description": "Coral Petal + Driftwood Garden + Sunset Orchid",
+    "price": 103,
+    "originalPrice": 129,
+    "items": ["Coral Petal", "Driftwood Garden", "Sunset Orchid"],
+    "active": true
+  }
+]

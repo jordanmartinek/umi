@@ -1023,3 +1023,362 @@ button { font-family: var(--font-body); }
 #fallbackCheckoutBtn {
     margin-top: 8px;
 }
+
+
+
+/* ============================================
+   DYNAMIC ENHANCEMENTS
+   Scroll reveals, hero motion, micro-interactions
+   ============================================ */
+
+/* --- Scroll reveal --- */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--stagger, 0ms);
+    will-change: opacity, transform;
+}
+
+.reveal.revealed {
+    opacity: 1;
+    transform: none;
+}
+
+/* --- Animated gradient text accent on headings --- */
+.section-header h2,
+.hero h1 {
+    background: linear-gradient(100deg, var(--ocean-teal), var(--dusty-rose), var(--lavender-mist), var(--ocean-teal));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientPan 8s ease infinite;
+}
+
+@keyframes gradientPan {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- Hero entrance + ambient motion --- */
+.hero { perspective: 1000px; }
+
+.hero-anim {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: heroRise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: var(--d, 0ms);
+}
+
+@keyframes heroRise {
+    to { opacity: 1; transform: none; }
+}
+
+.hero-badge {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-badge::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+    transform: translateX(-120%);
+    animation: shimmer 3.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 60% { transform: translateX(-120%); }
+    100% { transform: translateX(120%); }
+}
+
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-primary:hover::after { left: 130%; }
+
+/* Floating hero ornaments */
+.hero-float {
+    position: absolute;
+    font-size: 1.8rem;
+    opacity: 0.5;
+    z-index: 1;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 12px rgba(44, 110, 106, 0.15));
+    animation: floatY 7s ease-in-out infinite;
+}
+
+.hero-float-1 { top: 22%; left: 12%; animation-delay: 0s; }
+.hero-float-2 { top: 30%; right: 14%; font-size: 1.4rem; animation-delay: 1.2s; }
+.hero-float-3 { bottom: 34%; left: 20%; font-size: 1.5rem; animation-delay: 2.1s; }
+.hero-float-4 { bottom: 30%; right: 22%; font-size: 1.3rem; animation-delay: 0.6s; }
+
+@keyframes floatY {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-16px) rotate(6deg); }
+}
+
+/* Decorative wave at bottom of hero */
+.hero-wave {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    line-height: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-wave svg {
+    width: 100%;
+    height: 70px;
+    display: block;
+}
+
+.hero-wave path {
+    fill: var(--off-white);
+}
+
+/* --- Product card: 3D tilt + pointer glow + shine --- */
+.product-card {
+    transform-style: preserve-3d;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.35s ease;
+}
+
+.product-image {
+    --mx: 50%;
+    --my: 50%;
+}
+
+.product-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.45), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.product-card:hover .product-image::before { opacity: 1; }
+
+.product-shine {
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+    transform: skewX(-20deg);
+    z-index: 2;
+    pointer-events: none;
+    transition: left 0.7s ease;
+}
+
+.product-card:hover .product-shine { left: 130%; }
+
+.product-card:hover .product-visual {
+    transform: scale(1.15) rotate(-4deg);
+}
+
+.product-price {
+    position: relative;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-price { transform: scale(1.06); }
+
+/* --- Filter buttons: subtle pop --- */
+.filter-btn { transform: translateZ(0); }
+.filter-btn:active { transform: scale(0.94); }
+.filter-btn.active {
+    box-shadow: 0 4px 16px rgba(44, 110, 106, 0.28);
+}
+
+/* --- Trust items: lift on hover --- */
+.trust-item {
+    padding: 14px;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+.trust-item:hover {
+    background: var(--seafoam);
+    transform: translateY(-4px);
+}
+.trust-item:hover .trust-icon {
+    animation: wobble 0.6s ease;
+}
+
+@keyframes wobble {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-12deg) scale(1.1); }
+    75% { transform: rotate(12deg) scale(1.1); }
+}
+
+/* --- Set cards --- */
+.set-add-btn.added {
+    background: var(--seafoam-deep);
+    color: var(--ocean-teal);
+}
+.set-visual {
+    transition: transform 0.4s ease;
+}
+.set-card:hover .set-visual { transform: scale(1.08); }
+
+/* --- Cart icon bump --- */
+.cart-btn.bump { animation: cartBump 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes cartBump {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.28); }
+    100% { transform: scale(1); }
+}
+
+/* --- Cart quantity controls --- */
+.cart-item {
+    animation: cartItemIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes cartItemIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: none; }
+}
+
+.qty-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.qty-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(44, 110, 106, 0.2);
+    background: var(--white);
+    color: var(--ocean-teal);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+.qty-btn:hover {
+    background: var(--ocean-teal);
+    color: var(--white);
+    border-color: var(--ocean-teal);
+}
+
+.qty-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ocean-teal);
+    min-width: 16px;
+    text-align: center;
+}
+
+.cart-item-line {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.cart-item-subtotal {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    color: var(--ocean-teal);
+}
+
+/* --- Toast notifications --- */
+.toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(30px);
+    background: var(--ocean-teal);
+    color: var(--white);
+    padding: 14px 24px;
+    border-radius: var(--radius-full);
+    font-size: 0.88rem;
+    font-weight: 500;
+    box-shadow: 0 12px 32px rgba(44, 110, 106, 0.3);
+    z-index: 4000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 90vw;
+    text-align: center;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* --- Confetti --- */
+.confetti-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3500;
+    overflow: hidden;
+}
+
+.confetti-piece {
+    position: absolute;
+    top: -20px;
+    width: 10px;
+    height: 14px;
+    border-radius: 2px;
+    opacity: 0.9;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(720deg); opacity: 0.4; }
+}
+
+/* --- Announcement bar subtle motion --- */
+.announcement-bar p {
+    animation: announcePulse 4s ease-in-out infinite;
+}
+@keyframes announcePulse {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 1; }
+}
+
+/* --- Respect reduced motion preferences --- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .hero-anim { opacity: 1 !important; transform: none !important; }
+}

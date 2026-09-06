@@ -139,6 +139,7 @@ umi/
 |--------|----------|-------------|
 | GET | `/api/products` | All active products |
 | GET | `/api/categories` | All categories |
+| GET | `/api/sets` | Curated bundle sets |
 | GET | `/api/settings/public` | Store settings |
 | GET | `/api/paypal/client-id` | PayPal client ID for frontend |
 | POST | `/api/paypal/create-order` | Create PayPal order |
