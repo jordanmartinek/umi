@@ -16,18 +16,32 @@ module.exports = async (req, res) => {
     // router work no matter how Vercel hands us the request.
     let pathname = '/';
 
-    const qp = req.query && req.query.path;
-    if (qp !== undefined && qp !== null && String(qp).length) {
-        // From the rewrite: e.g. ['paypal','client-id'] or 'paypal/client-id'
-        pathname = '/' + (Array.isArray(qp) ? qp.join('/') : String(qp));
+    // Build a URL object from whatever raw URL we were given so we can read
+    // both the pathname and the query string ourselves (Vercel's Node runtime
+    // does not always populate req.query for rewritten requests).
+    const rawUrl = req.headers['x-forwarded-uri'] || req.headers['x-invoke-path'] || req.url || '/';
+    let parsed;
+    try {
+        parsed = new URL(rawUrl, `https://${req.headers.host || 'localhost'}`);
+    } catch (e) {
+        parsed = null;
+    }
+
+    // The vercel.json rewrite `/api/:path*` -> `/api` carries the real route in
+    // a `path` param. It may arrive via req.query.path OR only in the raw URL's
+    // query string (e.g. "/api?path=paypal/client-id"). Check both.
+    let pathParam = req.query && req.query.path;
+    if ((pathParam === undefined || pathParam === null || !String(pathParam).length) && parsed) {
+        const all = parsed.searchParams.getAll('path');
+        if (all.length) pathParam = all.length > 1 ? all : all[0];
+    }
+
+    if (pathParam !== undefined && pathParam !== null && String(pathParam).length) {
+        // e.g. ['paypal','client-id'] or 'paypal/client-id'
+        pathname = '/' + (Array.isArray(pathParam) ? pathParam.join('/') : String(pathParam));
     } else {
-        // Fall back to the raw/forwarded URL and strip any /api prefix.
-        const originalUrl = req.headers['x-forwarded-uri'] || req.headers['x-invoke-path'] || req.url || '/';
-        try {
-            pathname = new URL(originalUrl, `https://${req.headers.host || 'localhost'}`).pathname;
-        } catch (e) {
-            pathname = originalUrl.split('?')[0] || '/';
-        }
+        // No path param — parse it straight from the URL and strip any /api prefix.
+        pathname = parsed ? parsed.pathname : rawUrl.split('?')[0] || '/';
         if (pathname.startsWith('/api/')) pathname = pathname.slice(4);
         else if (pathname === '/api') pathname = '/';
         else if (pathname.startsWith('/api')) pathname = pathname.slice(4);
