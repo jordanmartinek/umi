@@ -147,7 +147,17 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
         radial-gradient(circle at 75% 40%, #C9E5FF 0%, transparent 50%),
         linear-gradient(160deg, #8Fc4f2 0%, #b79ae6 45%, #f4a9cf 100%);
     display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
 }
+/* Real images cover their container; if a file is missing the underlying
+   gradient shows through gracefully (see .img-missing). */
+.art-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+}
+.img-missing { display: none !important; }
 .art-label {
     font-family: var(--font-hand); font-size: 1.4rem; color: rgba(255,255,255,0.85);
     background: rgba(107,91,119,0.28); padding: 8px 18px; border-radius: 40px;
@@ -186,6 +196,12 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
     background: linear-gradient(160deg, #f2e6d3 0%, #e4d0b3 55%, #d3bd9c 100%);
     display: flex; align-items: center; justify-content: center;
     position: relative;
+    overflow: hidden;
+}
+.polaroid-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
 }
 .polaroid-label {
     font-family: var(--font-hand); font-size: 1.15rem; color: #a58f6f;
@@ -219,6 +235,8 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .thumb:nth-child(4){ background: linear-gradient(160deg,#e7dcff,#c3a9ef); }
 .thumb:hover { transform: scale(1.08); }
 .thumb.active { border-color: var(--pink); }
+.thumb { overflow: hidden; padding: 0; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .thumb-more { text-align: center; color: var(--ink-soft); font-size: 1.4rem; line-height: 0.4; }
 
 /* Right details panel */
@@ -410,10 +428,24 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .foot { position: relative; min-height: 320px; overflow: hidden; }
 .foot-art {
     position: absolute; inset: 0;
+    overflow: hidden;
     background:
         radial-gradient(circle at 20% 30%, #FFC7E1 0%, transparent 45%),
         linear-gradient(160deg, #7FB0E8 0%, #9E8AD8 45%, #E79FC6 100%);
     display: flex; align-items: flex-start; justify-content: center; padding-top: 14px;
+}
+.foot-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+}
+/* Soft gradient veil so the overlaid headline + logo stay readable over the photo */
+.foot-art::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(107,91,119,0.30), rgba(107,91,119,0.05) 45%, rgba(231,159,198,0.25));
+    z-index: 1;
 }
 .foot-art-label {
     font-family: var(--font-hand); color: rgba(255,255,255,0.8); font-size: 1.2rem;
