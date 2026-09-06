@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Umi Umi — Logo Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --teal:#2C6E6A; --red:#E23B3B; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Quicksand',sans-serif; background:#FDFCFB; color:#2D3436; padding:48px 20px; }
+  h1 { font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--teal); font-weight:500; font-size:2.2rem; margin-bottom:6px; text-align:center; }
+  .sub { text-align:center; color:#A89F9A; margin-bottom:40px; font-size:.95rem; }
+  .grid { max-width:900px; margin:0 auto; display:grid; gap:24px; }
+  .card { border-radius:24px; padding:36px; box-shadow:0 8px 32px rgba(44,110,106,.1); display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .card .label { font-size:.78rem; letter-spacing:1px; text-transform:uppercase; color:#A89F9A; }
+  .light { background:#FFFFFF; }
+  .cream { background:#FFF8F0; }
+  .dark  { background:#12343B; }
+  .dark .label { color:#8fb3b0; }
+  .row { display:flex; align-items:center; gap:40px; flex-wrap:wrap; justify-content:center; }
+  .sizes { display:flex; align-items:center; gap:28px; }
+  .sizes img { display:block; }
+  .fav { display:flex; align-items:center; gap:10px; background:#eceff1; padding:6px 14px 6px 6px; border-radius:8px; font-size:.85rem; color:#555; }
+</style>
+</head>
+<body>
+  <h1>umi umi</h1>
+  <p class="sub">Fun &amp; charming logo — red braided cord bracelet + blue evil-eye bead 🧿</p>
+
+  <div class="grid">
+    <div class="card light">
+      <span class="label">Primary Lockup — on White</span>
+      <img src="assets/logo.svg" alt="Umi Umi logo" width="320" height="120">
+    </div>
+
+    <div class="card cream">
+      <span class="label">Primary Lockup — on Cream (site background)</span>
+      <img src="assets/logo.svg" alt="Umi Umi logo" width="320" height="120">
+    </div>
+
+    <div class="card dark">
+      <span class="label">Mark — on Dark</span>
+      <img src="assets/logo-mark.svg" alt="Umi Umi mark" width="110" height="110">
+    </div>
+
+    <div class="card light">
+      <span class="label">Mark — Size / Favicon Test</span>
+      <div class="sizes">
+        <img src="assets/logo-mark.svg" width="96" height="96" alt="96px">
+        <img src="assets/logo-mark.svg" width="48" height="48" alt="48px">
+        <img src="assets/logo-mark.svg" width="32" height="32" alt="32px">
+        <img src="assets/logo-mark.svg" width="16" height="16" alt="16px">
+        <span class="fav"><img src="assets/logo-mark.svg" width="18" height="18" alt=""> favicon</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
