@@ -9,31 +9,34 @@ const { readData, writeData, readSettings, writeSettings } = require('./_lib/db'
 const { createOrder, captureOrder } = require('./_lib/paypal');
 
 module.exports = async (req, res) => {
-    // Parse the route from the URL
-    // On Vercel with rewrites, use x-vercel-rewrite-path or the original URL
-    // req.url may be /api or /api/paypal/client-id depending on config
-    const originalUrl = req.headers['x-forwarded-uri'] || req.headers['x-invoke-path'] || req.url || '/';
-    const url = new URL(originalUrl, `https://${req.headers.host || 'localhost'}`);
-    let pathname = url.pathname;
-    
-    // Strip /api prefix to get the route
-    if (pathname.startsWith('/api/')) {
-        pathname = pathname.slice(4); // remove "/api"
-    } else if (pathname === '/api') {
-        pathname = '/';
-    } else if (pathname.startsWith('/api')) {
-        pathname = pathname.slice(4);
+    // ---- Resolve the route (robust across local dev + Vercel rewrites) ----
+    // The vercel.json rewrite `/api/:path*` -> `/api` puts the real path
+    // segments in req.query.path (a string or array). We prefer that when
+    // present, and otherwise fall back to parsing the raw URL. This makes the
+    // router work no matter how Vercel hands us the request.
+    let pathname = '/';
+
+    const qp = req.query && req.query.path;
+    if (qp !== undefined && qp !== null && String(qp).length) {
+        // From the rewrite: e.g. ['paypal','client-id'] or 'paypal/client-id'
+        pathname = '/' + (Array.isArray(qp) ? qp.join('/') : String(qp));
+    } else {
+        // Fall back to the raw/forwarded URL and strip any /api prefix.
+        const originalUrl = req.headers['x-forwarded-uri'] || req.headers['x-invoke-path'] || req.url || '/';
+        try {
+            pathname = new URL(originalUrl, `https://${req.headers.host || 'localhost'}`).pathname;
+        } catch (e) {
+            pathname = originalUrl.split('?')[0] || '/';
+        }
+        if (pathname.startsWith('/api/')) pathname = pathname.slice(4);
+        else if (pathname === '/api') pathname = '/';
+        else if (pathname.startsWith('/api')) pathname = pathname.slice(4);
     }
-    
-    // Ensure pathname starts with /
+
+    // Normalize: ensure leading slash, drop any trailing slash (except root)
     if (!pathname.startsWith('/')) pathname = '/' + pathname;
-    
-    // On Vercel rewrites, path params may be in query
-    if (pathname === '/' && req.query && req.query.path) {
-        const queryPath = Array.isArray(req.query.path) ? req.query.path.join('/') : req.query.path;
-        pathname = '/' + queryPath;
-    }
-    
+    if (pathname.length > 1 && pathname.endsWith('/')) pathname = pathname.slice(0, -1);
+
     const method = req.method;
 
     // CORS
@@ -46,17 +49,19 @@ module.exports = async (req, res) => {
     }
 
     try {
-        // Debug route — check what the function receives
+        // Debug route — check what the function receives + whether PayPal is configured
         if (pathname === '/debug' && method === 'GET') {
             return res.status(200).json({
+                ok: true,
                 rawUrl: req.url,
-                originalUrl: req.headers['x-forwarded-uri'] || 'not set',
+                forwardedUri: req.headers['x-forwarded-uri'] || 'not set',
                 invokePath: req.headers['x-invoke-path'] || 'not set',
                 parsedPathname: pathname,
-                queryPath: req.query?.path || 'not set',
+                queryPath: (req.query && req.query.path) || 'not set',
                 paypalConfigured: !!process.env.PAYPAL_CLIENT_ID,
                 paypalClientIdLength: (process.env.PAYPAL_CLIENT_ID || '').length,
-                mode: process.env.PAYPAL_MODE || 'not set',
+                paypalSecretConfigured: !!process.env.PAYPAL_CLIENT_SECRET,
+                mode: process.env.PAYPAL_MODE || 'not set (defaults to sandbox)',
             });
         }
 
