@@ -154,11 +154,20 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
    the girl shows as the background, then overlay our own product polaroid
    on top (mockup style). object-position:left keeps the girl anchored; the
    scale pushes the baked-in polaroid off the right edge of the panel. */
+/* Composite crop: the source image is [ girl | thumbnails | polaroid ].
+   We want ONLY the girl (~left 46%). Scale the image so its width is ~2.1x
+   the panel and anchor to the left edge, so the thumbnail rail + baked-in
+   polaroid fall entirely outside the visible panel. */
+.art-fill { overflow: hidden; }
 .art-img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
+    position: absolute;
+    top: 0; left: 0; height: 100%;
+    width: auto;               /* preserve aspect ratio */
+    max-width: none;
     object-fit: cover;
-    object-position: 2% top;
+    object-position: left top;
+    transform: scale(1.18);
+    transform-origin: left top;
 }
 .img-missing { display: none !important; }
 .art-label {
