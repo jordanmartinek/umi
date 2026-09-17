@@ -5,7 +5,7 @@
 
 const crypto = require('crypto');
 const { getAuth, verifyPassword, hashPassword, createToken } = require('./_lib/auth');
-const { readData, writeData, readSettings, writeSettings } = require('./_lib/db');
+const { readData, writeData, readSettings, writeSettings, isPersistent } = require('./_lib/db');
 const { createOrder, captureOrder } = require('./_lib/paypal');
 
 module.exports = async (req, res) => {
@@ -99,6 +99,8 @@ module.exports = async (req, res) => {
             paypalClientIdLength: (process.env.PAYPAL_CLIENT_ID || '').length,
             paypalSecretConfigured: !!process.env.PAYPAL_CLIENT_SECRET,
             mode: process.env.PAYPAL_MODE || 'not set (defaults to sandbox)',
+            storageBackend: isPersistent ? 'upstash-redis (persistent)' : 'json-files (ephemeral on Vercel!)',
+            redisConfigured: !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN),
         });
     }
 
@@ -116,6 +118,8 @@ module.exports = async (req, res) => {
                 paypalClientIdLength: (process.env.PAYPAL_CLIENT_ID || '').length,
                 paypalSecretConfigured: !!process.env.PAYPAL_CLIENT_SECRET,
                 mode: process.env.PAYPAL_MODE || 'not set (defaults to sandbox)',
+                storageBackend: isPersistent ? 'upstash-redis (persistent)' : 'json-files (ephemeral on Vercel!)',
+                redisConfigured: !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN),
             });
         }
 
@@ -124,22 +128,22 @@ module.exports = async (req, res) => {
         // ============================
 
         if (pathname === '/products' && method === 'GET') {
-            const products = readData('products.json').filter(p => p.active);
+            const products = (await readData('products.json')).filter(p => p.active);
             return res.status(200).json(products);
         }
 
         if (pathname === '/categories' && method === 'GET') {
-            const categories = readData('categories.json').sort((a, b) => a.order - b.order);
+            const categories = (await readData('categories.json')).sort((a, b) => a.order - b.order);
             return res.status(200).json(categories);
         }
 
         if (pathname === '/sets' && method === 'GET') {
-            const sets = readData('sets.json').filter(s => s.active);
+            const sets = (await readData('sets.json')).filter(s => s.active);
             return res.status(200).json(sets);
         }
 
         if (pathname === '/settings/public' && method === 'GET') {
-            const settings = readSettings();
+            const settings = await readSettings();
             return res.status(200).json({
                 storeName: settings.storeName,
                 promoCode: settings.promoCode,
@@ -170,8 +174,8 @@ module.exports = async (req, res) => {
                 });
             }
 
-            const products = readData('products.json');
-            const sets = readData('sets.json');
+            const products = await readData('products.json');
+            const sets = await readData('sets.json');
 
             // Validate every incoming line against the catalog (products OR sets).
             // Prices come from the server — never trust prices sent by the client.
@@ -206,7 +210,7 @@ module.exports = async (req, res) => {
             const captureData = await captureOrder(orderID);
 
             if (captureData.status === 'COMPLETED') {
-                const orders = readData('orders.json');
+                const orders = await readData('orders.json');
                 const capture = captureData.purchase_units?.[0]?.payments?.captures?.[0];
 
                 const newOrder = {
@@ -227,7 +231,7 @@ module.exports = async (req, res) => {
                 };
 
                 orders.push(newOrder);
-                writeData('orders.json', orders);
+                await writeData('orders.json', orders);
                 return res.status(200).json({ success: true, orderId: newOrder.id, status: captureData.status });
             } else {
                 return res.status(400).json({ success: false, status: captureData.status, error: 'Payment not completed' });
@@ -240,7 +244,7 @@ module.exports = async (req, res) => {
 
         if (pathname === '/auth/login' && method === 'POST') {
             const { password } = req.body || {};
-            const settings = readSettings();
+            const settings = await readSettings();
             if (!verifyPassword(password || '', settings.adminPassword)) {
                 return res.status(401).json({ error: 'Invalid password' });
             }
@@ -265,12 +269,12 @@ module.exports = async (req, res) => {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
 
             const { currentPassword, newPassword } = req.body || {};
-            const settings = readSettings();
+            const settings = await readSettings();
             if (!verifyPassword(currentPassword || '', settings.adminPassword)) {
                 return res.status(401).json({ error: 'Current password is incorrect' });
             }
             settings.adminPassword = hashPassword(newPassword);
-            writeSettings(settings);
+            await writeSettings(settings);
             return res.status(200).json({ success: true });
         }
 
@@ -283,12 +287,12 @@ module.exports = async (req, res) => {
         // Admin: Products
         if (pathname === '/admin/products' && method === 'GET') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-            return res.status(200).json(readData('products.json'));
+            return res.status(200).json(await readData('products.json'));
         }
 
         if (pathname === '/admin/products' && method === 'POST') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-            const products = readData('products.json');
+            const products = await readData('products.json');
             const { name, description, price, category, badge, gradient, emoji, active, image } = req.body || {};
 
             const newProduct = {
@@ -306,7 +310,7 @@ module.exports = async (req, res) => {
             };
 
             products.push(newProduct);
-            writeData('products.json', products);
+            await writeData('products.json', products);
             return res.status(201).json(newProduct);
         }
 
@@ -317,7 +321,7 @@ module.exports = async (req, res) => {
             const id = productMatch[1];
 
             if (method === 'PUT') {
-                const products = readData('products.json');
+                const products = await readData('products.json');
                 const index = products.findIndex(p => p.id === id);
                 if (index === -1) return res.status(404).json({ error: 'Product not found' });
 
@@ -334,15 +338,15 @@ module.exports = async (req, res) => {
                     active: active !== undefined ? (active !== 'false' && active !== false) : products[index].active,
                     image: image !== undefined ? image : products[index].image,
                 };
-                writeData('products.json', products);
+                await writeData('products.json', products);
                 return res.status(200).json(products[index]);
             }
 
             if (method === 'DELETE') {
-                let products = readData('products.json');
+                let products = await readData('products.json');
                 if (!products.find(p => p.id === id)) return res.status(404).json({ error: 'Product not found' });
                 products = products.filter(p => p.id !== id);
-                writeData('products.json', products);
+                await writeData('products.json', products);
                 return res.status(200).json({ success: true });
             }
         }
@@ -350,17 +354,17 @@ module.exports = async (req, res) => {
         // Admin: Categories
         if (pathname === '/admin/categories' && method === 'GET') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-            return res.status(200).json(readData('categories.json').sort((a, b) => a.order - b.order));
+            return res.status(200).json((await readData('categories.json')).sort((a, b) => a.order - b.order));
         }
 
         if (pathname === '/admin/categories' && method === 'POST') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-            const categories = readData('categories.json');
+            const categories = await readData('categories.json');
             const { name } = req.body || {};
             const slug = (name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
             const newCategory = { id: `cat_${crypto.randomUUID().slice(0, 8)}`, name, slug, order: categories.length + 1 };
             categories.push(newCategory);
-            writeData('categories.json', categories);
+            await writeData('categories.json', categories);
             return res.status(201).json(newCategory);
         }
 
@@ -371,7 +375,7 @@ module.exports = async (req, res) => {
             const id = categoryMatch[1];
 
             if (method === 'PUT') {
-                const categories = readData('categories.json');
+                const categories = await readData('categories.json');
                 const index = categories.findIndex(c => c.id === id);
                 if (index === -1) return res.status(404).json({ error: 'Category not found' });
                 const { name, order } = req.body || {};
@@ -380,14 +384,14 @@ module.exports = async (req, res) => {
                     categories[index].slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
                 }
                 if (order !== undefined) categories[index].order = order;
-                writeData('categories.json', categories);
+                await writeData('categories.json', categories);
                 return res.status(200).json(categories[index]);
             }
 
             if (method === 'DELETE') {
-                let categories = readData('categories.json');
+                let categories = await readData('categories.json');
                 categories = categories.filter(c => c.id !== id);
-                writeData('categories.json', categories);
+                await writeData('categories.json', categories);
                 return res.status(200).json({ success: true });
             }
         }
@@ -395,7 +399,7 @@ module.exports = async (req, res) => {
         // Admin: Orders
         if (pathname === '/admin/orders' && method === 'GET') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-            const orders = readData('orders.json');
+            const orders = await readData('orders.json');
             orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             return res.status(200).json(orders);
         }
@@ -407,7 +411,7 @@ module.exports = async (req, res) => {
             const id = orderMatch[1];
 
             if (method === 'PUT') {
-                const orders = readData('orders.json');
+                const orders = await readData('orders.json');
                 const index = orders.findIndex(o => o.id === id);
                 if (index === -1) return res.status(404).json({ error: 'Order not found' });
                 const { status, fulfilledAt } = req.body || {};
@@ -416,7 +420,7 @@ module.exports = async (req, res) => {
                     orders[index].fulfilledAt = new Date().toISOString();
                 }
                 if (fulfilledAt) orders[index].fulfilledAt = fulfilledAt;
-                writeData('orders.json', orders);
+                await writeData('orders.json', orders);
                 return res.status(200).json(orders[index]);
             }
         }
@@ -424,21 +428,21 @@ module.exports = async (req, res) => {
         // Admin: Settings
         if (pathname === '/admin/settings' && method === 'GET') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-            const settings = readSettings();
+            const settings = await readSettings();
             const { adminPassword, ...publicSettings } = settings;
             return res.status(200).json(publicSettings);
         }
 
         if (pathname === '/admin/settings' && method === 'PUT') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
-            const settings = readSettings();
+            const settings = await readSettings();
             const { storeName, promoCode, promoDiscount, freeShippingThreshold, announcementText } = req.body || {};
             if (storeName !== undefined) settings.storeName = storeName;
             if (promoCode !== undefined) settings.promoCode = promoCode;
             if (promoDiscount !== undefined) settings.promoDiscount = promoDiscount;
             if (freeShippingThreshold !== undefined) settings.freeShippingThreshold = freeShippingThreshold;
             if (announcementText !== undefined) settings.announcementText = announcementText;
-            writeSettings(settings);
+            await writeSettings(settings);
             return res.status(200).json(settings);
         }
 
