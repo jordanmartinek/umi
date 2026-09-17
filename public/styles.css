@@ -435,22 +435,35 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .foot-art {
     position: absolute; inset: 0;
     overflow: hidden;
+    /* The crisp vector gradient is the real backdrop — it can never pixelate,
+       so the banner always reads sharp regardless of the photo's resolution. */
     background:
         radial-gradient(circle at 20% 30%, #FFC7E1 0%, transparent 45%),
         linear-gradient(160deg, #7FB0E8 0%, #9E8AD8 45%, #E79FC6 100%);
     display: flex; align-items: flex-start; justify-content: center; padding-top: 14px;
 }
+/* The source photo (umi_anime_girl_seaside.jpg) is only 460×266, so stretching
+   it across a full-width banner upscales ~3× and looks fuzzy. Instead we blend
+   it in as a soft, intentionally-diffused atmospheric wash over the gradient:
+   the slight blur now reads as a deliberate dreamy effect rather than a
+   low-res defect, while the gradient keeps the banner crisp and colorful. */
 .foot-img {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     object-fit: cover;
-    object-position: center 40%;
+    object-position: center 38%;
+    /* A gentle blur + slight upscale masks the pixelation from stretching the
+       460×266 source, and blending it into the gradient keeps the ocean scene
+       present without the hard, fuzzy edges of a raw upscaled photo. */
+    filter: blur(3px) saturate(1.12) contrast(1.03);
+    transform: scale(1.06); /* absorb the blurred edge so no soft border shows */
+    opacity: 0.92;
 }
 /* Soft gradient veil so the overlaid headline + logo stay readable over the photo */
 .foot-art::after {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(90deg, rgba(107,91,119,0.30), rgba(107,91,119,0.05) 45%, rgba(231,159,198,0.25));
+    background: linear-gradient(90deg, rgba(107,91,119,0.42), rgba(107,91,119,0.12) 45%, rgba(231,159,198,0.34));
     z-index: 1;
 }
 .foot-art-label {

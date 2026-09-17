@@ -43,18 +43,43 @@ function httpsRequest(url, options, body) {
  * Get PayPal OAuth2 access token
  */
 async function getAccessToken() {
+    // Fail fast with a clear, actionable message when credentials are missing.
+    // Without this, a missing secret produces a confusing network/parse error
+    // that looks like a code bug rather than a configuration problem.
+    if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
+        const missing = [
+            !PAYPAL_CLIENT_ID && 'PAYPAL_CLIENT_ID',
+            !PAYPAL_CLIENT_SECRET && 'PAYPAL_CLIENT_SECRET',
+        ].filter(Boolean).join(' and ');
+        throw new Error(
+            `PayPal is not configured — missing ${missing}. ` +
+            `Add it in your Vercel project's Environment Variables and redeploy.`
+        );
+    }
+
     const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64');
 
-    const { status, data } = await httpsRequest(`${BASE_URL}/v1/oauth2/token`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Basic ${auth}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-    }, 'grant_type=client_credentials');
+    let status, data;
+    try {
+        ({ status, data } = await httpsRequest(`${BASE_URL}/v1/oauth2/token`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        }, 'grant_type=client_credentials'));
+    } catch (e) {
+        throw new Error(`Could not reach PayPal (${PAYPAL_MODE} mode): ${e.message}`);
+    }
 
     if (status !== 200) {
-        throw new Error(`PayPal auth failed: ${JSON.stringify(data)}`);
+        // PayPal returns 401 "invalid_client" when the ID/secret don't match, or
+        // when live credentials are used in sandbox mode (or vice-versa).
+        const detail = (data && (data.error_description || data.error)) || JSON.stringify(data);
+        const hint = status === 401
+            ? ` — check the Client ID/Secret are correct and that PAYPAL_MODE ("${PAYPAL_MODE}") matches the credentials.`
+            : '';
+        throw new Error(`PayPal auth failed (${status}): ${detail}${hint}`);
     }
 
     return data.access_token;
