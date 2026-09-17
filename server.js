@@ -22,15 +22,19 @@ try {
 } catch (e) { /* No .env file */ }
 
 // Initialize default admin password if needed
-const { readSettings, writeSettings } = require('./api/_lib/db');
+const { readSettings, writeSettings, isPersistent } = require('./api/_lib/db');
 const { hashPassword } = require('./api/_lib/auth');
 
-(function initAdmin() {
-    const settings = readSettings();
-    if (settings.adminPassword === '$2a$10$placeholder') {
-        settings.adminPassword = hashPassword('umiumi2026');
-        writeSettings(settings);
-        console.log('✿ Default admin password set: umiumi2026');
+(async function initAdmin() {
+    try {
+        const settings = await readSettings();
+        if (settings.adminPassword === '$2a$10$placeholder') {
+            settings.adminPassword = hashPassword('umiumi2026');
+            await writeSettings(settings);
+            console.log('✿ Default admin password set: umiumi2026');
+        }
+    } catch (e) {
+        console.warn('initAdmin skipped:', e.message);
     }
 })();
 
@@ -132,5 +136,6 @@ server.listen(PORT, () => {
     console.log(`   Storefront: http://localhost:${PORT}`);
     console.log(`   Admin:      http://localhost:${PORT}/admin`);
     console.log(`\n✿ Default admin password: umiumi2026`);
-    console.log(`💳 PayPal: ${process.env.PAYPAL_CLIENT_ID ? 'Configured ✓' : 'Not configured (add .env file)'}\n`);
+    console.log(`💳 PayPal: ${process.env.PAYPAL_CLIENT_ID ? 'Configured ✓' : 'Not configured (add .env file)'}`);
+    console.log(`🗄️  Storage: ${isPersistent ? 'Upstash Redis (persistent) ✓' : 'JSON files (local dev; ephemeral on Vercel)'}\n`);
 });

@@ -8,14 +8,15 @@ Ocean-inspired bracelet webstore with PayPal checkout, admin dashboard, and Verc
 - **PayPal Checkout** — Integrated PayPal payment flow (supports PayPal, Venmo, Pay Later)
 - **Admin Dashboard** — Order management, product CRUD, category management, store settings
 - **Vercel Ready** — Serverless API functions, instant deploys from GitHub
-- **Zero Dependencies** — Pure Node.js, no `npm install` needed
+- **Persistent Storage** — Upstash Redis on Vercel (one-click Marketplace add-on), with automatic local JSON fallback for dev
 
 ## Quick Start (Local Development)
 
 ```bash
 git clone https://github.com/jordanmartinek/umi.git
 cd umi
-cp .env.example .env    # Add your PayPal credentials
+npm install             # installs @upstash/redis
+cp .env.example .env    # Add your PayPal credentials (Redis is optional locally)
 npm run dev
 ```
 
@@ -54,6 +55,40 @@ Add these as **Environment Variables** in your Vercel project settings:
 | `PAYPAL_CLIENT_SECRET` | Your PayPal Client Secret |
 | `PAYPAL_MODE` | `sandbox` for testing, `live` for real payments |
 | `JWT_SECRET` | A random secure string for auth tokens |
+| `UPSTASH_REDIS_REST_URL` | Injected automatically by the Upstash Marketplace add-on |
+| `UPSTASH_REDIS_REST_TOKEN` | Injected automatically by the Upstash Marketplace add-on |
+
+## Persistent Storage (Upstash Redis)
+
+Vercel's serverless filesystem is **ephemeral** — anything written to `data/*.json`
+at runtime is lost on the next deploy or cold start. So on Vercel the admin
+dashboard needs a real database, or every product/order/settings change silently
+disappears. This project uses **Upstash Redis** (the successor to the now-sunset
+Vercel KV) for that.
+
+### One-time setup on Vercel
+1. In your Vercel project, open the **Storage** tab → **Create Database** →
+   **Upstash for Redis** (or **Marketplace → Upstash**).
+2. Connect it to this project. Vercel automatically injects
+   `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as environment
+   variables — no manual copying needed.
+3. Redeploy.
+
+That's it. On first request, the store **auto-seeds Redis** from the committed
+`data/*.json` files, so your existing catalog carries over with zero manual
+import. From then on, all admin edits persist.
+
+### How it works
+- **Redis configured** (`UPSTASH_REDIS_*` present) → all reads/writes go to
+  Upstash. Each collection lives under a `umi:<name>` key (e.g. `umi:products`).
+- **Not configured** (local dev) → falls back to the JSON files in `data/`, so
+  you can still `npm run dev` with zero setup.
+- Visit `/api/debug` to see which backend is active (`storageBackend`).
+
+### Dependencies
+This adds a single dependency, [`@upstash/redis`](https://www.npmjs.com/package/@upstash/redis)
+(HTTP-based, serverless-friendly). Run `npm install` before deploying, or let
+Vercel install it during the build.
 
 ## Deploy to Vercel
 
@@ -148,6 +183,6 @@ umi/
 
 ## Important Notes
 
-- **Data persistence on Vercel**: Vercel's serverless functions have ephemeral filesystems. For a production store with significant volume, consider migrating `data/*.json` to a database (e.g., Vercel KV, PlanetScale, or Supabase). For low-volume stores, the JSON files work fine with the data committed to the repo.
+- **Data persistence on Vercel**: Vercel's serverless functions have ephemeral filesystems, so the app uses **Upstash Redis** for persistent storage in production (see [Persistent Storage](#persistent-storage-upstash-redis) above). Without it configured, admin dashboard changes will not survive redeploys/cold starts. Locally, it transparently falls back to the JSON files in `data/`.
 - **Security**: Always change the default admin password and set a strong `JWT_SECRET` in production.
 - **PayPal Sandbox**: Use sandbox mode for testing. PayPal provides test buyer accounts in the developer dashboard.
