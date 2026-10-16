@@ -332,12 +332,11 @@ function initHeroCarousel() {
         addBtn.addEventListener('click', () => {
             const p = HERO_PRODUCTS[heroIndex];
             const qty = parseInt(document.getElementById('qtyVal').textContent, 10) || 1;
-            // Always add to the cart under the canonical (English) catalog name so
-            // the server-side checkout validation in /api/paypal/create-order can
-            // match it against products.json — regardless of the active language.
-            // The translated title is only for display; sending it would cause a
-            // "Product not found" error when the site is in Spanish.
-            addToCart(p.name || heroCopy(p).title, p.price, qty);
+            // Add under the canonical (English) catalog name so server-side
+            // checkout validation matches products.json regardless of language,
+            // but tag the line with the hero id so the cart DISPLAYS the title
+            // in the active language (and re-translates on language change).
+            addToCart(p.name || heroCopy(p).title, p.price, qty, { heroId: p.id });
             addBtn.classList.add('added');
             const orig = addBtn.innerHTML;
             addBtn.innerHTML = T('hero.added', '✓ Added to Cart');
@@ -454,12 +453,32 @@ function initCart() {
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCart(); });
 }
 
-function addToCart(name, price, qty = 1) {
+// `name` is the canonical (English) catalog name used for server-side checkout
+// validation and as the cart's merge key. `meta.heroId` (optional) links the
+// line to a HERO_PRODUCTS entry so the cart can show the title in the active
+// language — the display re-translates automatically on language change.
+function addToCart(name, price, qty = 1, meta = {}) {
     const existing = cart.find(i => i.name === name);
-    if (existing) existing.quantity += qty;
-    else cart.push({ name, price: Number(price), quantity: qty });
+    if (existing) {
+        existing.quantity += qty;
+    } else {
+        cart.push({ name, price: Number(price), quantity: qty, heroId: meta.heroId || null });
+    }
     updateCartUI();
     bumpCart();
+}
+
+// Resolve what to SHOW for a cart line in the current language. Hero items look
+// up their translated title; everything else falls back to the catalog name.
+function cartDisplayName(item) {
+    if (item.heroId) {
+        const hp = HERO_PRODUCTS.find(p => p.id === item.heroId);
+        if (hp) {
+            const title = heroCopy(hp).title;
+            if (title) return title;
+        }
+    }
+    return item.name;
 }
 
 function setQuantity(name, delta) {
@@ -507,7 +526,7 @@ function updateCartUI() {
         <div class="cart-item">
             <div class="cart-item-color" style="background:${colors[idx % colors.length]};"></div>
             <div class="cart-item-details">
-                <h4>${escapeHtml(it.name)}</h4>
+                <h4>${escapeHtml(cartDisplayName(it))}</h4>
                 <span>$${it.price.toFixed(0)}</span>
                 <div class="cart-qc">
                     <button onclick="setQuantity('${jsStr(it.name)}',-1)" aria-label="Decrease">−</button>
