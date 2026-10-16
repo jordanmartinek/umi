@@ -164,11 +164,23 @@ async function loadStoreData() {
     renderFinder();
 }
 
+// Resolve the product name to DISPLAY in the active language. Falls back to the
+// canonical English name when there is no Spanish translation. The English name
+// is always kept separately as the cart/checkout key (see productCard data-name).
+function displayName(p) {
+    const lang = (window.UmiI18n && window.UmiI18n.getLang) ? window.UmiI18n.getLang() : 'en';
+    if (lang === 'es' && p.name_es) return p.name_es;
+    return p.name;
+}
+
 // The working catalog: normalized API products if present, else placeholders.
 function workingCatalog() {
     if (allProducts && allProducts.length) {
         return allProducts.map((p, i) => ({
             name: p.name,
+            name_es: p.name_es || '',
+            description: p.description || '',
+            description_es: p.description_es || '',
             price: Number(p.price),
             category: (p.category || '').toLowerCase() || 'all',
             color: (p.color || '').toLowerCase() || 'multi',
@@ -186,20 +198,22 @@ function workingCatalog() {
 function productCard(p, i) {
     const badge = p.badge
         ? `<span class="pcard-badge pcard-badge-${p.badge}">${escapeHtml(p.badge)}</span>` : '';
+    // Show the translated name; keep data-name = canonical English for the cart.
+    const shown = displayName(p);
     const media = p.image
-        ? `<img class="pcard-photo" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'">`
+        ? `<img class="pcard-photo" src="${escapeHtml(p.image)}" alt="${escapeHtml(shown)}" onerror="this.style.display='none'">`
         : `<span class="pcard-emoji" aria-hidden="true">${p.emoji || '🌸'}</span>`;
     return `
         <article class="pcard" style="--i:${i}">
             <div class="pcard-img" style="background:${p.gradient};">
                 ${badge}
                 ${media}
-                <button class="pcard-add" data-name="${escapeHtml(p.name)}" data-price="${p.price}">
+                <button class="pcard-add" data-name="${escapeHtml(p.name)}" data-display="${escapeHtml(shown)}" data-price="${p.price}">
                     <span class="cart-ic">🛍️</span> ${escapeHtml(T('cart.quickAdd', 'Quick Add'))}
                 </button>
             </div>
             <div class="pcard-body">
-                <h3 class="pcard-name">${escapeHtml(p.name)}</h3>
+                <h3 class="pcard-name">${escapeHtml(shown)}</h3>
                 <div class="pcard-meta">
                     <span class="pcard-price">$${Number(p.price).toFixed(0)}.00</span>
                     <span class="pcard-stars" aria-label="5 stars"><svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg></span>
@@ -216,7 +230,7 @@ function wireAddButtons(container) {
             btn.classList.add('added');
             btn.innerHTML = '✓';
             setTimeout(() => { btn.classList.remove('added'); btn.innerHTML = orig; }, 1200);
-            showToast(`${btn.dataset.name} ${T('toast.added', 'added')} 🛍️`);
+            showToast(`${btn.dataset.display || btn.dataset.name} ${T('toast.added', 'added')} 🛍️`);
         });
     });
 }
@@ -471,12 +485,20 @@ function addToCart(name, price, qty = 1, meta = {}) {
 // Resolve what to SHOW for a cart line in the current language. Hero items look
 // up their translated title; everything else falls back to the catalog name.
 function cartDisplayName(item) {
+    // Hero-carousel products: resolve the translated title from HERO_PRODUCTS.
     if (item.heroId) {
         const hp = HERO_PRODUCTS.find(p => p.id === item.heroId);
         if (hp) {
             const title = heroCopy(hp).title;
             if (title) return title;
         }
+    }
+    // Catalog products (Quick Add): match by canonical English name against the
+    // loaded catalog and show its Spanish name when the site is in Spanish.
+    const lang = (window.UmiI18n && window.UmiI18n.getLang) ? window.UmiI18n.getLang() : 'en';
+    if (lang === 'es' && allProducts && allProducts.length) {
+        const prod = allProducts.find(p => p.name === item.name);
+        if (prod && prod.name_es) return prod.name_es;
     }
     return item.name;
 }

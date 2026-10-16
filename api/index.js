@@ -293,12 +293,14 @@ module.exports = async (req, res) => {
         if (pathname === '/admin/products' && method === 'POST') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
             const products = await readData('products.json');
-            const { name, description, price, category, badge, gradient, emoji, active, image } = req.body || {};
+            const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image } = req.body || {};
 
             const newProduct = {
                 id: `prod_${crypto.randomUUID().slice(0, 8)}`,
                 name: name || '',
+                name_es: name_es || '',
                 description: description || '',
+                description_es: description_es || '',
                 price: parseFloat(price) || 0,
                 category: category || '',
                 badge: badge || '',
@@ -325,11 +327,13 @@ module.exports = async (req, res) => {
                 const index = products.findIndex(p => p.id === id);
                 if (index === -1) return res.status(404).json({ error: 'Product not found' });
 
-                const { name, description, price, category, badge, gradient, emoji, active, image } = req.body || {};
+                const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image } = req.body || {};
                 products[index] = {
                     ...products[index],
                     name: name || products[index].name,
+                    name_es: name_es !== undefined ? name_es : products[index].name_es,
                     description: description !== undefined ? description : products[index].description,
+                    description_es: description_es !== undefined ? description_es : products[index].description_es,
                     price: price ? parseFloat(price) : products[index].price,
                     category: category !== undefined ? category : products[index].category,
                     badge: badge !== undefined ? badge : products[index].badge,

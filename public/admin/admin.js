@@ -263,6 +263,8 @@ function openProductModal(product = null) {
         document.getElementById('productName').value = product.name;
         document.getElementById('productPrice').value = product.price;
         document.getElementById('productDescription').value = product.description || '';
+        document.getElementById('productNameEs').value = product.name_es || '';
+        document.getElementById('productDescriptionEs').value = product.description_es || '';
         document.getElementById('productCategory').value = product.category || '';
         document.getElementById('productBadge').value = product.badge || '';
         document.getElementById('productEmoji').value = product.emoji || '';
@@ -308,25 +310,32 @@ function initForms() {
     document.getElementById('productForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('productId').value;
-        const formData = new FormData();
 
-        formData.append('name', document.getElementById('productName').value);
-        formData.append('price', document.getElementById('productPrice').value);
-        formData.append('description', document.getElementById('productDescription').value);
-        formData.append('category', document.getElementById('productCategory').value);
-        formData.append('badge', document.getElementById('productBadge').value);
-        formData.append('emoji', document.getElementById('productEmoji').value);
-        formData.append('gradient', document.getElementById('productGradient').value);
-        formData.append('active', document.getElementById('productActive').value);
-
-        const imageFile = document.getElementById('productImage').files[0];
-        if (imageFile) formData.append('image', imageFile);
+        // The API reads JSON (it JSON-parses the request body), so send JSON —
+        // not multipart FormData — otherwise no fields persist. `image` is stored
+        // as a string/URL by the API; file uploads aren't supported server-side.
+        const payload = {
+            name: document.getElementById('productName').value,
+            name_es: document.getElementById('productNameEs').value,
+            price: document.getElementById('productPrice').value,
+            description: document.getElementById('productDescription').value,
+            description_es: document.getElementById('productDescriptionEs').value,
+            category: document.getElementById('productCategory').value,
+            badge: document.getElementById('productBadge').value,
+            emoji: document.getElementById('productEmoji').value,
+            gradient: document.getElementById('productGradient').value,
+            active: document.getElementById('productActive').value,
+        };
 
         try {
             const url = id ? `/api/admin/products/${id}` : '/api/admin/products';
             const method = id ? 'PUT' : 'POST';
 
-            const res = await fetch(url, { method, body: formData });
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
             if (res.ok) {
                 closeModal('productModal');
                 loadProducts();

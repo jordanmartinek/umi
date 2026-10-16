@@ -2,7 +2,9 @@
   {
     "id": "prod_001",
     "name": "Butterfly Bloom Pendant",
+    "name_es": "Colgante Mariposa en Flor",
     "description": "Hand-strung blue, cyan & yellow beads shaped into a cheerful butterfly on a soft adjustable cord.",
+    "description_es": "Cuentas azules, cian y amarillas tejidas a mano en forma de una alegre mariposa, en un suave cordón ajustable.",
     "price": 32,
     "category": "pendants",
     "color": "multi",
@@ -17,7 +19,9 @@
   {
     "id": "prod_002",
     "name": "Ocean Dream Bracelet",
+    "name_es": "Pulsera Sueño de Mar",
     "description": "Cool blue and seafoam beads with a tiny silver shell on a slip-on stretch cord.",
+    "description_es": "Cuentas azules y verde espuma con una diminuta concha plateada en un cordón elástico que se desliza.",
     "price": 28,
     "category": "bracelets",
     "color": "blue",
@@ -32,7 +36,9 @@
   {
     "id": "prod_003",
     "name": "Sunbeam Charm Bracelet",
+    "name_es": "Pulsera Rayo de Sol",
     "description": "Warm honey-gold beads and a little sun charm for a cozy everyday glow.",
+    "description_es": "Cálidas cuentas color miel dorada y un pequeño dije de sol para un brillo acogedor cada día.",
     "price": 26,
     "category": "bracelets",
     "color": "gold",
@@ -47,7 +53,9 @@
   {
     "id": "prod_004",
     "name": "Seashell Whisper Pendant",
+    "name_es": "Colgante Susurro de Concha",
     "description": "A hand-picked shell among blush and pearl beads on a delicate gold-filled chain.",
+    "description_es": "Una concha elegida a mano entre cuentas rosadas y perladas en una delicada cadena chapada en oro.",
     "price": 34,
     "category": "pendants",
     "color": "pink",
@@ -62,7 +70,9 @@
   {
     "id": "prod_005",
     "name": "Tide Pool Ring",
+    "name_es": "Anillo Poza de Marea",
     "description": "Cyan and lavender glass beads on a bendy, adjustable wire band. Stack them up!",
+    "description_es": "Cuentas de vidrio cian y lavanda sobre una banda de alambre flexible y ajustable. ¡Apílalos!",
     "price": 22,
     "category": "rings",
     "color": "cyan",
@@ -77,7 +87,9 @@
   {
     "id": "prod_006",
     "name": "Blossom Stack Ring Set",
+    "name_es": "Set de Anillos Flor Apilables",
     "description": "A trio of dainty beaded rings in soft pinks — mix, match and layer.",
+    "description_es": "Un trío de delicados anillos de cuentas en rosas suaves — combina, mezcla y superpón.",
     "price": 30,
     "category": "rings",
     "color": "pink",
@@ -92,7 +104,9 @@
   {
     "id": "prod_007",
     "name": "Coral Garden Anklet",
+    "name_es": "Tobillera Jardín de Coral",
     "description": "Playful coral-pink beads with a sunny accent — a little beach party for your ankle.",
+    "description_es": "Juguetonas cuentas rosa coral con un acento soleado — una pequeña fiesta de playa para tu tobillo.",
     "price": 24,
     "category": "anklets",
     "color": "pink",
@@ -107,7 +121,9 @@
   {
     "id": "prod_008",
     "name": "Moonlit Wave Anklet",
+    "name_es": "Tobillera Ola a la Luz de la Luna",
     "description": "Lavender and sky beads that shimmer like moonlight on the water.",
+    "description_es": "Cuentas lavanda y celeste que brillan como la luz de la luna sobre el agua.",
     "price": 27,
     "category": "anklets",
     "color": "lavender",
@@ -122,7 +138,9 @@
   {
     "id": "prod_009",
     "name": "Daisy Drop Earrings",
+    "name_es": "Aretes Gota de Margarita",
     "description": "Cheerful golden daisy drops — lightweight and made to make you smile.",
+    "description_es": "Alegres gotas doradas de margarita — ligeras y hechas para sacarte una sonrisa.",
     "price": 21,
     "category": "earrings",
     "color": "gold",
@@ -137,7 +155,9 @@
   {
     "id": "prod_010",
     "name": "Starfish Studs",
+    "name_es": "Aretes de Estrella de Mar",
     "description": "Tiny cyan starfish studs — a subtle little wish from the sea.",
+    "description_es": "Pequeños aretes cian de estrella de mar — un sutil deseo del mar.",
     "price": 19,
     "category": "earrings",
     "color": "cyan",
@@ -152,7 +172,9 @@
   {
     "id": "prod_011",
     "name": "Lagoon Layered Necklace",
+    "name_es": "Collar Laguna en Capas",
     "description": "Layered blue and seafoam strands for a dreamy, tide-pool-inspired look.",
+    "description_es": "Hebras azules y verde espuma en capas para un look soñador inspirado en las pozas de marea.",
     "price": 38,
     "category": "pendants",
     "color": "blue",
@@ -167,7 +189,9 @@
   {
     "id": "prod_012",
     "name": "Petal Beaded Bracelet",
+    "name_es": "Pulsera de Cuentas Pétalo",
     "description": "Soft lavender and pink beads strung into a delicate everyday bracelet.",
+    "description_es": "Suaves cuentas lavanda y rosa tejidas en una delicada pulsera para el día a día.",
     "price": 25,
     "category": "bracelets",
     "color": "lavender",

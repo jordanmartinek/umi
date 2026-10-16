@@ -44,6 +44,28 @@ function T(key, fallback) {
     return (window.UmiI18n && window.UmiI18n.t) ? window.UmiI18n.t(key) : (fallback || key);
 }
 
+// Current language ('en' | 'es')
+function currentLang() {
+    return (window.UmiI18n && window.UmiI18n.getLang) ? window.UmiI18n.getLang() : 'en';
+}
+
+// Product name to DISPLAY in the active language; falls back to the English
+// name. The English `name` stays the canonical cart/checkout key.
+function displayName(p) {
+    if (currentLang() === 'es' && p.name_es) return p.name_es;
+    return p.name;
+}
+
+// Resolve a cart line's display name by matching its canonical English name
+// against the loaded collection, so cart items re-translate on language change.
+function cartDisplayName(item) {
+    if (currentLang() === 'es' && allProducts && allProducts.length) {
+        const prod = allProducts.find(p => p.name === item.name);
+        if (prod && prod.name_es) return prod.name_es;
+    }
+    return item.name;
+}
+
 // ============================================ Data ============================================
 async function loadCollection() {
     try {
@@ -63,6 +85,9 @@ async function loadCollection() {
             ];
             allProducts = products.map((p, i) => ({
                 name: p.name,
+                name_es: p.name_es || '',
+                description: p.description || '',
+                description_es: p.description_es || '',
                 price: Number(p.price),
                 category: (p.category || '').toLowerCase() || 'all',
                 badge: p.badge || '',
@@ -102,23 +127,24 @@ function renderCollection() {
     }
 
     grid.innerHTML = items.map((p, i) => {
+        const shown = displayName(p);
         const badge = p.badge
             ? `<span class="pcard-badge pcard-badge-${p.badge}">${escapeHtml(p.badge)}</span>`
             : '';
         const media = p.image
-            ? `<img class="pcard-photo" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'">`
+            ? `<img class="pcard-photo" src="${escapeHtml(p.image)}" alt="${escapeHtml(shown)}" onerror="this.style.display='none'">`
             : `<span class="pcard-emoji" aria-hidden="true">${p.emoji || '🌸'}</span>`;
         return `
             <article class="pcard reveal" style="--i:${i}">
                 <div class="pcard-img" style="background:${p.gradient};">
                     ${badge}
                     ${media}
-                    <button class="pcard-add" data-name="${escapeHtml(p.name)}" data-price="${p.price}">
+                    <button class="pcard-add" data-name="${escapeHtml(p.name)}" data-display="${escapeHtml(shown)}" data-price="${p.price}">
                         <span class="cart-ic">🛍️</span> ${escapeHtml(T('cart.quickAdd', 'Quick Add'))}
                     </button>
                 </div>
                 <div class="pcard-body">
-                    <h3 class="pcard-name">${escapeHtml(p.name)}</h3>
+                    <h3 class="pcard-name">${escapeHtml(shown)}</h3>
                     <div class="pcard-meta">
                         <span class="pcard-price">$${Number(p.price).toFixed(0)}.00</span>
                         <span class="pcard-stars" aria-label="5 out of 5 stars">
@@ -136,7 +162,7 @@ function renderCollection() {
             btn.classList.add('added');
             btn.innerHTML = '✓ Added';
             setTimeout(() => { btn.classList.remove('added'); btn.innerHTML = original; }, 1400);
-            showToast(`${btn.dataset.name} added 🛍️`);
+            showToast(`${btn.dataset.display || btn.dataset.name} ${T('toast.added', 'added')} 🛍️`);
         });
     });
 
@@ -220,7 +246,7 @@ function updateCartUI() {
         <div class="cart-item">
             <div class="cart-item-color" style="background:${colors[idx % colors.length]};"></div>
             <div class="cart-item-details">
-                <h4>${escapeHtml(it.name)}</h4>
+                <h4>${escapeHtml(cartDisplayName(it))}</h4>
                 <span>$${it.price.toFixed(0)}</span>
                 <div class="cart-qc">
                     <button onclick="setQuantity('${jsStr(it.name)}',-1)" aria-label="Decrease">−</button>
