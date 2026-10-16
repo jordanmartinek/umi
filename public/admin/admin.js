@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initForms();
     initOrderFilters();
     initAdminLang();
+    initAiFill();
     document.getElementById('logoutBtn').addEventListener('click', logout);
 });
 
@@ -46,6 +47,121 @@ function updateLangSwitchLabel() {
     const label = document.getElementById('langSwitchLabel');
     if (!label || !window.AdminI18n) return;
     label.textContent = AdminI18n.getLang() === 'en' ? 'Español' : 'English';
+}
+
+// ============================================
+// AI photo autofill
+// ============================================
+
+function initAiFill() {
+    const fileInput = document.getElementById('aiPhoto');
+    const analyzeBtn = document.getElementById('aiAnalyzeBtn');
+    const preview = document.getElementById('aiPreview');
+    if (!fileInput || !analyzeBtn) return;
+
+    // Show a thumbnail preview as soon as a photo is chosen.
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files && fileInput.files[0];
+        setAiStatus('');
+        if (!file) { preview.style.display = 'none'; preview.src = ''; return; }
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+    });
+
+    analyzeBtn.addEventListener('click', () => analyzePhoto(fileInput.files && fileInput.files[0]));
+}
+
+function setAiStatus(msg, kind) {
+    const el = document.getElementById('aiStatus');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.className = 'ai-status' + (kind ? ' ai-status-' + kind : '');
+}
+
+// Read a File as a base64 string (without the "data:...;base64," prefix).
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const result = String(reader.result || '');
+            const comma = result.indexOf('base64,');
+            resolve(comma !== -1 ? result.slice(comma + 7) : result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+async function analyzePhoto(file) {
+    const btn = document.getElementById('aiAnalyzeBtn');
+    if (!file) { setAiStatus(t('ai.noPhoto', 'Please choose a photo first.'), 'error'); return; }
+
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = t('ai.analyzing', 'Analyzing photo…');
+    setAiStatus(t('ai.analyzing', 'Analyzing photo…'));
+
+    try {
+        const base64 = await fileToBase64(file);
+        const res = await fetch('/api/admin/analyze-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: base64, mimeType: file.type || 'image/jpeg' }),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            // Distinguish "not configured" so the owner knows it's a setup step.
+            const msg = /GEMINI_API_KEY|not configured/i.test(data.error || '')
+                ? t('ai.notConfigured', 'AI is not set up yet. Add a GEMINI_API_KEY in Vercel and redeploy.')
+                : (data.error || t('ai.error', 'Could not analyze the photo. Please try again.'));
+            setAiStatus(msg, 'error');
+            return;
+        }
+
+        applyAiSuggestion(data.suggestion || {});
+        setAiStatus(t('ai.done', '✓ Fields filled in — review and edit, then save.'), 'success');
+    } catch (e) {
+        setAiStatus(t('ai.error', 'Could not analyze the photo. Please try again.'), 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = original;
+    }
+}
+
+// Prefill the form inputs from the AI suggestion. Only fills non-empty values
+// so it never wipes something the owner already typed.
+function applyAiSuggestion(s) {
+    const setIf = (id, val) => {
+        if (val === undefined || val === null || val === '') return;
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+    };
+    setIf('productName', s.name);
+    setIf('productNameEs', s.name_es);
+    setIf('productDescription', s.description);
+    setIf('productDescriptionEs', s.description_es);
+    setIf('productEmoji', s.emoji);
+    if (s.price !== undefined && s.price !== null && s.price !== '' && Number(s.price) > 0) {
+        setIf('productPrice', s.price);
+    }
+    // Category: only select it if the suggested slug matches an existing option.
+    if (s.category) {
+        const sel = document.getElementById('productCategory');
+        if (sel) {
+            const match = Array.from(sel.options).find(o => o.value === s.category || o.textContent.trim().toLowerCase() === String(s.category).toLowerCase());
+            if (match) sel.value = match.value;
+        }
+    }
+}
+
+// Clear the AI section's preview/status when the product modal opens.
+function resetAiFill() {
+    const fileInput = document.getElementById('aiPhoto');
+    const preview = document.getElementById('aiPreview');
+    if (fileInput) fileInput.value = '';
+    if (preview) { preview.style.display = 'none'; preview.src = ''; }
+    setAiStatus('');
 }
 
 // ============================================
@@ -288,6 +404,7 @@ function openProductModal(product = null) {
     form.reset();
     document.getElementById('productId').value = '';
     document.getElementById('gradientPreview').style.background = '';
+    resetAiFill();
 
     if (product) {
         title.textContent = t('pm.editTitle', 'Edit Product');

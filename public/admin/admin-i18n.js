@@ -145,6 +145,16 @@
             'cm.cancel': 'Cancel',
             'cm.save': 'Save Category',
 
+            // AI photo autofill
+            'ai.title': '✨ Fill from a photo',
+            'ai.sub': 'Upload a product photo and let AI draft the details for you.',
+            'ai.analyze': 'Analyze photo',
+            'ai.analyzing': 'Analyzing photo…',
+            'ai.done': '✓ Fields filled in — review and edit, then save.',
+            'ai.noPhoto': 'Please choose a photo first.',
+            'ai.error': 'Could not analyze the photo. Please try again.',
+            'ai.notConfigured': 'AI is not set up yet. Add a GEMINI_API_KEY in Vercel and redeploy.',
+
             // Generic
             'generic.connError': 'Connection error',
         },
@@ -272,6 +282,15 @@
             'cm.namePh': 'ej. Colección Océano',
             'cm.cancel': 'Cancelar',
             'cm.save': 'Guardar Categoría',
+
+            'ai.title': '✨ Rellenar desde una foto',
+            'ai.sub': 'Sube una foto del producto y deja que la IA redacte los detalles por ti.',
+            'ai.analyze': 'Analizar foto',
+            'ai.analyzing': 'Analizando la foto…',
+            'ai.done': '✓ Campos rellenados: revísalos, edítalos y guarda.',
+            'ai.noPhoto': 'Por favor elige una foto primero.',
+            'ai.error': 'No se pudo analizar la foto. Inténtalo de nuevo.',
+            'ai.notConfigured': 'La IA aún no está configurada. Añade GEMINI_API_KEY en Vercel y vuelve a desplegar.',
 
             'generic.connError': 'Error de conexión',
         },

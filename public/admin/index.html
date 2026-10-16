@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Quicksand:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=1">
-    <script src="admin-i18n.js?v=1"></script>
+    <link rel="stylesheet" href="admin.css?v=2">
+    <script src="admin-i18n.js?v=2"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -179,6 +179,22 @@
             </div>
             <form id="productForm">
                 <input type="hidden" id="productId">
+
+                <!-- AI autofill: upload a product photo and let AI suggest the
+                     fields below. The owner reviews/edits before saving. -->
+                <div class="ai-fill" id="aiFill">
+                    <div class="ai-fill-head">
+                        <span class="ai-fill-title" data-i18n="ai.title">✨ Fill from a photo</span>
+                        <span class="ai-fill-sub" data-i18n="ai.sub">Upload a product photo and let AI draft the details for you.</span>
+                    </div>
+                    <div class="ai-fill-row">
+                        <input type="file" id="aiPhoto" accept="image/*">
+                        <button type="button" class="btn btn-secondary" id="aiAnalyzeBtn" data-i18n="ai.analyze">Analyze photo</button>
+                    </div>
+                    <img id="aiPreview" class="ai-preview" alt="" style="display:none;">
+                    <p class="ai-status" id="aiStatus" role="status" aria-live="polite"></p>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label data-i18n="pm.name">Product Name</label>
@@ -275,6 +291,6 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="admin.js?v=1"></script>
+    <script src="admin.js?v=2"></script>
 </body>
 </html>
