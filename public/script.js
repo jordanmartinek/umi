@@ -13,7 +13,7 @@ let paypalLoaded = false;
 // pastel gradient + emoji placeholder for now — swap in a real image via `img`.
 const HERO_PRODUCTS = [
     {
-        id: 'butterfly-bloom', price: 32, img: 'assets/product.png',
+        id: 'butterfly-bloom', name: 'Butterfly Bloom Pendant', price: 32, img: 'assets/product.png',
         gradient: 'linear-gradient(160deg,#BFE3FF,#FFE29A)', emoji: '🦋',
         en: {
             badge: 'BEST SELLER', title: 'Butterfly Bloom Pendant', sub: 'Ocean Blue • Sky Cyan • Sunbeam Yellow',
@@ -29,7 +29,7 @@ const HERO_PRODUCTS = [
         },
     },
     {
-        id: 'ocean-dream', price: 28, img: null,
+        id: 'ocean-dream', name: 'Ocean Dream Bracelet', price: 28, img: null,
         gradient: 'linear-gradient(160deg,#CDE7FF,#C9A7F0)', emoji: '🌊',
         en: {
             badge: 'NEW', title: 'Ocean Dream Bracelet', sub: 'Deep Blue • Seafoam • Silver Shimmer',
@@ -45,7 +45,7 @@ const HERO_PRODUCTS = [
         },
     },
     {
-        id: 'sunbeam-charm', price: 26, img: null,
+        id: 'sunbeam-charm', name: 'Sunbeam Charm Bracelet', price: 26, img: null,
         gradient: 'linear-gradient(160deg,#FFECD2,#F7A8D8)', emoji: '☀️',
         en: {
             badge: '', title: 'Sunbeam Charm Bracelet', sub: 'Golden Honey • Warm Coral • Cream',
@@ -61,7 +61,7 @@ const HERO_PRODUCTS = [
         },
     },
     {
-        id: 'seashell-whisper', price: 34, img: null,
+        id: 'seashell-whisper', name: 'Seashell Whisper Pendant', price: 34, img: null,
         gradient: 'linear-gradient(160deg,#F7D1C4,#BFE3FF)', emoji: '🐚',
         en: {
             badge: '', title: 'Seashell Whisper Pendant', sub: 'Blush Pink • Pearl • Sky',
@@ -77,7 +77,7 @@ const HERO_PRODUCTS = [
         },
     },
     {
-        id: 'tide-pool-ring', price: 22, img: null,
+        id: 'tide-pool-ring', name: 'Tide Pool Ring', price: 22, img: null,
         gradient: 'linear-gradient(160deg,#B8E6DC,#C9A7F0)', emoji: '💍',
         en: {
             badge: 'NEW', title: 'Tide Pool Ring', sub: 'Cyan • Lavender • Glass Bead',
@@ -332,7 +332,12 @@ function initHeroCarousel() {
         addBtn.addEventListener('click', () => {
             const p = HERO_PRODUCTS[heroIndex];
             const qty = parseInt(document.getElementById('qtyVal').textContent, 10) || 1;
-            addToCart(heroCopy(p).title, p.price, qty);
+            // Always add to the cart under the canonical (English) catalog name so
+            // the server-side checkout validation in /api/paypal/create-order can
+            // match it against products.json — regardless of the active language.
+            // The translated title is only for display; sending it would cause a
+            // "Product not found" error when the site is in Spanish.
+            addToCart(p.name || heroCopy(p).title, p.price, qty);
             addBtn.classList.add('added');
             const orig = addBtn.innerHTML;
             addBtn.innerHTML = T('hero.added', '✓ Added to Cart');
