@@ -952,3 +952,54 @@ body {
     opacity: 0.7;
     font-size: 0.85em;
 }
+
+/* ============================================
+   AI photo autofill (product modal)
+   ============================================ */
+.ai-fill {
+    background: var(--seafoam, #eef7f5);
+    border: 1px dashed var(--ocean-teal, #6aa9a0);
+    border-radius: var(--radius-md, 12px);
+    padding: 14px 16px;
+    margin-bottom: 18px;
+}
+.ai-fill-head {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 10px;
+}
+.ai-fill-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--ocean-teal, #2f7a70);
+}
+.ai-fill-sub {
+    font-size: 0.8rem;
+    color: var(--dark-text, #44515a);
+    opacity: 0.8;
+}
+.ai-fill-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.ai-fill-row input[type="file"] {
+    flex: 1;
+    min-width: 160px;
+    font-size: 0.82rem;
+}
+.ai-preview {
+    margin-top: 12px;
+    max-height: 130px;
+    border-radius: var(--radius-md, 12px);
+    display: block;
+}
+.ai-status {
+    margin-top: 10px;
+    font-size: 0.82rem;
+    min-height: 1em;
+}
+.ai-status-success { color: #2f8f5b; }
+.ai-status-error { color: #c0453f; }

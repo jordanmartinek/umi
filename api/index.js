@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const { getAuth, verifyPassword, hashPassword, createToken } = require('./_lib/auth');
 const { readData, writeData, readSettings, writeSettings, isPersistent } = require('./_lib/db');
 const { createOrder, captureOrder } = require('./_lib/paypal');
+const { analyzeProductImage } = require('./_lib/gemini');
 
 module.exports = async (req, res) => {
     // ---- Resolve the route (robust across local dev + Vercel rewrites) ----
@@ -101,6 +102,7 @@ module.exports = async (req, res) => {
             mode: process.env.PAYPAL_MODE || 'not set (defaults to sandbox)',
             storageBackend: isPersistent ? 'upstash-redis (persistent)' : 'json-files (ephemeral on Vercel!)',
             redisConfigured: !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN),
+            aiConfigured: !!process.env.GEMINI_API_KEY,
         });
     }
 
@@ -120,6 +122,7 @@ module.exports = async (req, res) => {
                 mode: process.env.PAYPAL_MODE || 'not set (defaults to sandbox)',
                 storageBackend: isPersistent ? 'upstash-redis (persistent)' : 'json-files (ephemeral on Vercel!)',
                 redisConfigured: !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN),
+                aiConfigured: !!process.env.GEMINI_API_KEY,
             });
         }
 
@@ -283,6 +286,30 @@ module.exports = async (req, res) => {
         // ============================
 
         const auth = getAuth(req);
+
+        // Admin: AI — analyze a product photo and suggest catalog fields.
+        // Body: { image: "<base64, no data: prefix>", mimeType: "image/jpeg" }
+        // Returns suggested fields for the admin form to prefill (never saves).
+        if (pathname === '/admin/analyze-product' && method === 'POST') {
+            if (!auth) return res.status(401).json({ error: 'Unauthorized' });
+
+            let image = (req.body && req.body.image) || '';
+            const mimeType = (req.body && req.body.mimeType) || 'image/jpeg';
+            // Accept a full data URL too — strip the "data:...;base64," prefix.
+            const comma = image.indexOf('base64,');
+            if (comma !== -1) image = image.slice(comma + 7);
+            if (!image) return res.status(400).json({ error: 'No image provided' });
+
+            try {
+                const categories = await readData('categories.json');
+                const slugs = (categories || []).map(c => c.slug).filter(Boolean);
+                const suggestion = await analyzeProductImage(image, mimeType, slugs);
+                return res.status(200).json({ ok: true, suggestion });
+            } catch (e) {
+                // e.message is already a clean, non-sensitive string.
+                return res.status(502).json({ error: e.message || 'AI analysis failed' });
+            }
+        }
 
         // Admin: Products
         if (pathname === '/admin/products' && method === 'GET') {
