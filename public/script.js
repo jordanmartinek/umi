@@ -215,9 +215,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initNewReleases();
     initFinder();
     initOwnerAccess();
+    initNavToggle();
     loadStoreData();
     loadPayPal();
 });
+
+// Mobile nav: hamburger toggles the links dropdown; tapping a link closes it.
+function initNavToggle() {
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    if (!toggle || !links) return;
+    toggle.addEventListener('click', () => {
+        const open = links.classList.toggle('open');
+        toggle.classList.toggle('open', open);
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+    }));
+}
 
 // Discreet owner entry point: double-clicking the footer "Accessories" subtitle
 // opens the admin dashboard. The admin page is itself password-protected, so

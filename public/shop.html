@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=7">
-    <script src="i18n.js?v=7"></script>
+    <link rel="stylesheet" href="styles.css?v=8">
+    <script src="i18n.js?v=8"></script>
 </head>
 <body>
 
@@ -30,7 +30,7 @@
                     <span class="brand-sub">Accessories</span>
                 </span>
             </a>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" data-i18n="nav.home">Home</a></li>
                 <li><a href="shop.html" class="active" data-i18n="nav.shop">Shop</a></li>
             </ul>
@@ -46,6 +46,9 @@
                 <button class="icon-btn cart-btn" aria-label="Cart">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                     <span class="cart-count">0</span>
+                </button>
+                <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+                    <span></span><span></span><span></span>
                 </button>
             </div>
         </div>
@@ -127,6 +130,6 @@
         </div>
     </div>
 
-    <script src="shop.js?v=7"></script>
+    <script src="shop.js?v=8"></script>
 </body>
 </html>

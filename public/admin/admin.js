@@ -15,8 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
     initOrderFilters();
     initAdminLang();
     initAiFill();
+    initSidebarToggle();
     document.getElementById('logoutBtn').addEventListener('click', logout);
 });
+
+// Mobile sidebar: hamburger opens it, backdrop/nav-tap closes it.
+function initSidebarToggle() {
+    const sidebar = document.getElementById('sidebar');
+    const toggle = document.getElementById('sidebarToggle');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (!sidebar || !toggle) return;
+
+    const open = () => {
+        sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('show');
+        toggle.setAttribute('aria-expanded', 'true');
+    };
+    const close = () => {
+        sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('show');
+        toggle.setAttribute('aria-expanded', 'false');
+    };
+
+    toggle.addEventListener('click', () => {
+        sidebar.classList.contains('open') ? close() : open();
+    });
+    if (backdrop) backdrop.addEventListener('click', close);
+    // Tapping any sidebar link/button closes the drawer on mobile.
+    sidebar.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', close);
+    });
+}
 
 // i18n shorthand (safe even before admin-i18n.js has parsed)
 function t(key, fallback) {
