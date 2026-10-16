@@ -482,6 +482,16 @@ module.exports = async (req, res) => {
 
     } catch (err) {
         console.error('API Error:', err);
+        // A persistence failure (ephemeral/read-only filesystem with no Redis)
+        // is a configuration problem, not a server bug — return a clear,
+        // actionable message so the admin UI can tell the user what to fix.
+        if (err && err.code === 'PERSIST_FAILED') {
+            return res.status(503).json({
+                error: 'Changes could not be saved because no persistent storage is configured. ' +
+                       'Add Upstash Redis to the project (Vercel → Storage) and redeploy.',
+                code: 'PERSIST_FAILED',
+            });
+        }
         return res.status(500).json({ error: err.message || 'Internal server error' });
     }
 };
