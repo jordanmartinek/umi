@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=4">
-    <script src="i18n.js?v=4"></script>
+    <link rel="stylesheet" href="styles.css?v=5">
+    <script src="i18n.js?v=5"></script>
 </head>
 <body>
 
@@ -225,7 +225,10 @@
             <div class="foot-brand">
                 <img src="assets/logo-mark.svg" alt="" width="70" height="70">
                 <span class="foot-name">umi umi</span>
-                <span class="foot-sub">Accessories</span>
+                <!-- Discreet owner access: double-click "Accessories" to open the
+                     admin dashboard (which is itself password-protected). Looks
+                     like plain text to customers; a single click does nothing. -->
+                <span class="foot-sub" id="ownerAccess" title="umi umi Accessories">Accessories</span>
                 <a href="shop.html" class="shop-collection"><span data-i18n="foot.cta">Shop the Collection</span> <span>→</span></a>
             </div>
         </div>
@@ -261,6 +264,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=4"></script>
+    <script src="script.js?v=5"></script>
 </body>
 </html>

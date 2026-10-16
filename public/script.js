@@ -129,9 +129,21 @@ document.addEventListener('DOMContentLoaded', () => {
     initCart();
     initNewReleases();
     initFinder();
+    initOwnerAccess();
     loadStoreData();
     loadPayPal();
 });
+
+// Discreet owner entry point: double-clicking the footer "Accessories" subtitle
+// opens the admin dashboard. The admin page is itself password-protected, so
+// this is just a convenient shortcut, not a security boundary. Customers see
+// only plain text; a single click does nothing.
+function initOwnerAccess() {
+    const el = document.getElementById('ownerAccess');
+    if (!el) return;
+    el.style.cursor = 'default';
+    el.addEventListener('dblclick', () => { window.location.href = 'admin/'; });
+}
 
 // Re-render dynamic bits + refresh open cart when the language switches
 document.addEventListener('umi:langchange', () => {
