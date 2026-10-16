@@ -13,8 +13,40 @@ document.addEventListener('DOMContentLoaded', () => {
     initModals();
     initForms();
     initOrderFilters();
+    initAdminLang();
     document.getElementById('logoutBtn').addEventListener('click', logout);
 });
+
+// i18n shorthand (safe even before admin-i18n.js has parsed)
+function t(key, fallback) {
+    return (window.AdminI18n && window.AdminI18n.t) ? window.AdminI18n.t(key) : (fallback || key);
+}
+
+// Sidebar language switch + re-render dynamic content on language change
+function initAdminLang() {
+    const sidebarBtn = document.getElementById('langToggleSidebar');
+    if (sidebarBtn && window.AdminI18n) {
+        sidebarBtn.addEventListener('click', () => {
+            AdminI18n.setLang(AdminI18n.getLang() === 'en' ? 'es' : 'en');
+        });
+    }
+    updateLangSwitchLabel();
+
+    // Re-render JS-built tables/stats whenever the language changes
+    document.addEventListener('umi:langchange', () => {
+        updateLangSwitchLabel();
+        if (Array.isArray(products) && products.length) renderProducts();
+        if (Array.isArray(categories)) { renderCategories(); populateCategorySelect(); }
+        if (Array.isArray(orders)) { renderOrders(orders); renderOrderStats(); }
+    });
+}
+
+// The sidebar switch shows the OTHER language (the one you'd switch to)
+function updateLangSwitchLabel() {
+    const label = document.getElementById('langSwitchLabel');
+    if (!label || !window.AdminI18n) return;
+    label.textContent = AdminI18n.getLang() === 'en' ? 'Español' : 'English';
+}
 
 // ============================================
 // Auth
@@ -48,10 +80,10 @@ function initLogin() {
                 errorEl.textContent = '';
                 showDashboard();
             } else {
-                errorEl.textContent = 'Invalid password. Please try again.';
+                errorEl.textContent = t('login.error', 'Invalid password. Please try again.');
             }
         } catch (e) {
-            errorEl.textContent = 'Connection error. Please try again.';
+            errorEl.textContent = t('login.connError', 'Connection error. Please try again.');
         }
     });
 }
@@ -138,18 +170,18 @@ function renderProducts() {
     const table = document.getElementById('productsTable');
 
     if (products.length === 0) {
-        table.innerHTML = `<div class="empty-state"><span>📦</span><p>No products yet. Add your first bracelet!</p></div>`;
+        table.innerHTML = `<div class="empty-state"><span>📦</span><p>${t('products.empty', 'No products yet. Add your first bracelet!')}</p></div>`;
         return;
     }
 
     const header = `
         <div class="product-row product-row-header">
             <span></span>
-            <span>Product</span>
-            <span>Price</span>
-            <span class="badge-col">Badge</span>
-            <span>Status</span>
-            <span>Actions</span>
+            <span>${t('products.col.product', 'Product')}</span>
+            <span>${t('products.col.price', 'Price')}</span>
+            <span class="badge-col">${t('products.col.badge', 'Badge')}</span>
+            <span>${t('products.col.status', 'Status')}</span>
+            <span>${t('products.col.actions', 'Actions')}</span>
         </div>
     `;
 
@@ -172,7 +204,7 @@ function renderProducts() {
                 </div>
                 <div>
                     <span class="status-dot ${product.active ? 'status-active' : 'status-hidden'}"></span>
-                    ${product.active ? 'Active' : 'Hidden'}
+                    ${product.active ? t('products.active', 'Active') : t('products.hidden', 'Hidden')}
                 </div>
                 <div class="row-actions">
                     <button class="action-btn" onclick="editProduct('${product.id}')" title="Edit">✏️</button>
@@ -193,7 +225,7 @@ function renderCategories() {
     const list = document.getElementById('categoriesList');
 
     if (categories.length === 0) {
-        list.innerHTML = `<div class="empty-state"><span>🏷️</span><p>No categories yet. Create your first collection!</p></div>`;
+        list.innerHTML = `<div class="empty-state"><span>🏷️</span><p>${t('categories.empty', 'No categories yet. Create your first collection!')}</p></div>`;
         return;
     }
 
@@ -258,7 +290,7 @@ function openProductModal(product = null) {
     document.getElementById('gradientPreview').style.background = '';
 
     if (product) {
-        title.textContent = 'Edit Product';
+        title.textContent = t('pm.editTitle', 'Edit Product');
         document.getElementById('productId').value = product.id;
         document.getElementById('productName').value = product.name;
         document.getElementById('productPrice').value = product.price;
@@ -272,7 +304,7 @@ function openProductModal(product = null) {
         document.getElementById('productActive').value = product.active ? 'true' : 'false';
         document.getElementById('gradientPreview').style.background = product.gradient || '';
     } else {
-        title.textContent = 'Add Product';
+        title.textContent = t('pm.addTitle', 'Add Product');
     }
 
     modal.classList.add('open');
@@ -287,11 +319,11 @@ function openCategoryModal(category = null) {
     document.getElementById('categoryId').value = '';
 
     if (category) {
-        title.textContent = 'Edit Category';
+        title.textContent = t('cm.editTitle', 'Edit Category');
         document.getElementById('categoryId').value = category.id;
         document.getElementById('categoryName').value = category.name;
     } else {
-        title.textContent = 'Add Category';
+        title.textContent = t('cm.addTitle', 'Add Category');
     }
 
     modal.classList.add('open');
@@ -339,12 +371,12 @@ function initForms() {
             if (res.ok) {
                 closeModal('productModal');
                 loadProducts();
-                showToast(id ? 'Product updated! ✿' : 'Product added! 🌊');
+                showToast(id ? t('products.updated', 'Product updated! ✿') : t('products.added', 'Product added! 🌊'));
             } else {
-                showToast('Error saving product', 'error');
+                showToast(t('products.saveError', 'Error saving product'), 'error');
             }
         } catch (e) {
-            showToast('Connection error', 'error');
+            showToast(t('generic.connError', 'Connection error'), 'error');
         }
     });
 
@@ -367,12 +399,12 @@ function initForms() {
             if (res.ok) {
                 closeModal('categoryModal');
                 loadCategories();
-                showToast(id ? 'Category updated! 🏷️' : 'Category added! ✿');
+                showToast(id ? t('categories.updated', 'Category updated! 🏷️') : t('categories.added', 'Category added! ✿'));
             } else {
-                showToast('Error saving category', 'error');
+                showToast(t('categories.saveError', 'Error saving category'), 'error');
             }
         } catch (e) {
-            showToast('Connection error', 'error');
+            showToast(t('generic.connError', 'Connection error'), 'error');
         }
     });
 
@@ -396,12 +428,12 @@ function initForms() {
             });
 
             if (res.ok) {
-                showToast('Settings saved! ⚙️');
+                showToast(t('settings.saved', 'Settings saved! ⚙️'));
             } else {
-                showToast('Error saving settings', 'error');
+                showToast(t('settings.saveError', 'Error saving settings'), 'error');
             }
         } catch (e) {
-            showToast('Connection error', 'error');
+            showToast(t('generic.connError', 'Connection error'), 'error');
         }
     });
 
@@ -411,12 +443,12 @@ function initForms() {
         const newPassword = document.getElementById('settingNewPw').value;
 
         if (!currentPassword || !newPassword) {
-            showToast('Please fill in both password fields', 'error');
+            showToast(t('settings.pwBothFields', 'Please fill in both password fields'), 'error');
             return;
         }
 
         if (newPassword.length < 6) {
-            showToast('New password must be at least 6 characters', 'error');
+            showToast(t('settings.pwTooShort', 'New password must be at least 6 characters'), 'error');
             return;
         }
 
@@ -428,14 +460,14 @@ function initForms() {
             });
 
             if (res.ok) {
-                showToast('Password updated! 🔐');
+                showToast(t('settings.pwUpdated', 'Password updated! 🔐'));
                 document.getElementById('settingCurrentPw').value = '';
                 document.getElementById('settingNewPw').value = '';
             } else {
-                showToast('Current password is incorrect', 'error');
+                showToast(t('settings.pwIncorrect', 'Current password is incorrect'), 'error');
             }
         } catch (e) {
-            showToast('Connection error', 'error');
+            showToast(t('generic.connError', 'Connection error'), 'error');
         }
     });
 }
@@ -450,16 +482,16 @@ function editProduct(id) {
 }
 
 async function deleteProduct(id) {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+    if (!confirm(t('products.deleteConfirm', 'Are you sure you want to delete this product?'))) return;
 
     try {
         const res = await fetch(`/api/admin/products/${id}`, { method: 'DELETE' });
         if (res.ok) {
             loadProducts();
-            showToast('Product deleted');
+            showToast(t('products.deleted', 'Product deleted'));
         }
     } catch (e) {
-        showToast('Error deleting product', 'error');
+        showToast(t('products.deleteError', 'Error deleting product'), 'error');
     }
 }
 
@@ -469,16 +501,16 @@ function editCategory(id) {
 }
 
 async function deleteCategory(id) {
-    if (!confirm('Are you sure? Products in this category will become uncategorized.')) return;
+    if (!confirm(t('categories.deleteConfirm', 'Are you sure? Products in this category will become uncategorized.'))) return;
 
     try {
         const res = await fetch(`/api/admin/categories/${id}`, { method: 'DELETE' });
         if (res.ok) {
             loadCategories();
-            showToast('Category deleted');
+            showToast(t('categories.deleted', 'Category deleted'));
         }
     } catch (e) {
-        showToast('Error deleting category', 'error');
+        showToast(t('categories.deleteError', 'Error deleting category'), 'error');
     }
 }
 
@@ -521,9 +553,9 @@ function renderOrderStats() {
 
     stats.innerHTML = `
         <div class="stat-pills">
-            <span class="stat-pill">${orders.length} orders</span>
-            <span class="stat-pill revenue">$${totalRevenue.toFixed(2)} revenue</span>
-            <span class="stat-pill pending">${paidCount} to fulfill</span>
+            <span class="stat-pill">${orders.length} ${t('orders.stat.orders', 'orders')}</span>
+            <span class="stat-pill revenue">$${totalRevenue.toFixed(2)} ${t('orders.stat.revenue', 'revenue')}</span>
+            <span class="stat-pill pending">${paidCount} ${t('orders.stat.toFulfill', 'to fulfill')}</span>
         </div>
     `;
 }
@@ -532,28 +564,29 @@ function renderOrders(ordersToRender) {
     const table = document.getElementById('ordersTable');
 
     if (ordersToRender.length === 0) {
-        table.innerHTML = `<div class="empty-state"><span>🧾</span><p>No orders yet. They'll appear here once customers check out.</p></div>`;
+        table.innerHTML = `<div class="empty-state"><span>🧾</span><p>${t('orders.empty', "No orders yet. They'll appear here once customers check out.")}</p></div>`;
         return;
     }
 
     const header = `
         <div class="order-row order-row-header">
-            <span>Order</span>
-            <span>Customer</span>
-            <span>Items</span>
-            <span>Total</span>
-            <span>Status</span>
-            <span>Actions</span>
+            <span>${t('orders.col.order', 'Order')}</span>
+            <span>${t('orders.col.customer', 'Customer')}</span>
+            <span>${t('orders.col.items', 'Items')}</span>
+            <span>${t('orders.col.total', 'Total')}</span>
+            <span>${t('orders.col.status', 'Status')}</span>
+            <span>${t('orders.col.actions', 'Actions')}</span>
         </div>
     `;
 
+    const dateLocale = (window.AdminI18n && AdminI18n.getLang() === 'es') ? 'es-ES' : 'en-US';
     const rows = ordersToRender.map(order => {
-        const date = new Date(order.createdAt).toLocaleDateString('en-US', {
+        const date = new Date(order.createdAt).toLocaleDateString(dateLocale, {
             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
         });
         const itemNames = (order.items || []).map(i => i.name).join(', ') || '—';
         const statusClass = order.status === 'fulfilled' ? 'status-fulfilled' : 'status-paid';
-        const statusLabel = order.status === 'fulfilled' ? 'Fulfilled' : 'Paid';
+        const statusLabel = order.status === 'fulfilled' ? t('orders.status.fulfilled', 'Fulfilled') : t('orders.status.paid', 'Paid');
 
         return `
             <div class="order-row">
@@ -571,7 +604,7 @@ function renderOrders(ordersToRender) {
                     <span class="order-status ${statusClass}">${statusLabel}</span>
                 </div>
                 <div class="row-actions">
-                    ${order.status === 'paid' ? `<button class="btn btn-small btn-primary" onclick="fulfillOrder('${order.id}')">Mark Fulfilled</button>` : `<span class="fulfilled-check">✓</span>`}
+                    ${order.status === 'paid' ? `<button class="btn btn-small btn-primary" onclick="fulfillOrder('${order.id}')">${t('orders.markFulfilled', 'Mark Fulfilled')}</button>` : `<span class="fulfilled-check">✓</span>`}
                 </div>
             </div>
         `;
@@ -606,11 +639,11 @@ async function fulfillOrder(id) {
 
         if (res.ok) {
             loadOrders();
-            showToast('Order marked as fulfilled! 📦');
+            showToast(t('orders.fulfilledToast', 'Order marked as fulfilled! 📦'));
         } else {
-            showToast('Error updating order', 'error');
+            showToast(t('orders.updateError', 'Error updating order'), 'error');
         }
     } catch (e) {
-        showToast('Connection error', 'error');
+        showToast(t('generic.connError', 'Connection error'), 'error');
     }
 }
