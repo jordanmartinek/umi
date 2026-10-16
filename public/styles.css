@@ -3,18 +3,27 @@
    ============================================ */
 
 :root {
-    --pink:        #F26FB2;
-    --pink-soft:   #FFC7E1;
-    --pink-bg:     #FDE7F1;
-    --lav:         #B98BEA;
-    --lav-soft:    #E6DAF7;
-    --lav-bg:      #EDE4FA;
+    /* Accent colors — kept vivid, but now used sparingly (buttons, prices,
+       badges, active states) so they pop against calm neutral surfaces. */
+    --pink:        #E86BA8;
+    --pink-soft:   #F6D7E6;
+    --pink-bg:     #FBEEF4;
+    --lav:         #A98BD8;
+    --lav-soft:    #E8E2F2;
+    --lav-bg:      #F2EEF8;
     --blue:        #6FB6F5;
     --sky:         #BFE3FF;
-    --gold:        #E9B949;
-    --cream:       #FFF6FA;
-    --ink:         #6B5B77;
-    --ink-soft:    #9A8AA8;
+    --gold:        #D9A94A;
+
+    /* Neutral surfaces — the storefront is now built on soft off-whites so the
+       product photography provides the color, not the UI chrome. */
+    --cream:       #FBF8F6;   /* page background */
+    --surface:     #FFFFFF;   /* cards / panels */
+    --surface-2:   #F6F2EF;   /* faint neutral wash for section bands */
+    --line:        #ECE7E3;   /* hairline borders */
+
+    --ink:         #5E5566;
+    --ink-soft:    #9A91A1;
     --white:       #FFFFFF;
 
     --font-round:  'Baloo 2', sans-serif;
@@ -131,9 +140,9 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
     display: grid;
     grid-template-columns: 45fr 55fr;
     align-items: stretch;
-    background:
-        linear-gradient(180deg, rgba(191,227,255,0.45), rgba(253,231,241,0.55)),
-        linear-gradient(120deg, #CDE7FF 0%, #E9D6F5 55%, #FBD9EC 100%);
+    /* Soft, near-neutral wash — just a whisper of warm cream so the panel
+       feels intentional without competing with the product photo. */
+    background: linear-gradient(120deg, #FBF8F6 0%, #F6F1F4 100%);
     position: relative;
     overflow: hidden;
 }
@@ -142,21 +151,14 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .hero-art { position: relative; padding: 26px; min-height: 560px; }
 .art-fill {
     position: absolute; inset: 0;
+    /* Quiet, airy tint so the floating product polaroid is the hero — a faint
+       blush/lavender glow on a soft neutral base, nothing that shouts. */
     background:
-        radial-gradient(circle at 30% 25%, #FFD1E8 0%, transparent 45%),
-        radial-gradient(circle at 75% 40%, #C9E5FF 0%, transparent 50%),
-        linear-gradient(160deg, #8Fc4f2 0%, #b79ae6 45%, #f4a9cf 100%);
+        radial-gradient(circle at 30% 25%, rgba(246,215,230,0.55) 0%, transparent 50%),
+        radial-gradient(circle at 75% 45%, rgba(232,226,242,0.5) 0%, transparent 55%),
+        linear-gradient(160deg, #F7F2F5 0%, #F1ECF3 100%);
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
-}
-/* Clean girl-only illustration (wide image: girl on the left, coastal scene
-   on the right, "Small Details. Big Energy." baked in). Fill the panel and
-   anchor left so the girl is featured; the scenery bleeds off to the right. */
-.art-img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: 22% center;
 }
 .img-missing { display: none !important; }
 .art-label {
@@ -247,8 +249,7 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 
 /* Right details panel */
 .hero-details {
-    background: rgba(255,255,255,0.82);
-    backdrop-filter: blur(4px);
+    background: var(--surface);
     padding: 46px 52px;
     display: flex; flex-direction: column;
     justify-content: center;
@@ -341,7 +342,9 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 
 /* ============================================ Band ================== */
 .band {
-    background: linear-gradient(90deg, #E7DAF7, #EFE0F7);
+    background: var(--surface-2);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -435,40 +438,17 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .foot-art {
     position: absolute; inset: 0;
     overflow: hidden;
-    /* The crisp vector gradient is the real backdrop — it can never pixelate,
-       so the banner always reads sharp regardless of the photo's resolution. */
+    /* Soft neutral banner with just a faint blush/lavender glow — calm enough
+       that it never competes with product imagery elsewhere on the page. */
     background:
-        radial-gradient(circle at 20% 30%, #FFC7E1 0%, transparent 45%),
-        linear-gradient(160deg, #7FB0E8 0%, #9E8AD8 45%, #E79FC6 100%);
+        radial-gradient(circle at 18% 30%, rgba(246,215,230,0.6) 0%, transparent 50%),
+        radial-gradient(circle at 85% 40%, rgba(232,226,242,0.55) 0%, transparent 55%),
+        linear-gradient(160deg, #F7F2F5 0%, #F1ECF3 100%);
     display: flex; align-items: flex-start; justify-content: center; padding-top: 14px;
 }
-/* The source photo (umi_anime_girl_seaside.jpg) is only 460×266, so stretching
-   it across a full-width banner upscales ~3× and looks fuzzy. Instead we blend
-   it in as a soft, intentionally-diffused atmospheric wash over the gradient:
-   the slight blur now reads as a deliberate dreamy effect rather than a
-   low-res defect, while the gradient keeps the banner crisp and colorful. */
-.foot-img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center 38%;
-    /* A gentle blur + slight upscale masks the pixelation from stretching the
-       460×266 source, and blending it into the gradient keeps the ocean scene
-       present without the hard, fuzzy edges of a raw upscaled photo. */
-    filter: blur(3px) saturate(1.12) contrast(1.03);
-    transform: scale(1.06); /* absorb the blurred edge so no soft border shows */
-    opacity: 0.92;
-}
-/* Soft gradient veil so the overlaid headline + logo stay readable over the photo */
-.foot-art::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(90deg, rgba(107,91,119,0.42), rgba(107,91,119,0.12) 45%, rgba(231,159,198,0.34));
-    z-index: 1;
-}
 .foot-art-label {
-    font-family: var(--font-hand); color: rgba(255,255,255,0.8); font-size: 1.2rem;
-    background: rgba(107,91,119,0.22); padding: 6px 16px; border-radius: 30px;
+    font-family: var(--font-hand); color: var(--ink-soft); font-size: 1.2rem;
+    background: rgba(94,85,102,0.08); padding: 6px 16px; border-radius: 30px;
 }
 .foot-overlay {
     position: relative; z-index: 2;
@@ -479,20 +459,18 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 }
 .foot-headline {
     font-family: var(--font-round); font-weight: 700;
-    font-size: 2.2rem; color: var(--white); line-height: 1.1;
-    text-shadow: 0 2px 10px rgba(107,91,119,0.3);
+    font-size: 2.2rem; color: var(--ink); line-height: 1.1;
 }
 .foot-brand { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .foot-name {
-    font-family: var(--font-round); font-weight: 800; font-size: 2rem; color: var(--white);
-    text-shadow: 0 2px 8px rgba(107,91,119,0.25);
+    font-family: var(--font-round); font-weight: 800; font-size: 2rem; color: var(--ink);
 }
-.foot-sub { font-size: 0.6rem; letter-spacing: 4px; color: rgba(255,255,255,0.9); text-transform: uppercase; margin-bottom: 16px; }
+.foot-sub { font-size: 0.6rem; letter-spacing: 4px; color: var(--ink-soft); text-transform: uppercase; margin-bottom: 16px; }
 .shop-collection {
-    background: rgba(255,255,255,0.92);
-    color: var(--pink); font-weight: 700; font-size: 0.9rem;
+    background: linear-gradient(90deg, var(--pink), var(--lav));
+    color: var(--white); font-weight: 700; font-size: 0.9rem;
     padding: 12px 26px; border-radius: 30px;
-    box-shadow: 0 8px 18px rgba(107,91,119,0.25);
+    box-shadow: 0 8px 18px rgba(232,107,168,0.28);
     transition: transform 0.2s;
     display: inline-flex; gap: 8px; align-items: center;
 }
@@ -597,9 +575,9 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
     text-align: center;
     padding: 46px 20px 40px;
     background:
-        radial-gradient(circle at 20% 20%, rgba(255,209,232,0.6) 0%, transparent 45%),
-        radial-gradient(circle at 82% 30%, rgba(191,227,255,0.6) 0%, transparent 45%),
-        linear-gradient(120deg, #FDE7F1 0%, #EDE4FA 55%, #E3F1FF 100%);
+        radial-gradient(circle at 20% 20%, rgba(246,215,230,0.5) 0%, transparent 50%),
+        radial-gradient(circle at 82% 30%, rgba(232,226,242,0.5) 0%, transparent 50%),
+        linear-gradient(120deg, #FBF8F6 0%, #F4F0F5 100%);
     overflow: hidden;
 }
 .shop-banner-inner { position: relative; z-index: 2; max-width: 720px; margin: 0 auto; }
@@ -755,9 +733,9 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 /* ============================================ New Releases carousel ============================================ */
 .new-releases {
     padding: 44px 20px 40px;
-    background:
-        radial-gradient(circle at 85% 15%, rgba(191,227,255,0.5) 0%, transparent 45%),
-        linear-gradient(120deg, #FFF6FA 0%, #FDE7F1 100%);
+    background: var(--surface-2);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
 }
 .nr-head { text-align: center; max-width: 640px; margin: 0 auto 26px; }
 .nr-title {
