@@ -97,6 +97,28 @@ const HERO_PRODUCTS = [
 let heroIndex = 0;
 let heroAutoTimer = null;
 
+// The hero shows a curated subset of HERO_PRODUCTS, but it must respect the
+// live catalog: a product deleted or hidden in the admin should disappear from
+// the hero too. `activeHeroProducts` is HERO_PRODUCTS filtered down to the
+// items that still exist as ACTIVE products in /api/products. Until the catalog
+// loads (or if the API fails), we show all curated items so the hero is never
+// empty on first paint.
+let activeHeroProducts = HERO_PRODUCTS.slice();
+
+// Rebuild activeHeroProducts from the loaded catalog (allProducts). Matches by
+// canonical English name — the same key used for the cart/checkout.
+function syncHeroWithCatalog() {
+    if (Array.isArray(allProducts) && allProducts.length) {
+        const activeNames = new Set(
+            allProducts.filter(p => p.active !== false).map(p => p.name)
+        );
+        activeHeroProducts = HERO_PRODUCTS.filter(p => activeNames.has(p.name));
+    } else {
+        // No catalog data (empty store or API error) — keep the curated set.
+        activeHeroProducts = HERO_PRODUCTS.slice();
+    }
+}
+
 // Current hero product's copy in the active language
 function heroCopy(p) {
     const lang = (window.UmiI18n && window.UmiI18n.getLang) ? window.UmiI18n.getLang() : 'en';
@@ -147,7 +169,7 @@ function initOwnerAccess() {
 
 // Re-render dynamic bits + refresh open cart when the language switches
 document.addEventListener('umi:langchange', () => {
-    renderHeroSlide();       // re-translate the current hero product
+    renderHeroCarousel();    // re-translate hero + keep it synced to the catalog
     renderNewReleases();
     renderFinder();
     if (cart.length) updateCartUI();
@@ -172,6 +194,7 @@ async function loadStoreData() {
         console.error('Failed to load store data:', e);
         allProducts = [];
     }
+    renderHeroCarousel();   // hero must respect deleted/hidden products
     renderNewReleases();
     renderFinder();
 }
@@ -326,15 +349,8 @@ function initHeroCarousel() {
     const stage = document.getElementById('heroStage');
     if (!stage) return; // hero markup not present
 
-    // Build dot indicators
-    const dots = document.getElementById('heroDots');
-    if (dots) {
-        dots.innerHTML = HERO_PRODUCTS.map((_, i) =>
-            `<button class="hero-dot${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="Product ${i + 1}"></button>`
-        ).join('');
-        dots.querySelectorAll('.hero-dot').forEach(d =>
-            d.addEventListener('click', () => goHero(parseInt(d.dataset.idx, 10), true)));
-    }
+    // Dots + slide are (re)built here and again after the catalog loads.
+    renderHeroCarousel();
 
     // Arrows
     const prev = document.getElementById('heroPrev');
@@ -356,7 +372,8 @@ function initHeroCarousel() {
     const addBtn = document.getElementById('addToCart');
     if (addBtn) {
         addBtn.addEventListener('click', () => {
-            const p = HERO_PRODUCTS[heroIndex];
+            const p = activeHeroProducts[heroIndex];
+            if (!p) return;
             const qty = parseInt(document.getElementById('qtyVal').textContent, 10) || 1;
             // Add under the canonical (English) catalog name so server-side
             // checkout validation matches products.json regardless of language,
@@ -390,13 +407,44 @@ function initHeroCarousel() {
     document.querySelector('.hero-details')?.addEventListener('mouseenter', stopAuto);
     document.querySelector('.hero-details')?.addEventListener('mouseleave', startAuto);
 
-    renderHeroSlide();
     startAuto();
 }
 
+// (Re)build the hero: filter against the live catalog, rebuild the dots, hide
+// the whole section if nothing remains, and repaint the current slide. Safe to
+// call repeatedly (on init, after the catalog loads, and on language change).
+function renderHeroCarousel() {
+    syncHeroWithCatalog();
+
+    const section = document.querySelector('.hero');
+    const n = activeHeroProducts.length;
+
+    // Edge case: every curated hero product was deleted/hidden → hide the hero.
+    if (section) section.style.display = n ? '' : 'none';
+    if (!n) { stopHeroAuto(); return; }
+
+    // Keep heroIndex in range after the set shrinks.
+    if (heroIndex >= n) heroIndex = 0;
+
+    // Rebuild dot indicators to match the active set.
+    const dots = document.getElementById('heroDots');
+    if (dots) {
+        dots.innerHTML = activeHeroProducts.map((_, i) =>
+            `<button class="hero-dot${i === heroIndex ? ' active' : ''}" data-idx="${i}" aria-label="Product ${i + 1}"></button>`
+        ).join('');
+        dots.querySelectorAll('.hero-dot').forEach(d =>
+            d.addEventListener('click', () => goHero(parseInt(d.dataset.idx, 10), true)));
+    }
+
+    renderHeroSlide();
+}
+
+function stopHeroAuto() { if (heroAutoTimer) { clearInterval(heroAutoTimer); heroAutoTimer = null; } }
+
 // Navigate the hero carousel (wraps around). userInitiated resets the timer.
 function goHero(idx, userInitiated) {
-    const n = HERO_PRODUCTS.length;
+    const n = activeHeroProducts.length;
+    if (!n) return;
     heroIndex = ((idx % n) + n) % n;
     renderHeroSlide(true);
     if (userInitiated && heroAutoTimer) {
@@ -407,7 +455,7 @@ function goHero(idx, userInitiated) {
 
 // Paint the current hero product into the polaroid + detail panel
 function renderHeroSlide(animate) {
-    const p = HERO_PRODUCTS[heroIndex];
+    const p = activeHeroProducts[heroIndex];
     if (!p) return;
     const c = heroCopy(p);
 
