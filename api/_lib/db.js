@@ -99,7 +99,18 @@ function fileWrite(filename, data) {
     try {
         fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
     } catch (e) {
-        console.warn('Write failed (read-only filesystem):', filename);
+        // Previously this was swallowed, which made admin saves/deletes silently
+        // no-op on Vercel (read-only, ephemeral filesystem) while still returning
+        // HTTP 200 — so changes "succeeded" but never persisted. Throw instead so
+        // callers can surface a real error and prompt the user to configure a
+        // persistent store (Upstash Redis).
+        const err = new Error(
+            'PERSIST_FAILED: could not write ' + filename + ' — the hosting ' +
+            'filesystem is read-only/ephemeral. Configure Upstash Redis for ' +
+            'persistent storage. (' + e.code + ')'
+        );
+        err.code = 'PERSIST_FAILED';
+        throw err;
     }
 }
 

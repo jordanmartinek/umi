@@ -157,6 +157,7 @@
 
             // Generic
             'generic.connError': 'Connection error',
+            'err.persist': 'Changes can’t be saved yet — persistent storage isn’t set up. Add Upstash Redis in Vercel, then redeploy.',
         },
         es: {
             'doc.title': 'Umi Umi — Panel de Administración',
@@ -293,6 +294,7 @@
             'ai.notConfigured': 'La IA aún no está configurada. Añade GEMINI_API_KEY en Vercel y vuelve a desplegar.',
 
             'generic.connError': 'Error de conexión',
+            'err.persist': 'Los cambios aún no se pueden guardar: falta configurar el almacenamiento persistente. Añade Upstash Redis en Vercel y vuelve a desplegar.',
         },
     };
 

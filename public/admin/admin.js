@@ -23,6 +23,22 @@ function t(key, fallback) {
     return (window.AdminI18n && window.AdminI18n.t) ? window.AdminI18n.t(key) : (fallback || key);
 }
 
+// Parse a response body as JSON without throwing on empty/non-JSON responses.
+async function safeJson(res) {
+    try { return await res.json(); } catch (e) { return {}; }
+}
+
+// Turn an API error body into a user-facing message. The PERSIST_FAILED code
+// (no persistent storage configured) gets a dedicated, translated explanation
+// so the owner knows exactly what to do; otherwise fall back.
+function errorMessage(body, fallback) {
+    if (body && body.code === 'PERSIST_FAILED') {
+        return t('err.persist', 'Changes can\u2019t be saved yet — persistent storage isn\u2019t set up. Add Upstash Redis in Vercel, then redeploy.');
+    }
+    if (body && body.error) return body.error;
+    return fallback;
+}
+
 // Sidebar language switch + re-render dynamic content on language change
 function initAdminLang() {
     const sidebarBtn = document.getElementById('langToggleSidebar');
@@ -490,7 +506,7 @@ function initForms() {
                 loadProducts();
                 showToast(id ? t('products.updated', 'Product updated! ✿') : t('products.added', 'Product added! 🌊'));
             } else {
-                showToast(t('products.saveError', 'Error saving product'), 'error');
+                showToast(errorMessage(await safeJson(res), t('products.saveError', 'Error saving product')), 'error');
             }
         } catch (e) {
             showToast(t('generic.connError', 'Connection error'), 'error');
@@ -518,7 +534,7 @@ function initForms() {
                 loadCategories();
                 showToast(id ? t('categories.updated', 'Category updated! 🏷️') : t('categories.added', 'Category added! ✿'));
             } else {
-                showToast(t('categories.saveError', 'Error saving category'), 'error');
+                showToast(errorMessage(await safeJson(res), t('categories.saveError', 'Error saving category')), 'error');
             }
         } catch (e) {
             showToast(t('generic.connError', 'Connection error'), 'error');
@@ -547,7 +563,7 @@ function initForms() {
             if (res.ok) {
                 showToast(t('settings.saved', 'Settings saved! ⚙️'));
             } else {
-                showToast(t('settings.saveError', 'Error saving settings'), 'error');
+                showToast(errorMessage(await safeJson(res), t('settings.saveError', 'Error saving settings')), 'error');
             }
         } catch (e) {
             showToast(t('generic.connError', 'Connection error'), 'error');
@@ -606,6 +622,8 @@ async function deleteProduct(id) {
         if (res.ok) {
             loadProducts();
             showToast(t('products.deleted', 'Product deleted'));
+        } else {
+            showToast(errorMessage(await safeJson(res), t('products.deleteError', 'Error deleting product')), 'error');
         }
     } catch (e) {
         showToast(t('products.deleteError', 'Error deleting product'), 'error');
@@ -625,6 +643,8 @@ async function deleteCategory(id) {
         if (res.ok) {
             loadCategories();
             showToast(t('categories.deleted', 'Category deleted'));
+        } else {
+            showToast(errorMessage(await safeJson(res), t('categories.deleteError', 'Error deleting category')), 'error');
         }
     } catch (e) {
         showToast(t('categories.deleteError', 'Error deleting category'), 'error');
@@ -758,7 +778,7 @@ async function fulfillOrder(id) {
             loadOrders();
             showToast(t('orders.fulfilledToast', 'Order marked as fulfilled! 📦'));
         } else {
-            showToast(t('orders.updateError', 'Error updating order'), 'error');
+            showToast(errorMessage(await safeJson(res), t('orders.updateError', 'Error updating order')), 'error');
         }
     } catch (e) {
         showToast(t('generic.connError', 'Connection error'), 'error');
