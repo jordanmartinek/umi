@@ -181,21 +181,22 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .doodle-crown { top: 210px; right: 60px; font-size: 1.5rem; transform: rotate(12deg); }
 .doodle-spark { top: 120px; right: 150px; color: #fff; }
 
-/* Polaroid — anchored to the lower-right of the art panel so it sits over the
-   coastal scenery and does NOT cover the girl's face or the baked-in quote. */
+/* Polaroid — now the focal point of the art panel: centered and enlarged so
+   the product reads big on the soft neutral backdrop. */
 .polaroid {
     position: absolute;
-    right: 20px; bottom: 20px;
-    transform: rotate(-4deg);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-4deg);
     background: var(--white);
-    padding: 12px 12px 40px;
+    padding: 16px 16px 52px;
     border-radius: 6px;
-    /* Layered drop shadow so the polaroid clearly lifts off the scenery */
+    /* Layered drop shadow so the polaroid clearly lifts off the panel */
     box-shadow:
         0 2px 6px rgba(107, 91, 119, 0.25),
         0 12px 24px rgba(107, 91, 119, 0.30),
         0 28px 55px rgba(60, 40, 70, 0.38);
-    width: 52%;
+    width: 72%;
+    max-width: 380px;
     z-index: 4;
 }
 .polaroid-photo {
@@ -875,8 +876,8 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 }
 .polaroid.hero-swap { animation: heroSwapPolaroid 0.4s cubic-bezier(0.22,1,0.36,1); }
 @keyframes heroSwapPolaroid {
-    0%   { opacity: 0.5; transform: rotate(-4deg) scale(0.96); }
-    100% { opacity: 1; transform: rotate(-4deg) scale(1); }
+    0%   { opacity: 0.5; transform: translate(-50%, -50%) rotate(-4deg) scale(0.96); }
+    100% { opacity: 1; transform: translate(-50%, -50%) rotate(-4deg) scale(1); }
 }
 /* Only animate the title + description block; leave everything else static
    so the panel is never blank. */
