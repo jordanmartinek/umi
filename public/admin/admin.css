@@ -701,16 +701,21 @@ body {
         padding: 24px;
     }
 
+    /* Product rows become stacked cards instead of a cramped 6-col grid. */
+    .product-row-header { display: none; }
     .product-row {
-        grid-template-columns: 44px 1fr auto;
-        gap: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 14px;
+        padding: 14px;
+        border: 1px solid var(--border, #ece7e3);
+        border-radius: 12px;
+        margin-bottom: 12px;
     }
-
-    .product-row .desc,
-    .product-row-header .desc-col,
-    .product-row .badge-col {
-        display: none;
-    }
+    .product-row .desc { width: 100%; order: 5; font-size: 0.82rem; }
+    .product-row .price { font-weight: 600; }
+    .product-row .row-actions { margin-left: auto; }
 
     .form-row {
         grid-template-columns: 1fr;
@@ -718,6 +723,7 @@ body {
 
     .view-header {
         flex-direction: column;
+        align-items: flex-start;
         gap: 16px;
     }
 }
@@ -891,15 +897,28 @@ body {
 }
 
 @media (max-width: 768px) {
+    /* Order rows become stacked cards so all fields stay readable. */
+    .order-row-header { display: none; }
     .order-row {
-        grid-template-columns: 1fr 1fr auto;
-        gap: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 14px;
+        padding: 14px;
+        border: 1px solid var(--border, #ece7e3);
+        border-radius: 12px;
+        margin-bottom: 12px;
     }
-
-    .order-row .order-items-cell,
-    .order-row-header span:nth-child(3) {
-        display: none;
+    .order-row > div { min-width: 0; }
+    .order-row .order-items-cell {
+        width: 100%;
+        order: 5;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
     }
+    .order-row .order-total { font-weight: 700; }
+    .order-row .row-actions { margin-left: auto; order: 6; }
 
     .stat-pills {
         flex-wrap: wrap;
@@ -907,7 +926,9 @@ body {
 
     .order-filters {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
+    .order-filters .filter-btn { flex: 0 0 auto; }
 }
 
 /* ============================================
@@ -1019,4 +1040,75 @@ body {
     cursor: pointer;
     accent-color: var(--ocean-teal, #2f7a70);
     margin: 0;
+}
+
+/* ============================================
+   Mobile navigation (hamburger + sidebar drawer)
+   ============================================ */
+
+/* Hidden on desktop; shown only at <=768px via the media block below. */
+.mobile-topbar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--white, #fff);
+    border-bottom: 1px solid var(--border, #ece7e3);
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+.mobile-topbar-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--ocean-teal, #2f7a70);
+}
+.hamburger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 10px;
+}
+.hamburger span {
+    display: block;
+    height: 2.5px;
+    width: 100%;
+    background: var(--dark-text, #44515a);
+    border-radius: 2px;
+}
+.hamburger:hover { background: var(--light-gray, #f3f3f3); }
+
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 999;
+}
+.sidebar-backdrop.show { display: block; }
+
+@media (max-width: 768px) {
+    /* Reveal the mobile top bar; the sidebar is a slide-in drawer. */
+    .mobile-topbar { display: flex; }
+
+    /* Give the fixed/slide-in sidebar a solid background + full height so it
+       reads as a proper drawer over the content. */
+    .sidebar {
+        top: 0;
+        bottom: 0;
+        height: 100vh;
+        background: var(--white, #fff);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+        overflow-y: auto;
+    }
+
+    /* Bigger, comfortable tap targets for sidebar links on touch. */
+    .sidebar .nav-item { padding: 14px 16px; font-size: 0.95rem; }
 }

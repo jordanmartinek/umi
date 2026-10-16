@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Quicksand:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=4">
-    <script src="admin-i18n.js?v=4"></script>
+    <link rel="stylesheet" href="admin.css?v=5">
+    <script src="admin-i18n.js?v=5"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -29,8 +29,18 @@
 
     <!-- Dashboard -->
     <div class="dashboard" id="dashboard" style="display:none;">
+        <!-- Mobile top bar: only visible on small screens; opens the sidebar -->
+        <div class="mobile-topbar">
+            <button type="button" class="hamburger" id="sidebarToggle" aria-label="Menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <span class="mobile-topbar-brand">umi umi</span>
+        </div>
+        <!-- Backdrop behind the open sidebar on mobile -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-brand">
                 <h2 class="logo">umi umi</h2>
                 <span class="sidebar-badge" data-i18n="side.badge">Admin</span>
@@ -298,6 +308,6 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="admin.js?v=4"></script>
+    <script src="admin.js?v=5"></script>
 </body>
 </html>
