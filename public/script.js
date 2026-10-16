@@ -97,22 +97,85 @@ const HERO_PRODUCTS = [
 let heroIndex = 0;
 let heroAutoTimer = null;
 
-// The hero shows a curated subset of HERO_PRODUCTS, but it must respect the
-// live catalog: a product deleted or hidden in the admin should disappear from
-// the hero too. `activeHeroProducts` is HERO_PRODUCTS filtered down to the
-// items that still exist as ACTIVE products in /api/products. Until the catalog
-// loads (or if the API fails), we show all curated items so the hero is never
-// empty on first paint.
+// The hero is driven by the live catalog: products the owner tags "featured"
+// in the admin appear here. For each one we use the richest copy available —
+// the curated hand-written HERO_PRODUCTS panel when the name matches, otherwise
+// a clean panel synthesized from the product's own catalog data. Until the
+// catalog loads (or if the API fails / nothing is featured), we fall back to
+// the curated set so the hero is never empty.
 let activeHeroProducts = HERO_PRODUCTS.slice();
 
-// Rebuild activeHeroProducts from the loaded catalog (allProducts). Matches by
-// canonical English name — the same key used for the cart/checkout.
+// Look up a curated HERO_PRODUCTS entry by canonical English name.
+function curatedHeroFor(name) {
+    return HERO_PRODUCTS.find(h => h.name === name) || null;
+}
+
+// Human-friendly category label (e.g. "pendants" -> "Pendants") using the
+// finder i18n keys when available so it's translated too.
+function categoryLabel(slug) {
+    if (!slug) return '';
+    const key = 'find.style.' + String(slug).toLowerCase();
+    const translated = T(key, '');
+    if (translated && translated !== key) return translated;
+    return String(slug).charAt(0).toUpperCase() + String(slug).slice(1);
+}
+
+// Build a full hero "copy" object (en/es + top-level fields) for a catalog
+// product that has no curated panel. Feature bullets + caption are synthesized
+// from existing translated strings so the panel never looks empty.
+function synthHeroProduct(p) {
+    const catEn = categoryLabel(p.category);
+    const mk = (title, desc, sub) => ({
+        badge: (p.badge || '').toUpperCase(),
+        title: title || p.name,
+        sub: sub || catEn || '',
+        desc: desc || '',
+        feats: [
+            ['🤍', T('hero.feat2.t', 'Handmade with Love'), T('hero.feat2.s', 'Each piece is unique')],
+            ['✨', T('hero.feat3.t', 'Adjustable Cord'), T('hero.feat3.s', 'Comfy, durable & one-size-fits-all')],
+            ['🌊', T('band.f3', 'Inspired by Nature').replace(/<br>/g, ' '), T('nr.eyebrow', 'Fresh off the workbench')],
+        ],
+        caption: T('hero.polaroid', 'Good things<br>take time'),
+    });
+    // Resolve EN/ES display strings from the catalog product.
+    const enCopy = mk(p.name, p.description, catEn);
+    const esCopy = mk(p.name_es || p.name, p.description_es || p.description, catEn);
+    return {
+        id: 'cat-' + p.name,
+        name: p.name,
+        name_es: p.name_es || '',
+        price: Number(p.price) || 0,
+        img: p.image || null,
+        gradient: p.gradient || 'linear-gradient(160deg,#F7F2F5,#F1ECF3)',
+        emoji: p.emoji || '🌸',
+        en: enCopy,
+        es: esCopy,
+        _synth: true,
+    };
+}
+
+// Rebuild activeHeroProducts from the loaded catalog. Products flagged
+// `featured` (and active) are shown; each uses its curated panel if one exists,
+// else a synthesized one. Matches by canonical English name (the cart key).
 function syncHeroWithCatalog() {
     if (Array.isArray(allProducts) && allProducts.length) {
-        const activeNames = new Set(
-            allProducts.filter(p => p.active !== false).map(p => p.name)
-        );
-        activeHeroProducts = HERO_PRODUCTS.filter(p => activeNames.has(p.name));
+        const featured = allProducts.filter(p => p.active !== false && p.featured);
+        if (featured.length) {
+            activeHeroProducts = featured.map(p => {
+                const curated = curatedHeroFor(p.name);
+                if (curated) {
+                    // Keep the rich curated copy, but let the live price win.
+                    return Object.assign({}, curated, { price: Number(p.price) || curated.price });
+                }
+                return synthHeroProduct(p);
+            });
+            return;
+        }
+        // Nothing tagged featured → fall back to curated items that still exist
+        // and are active, so the homepage hero is never empty.
+        const activeNames = new Set(allProducts.filter(p => p.active !== false).map(p => p.name));
+        const stillThere = HERO_PRODUCTS.filter(p => activeNames.has(p.name));
+        activeHeroProducts = stillThere.length ? stillThere : HERO_PRODUCTS.slice();
     } else {
         // No catalog data (empty store or API error) — keep the curated set.
         activeHeroProducts = HERO_PRODUCTS.slice();

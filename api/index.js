@@ -320,7 +320,7 @@ module.exports = async (req, res) => {
         if (pathname === '/admin/products' && method === 'POST') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
             const products = await readData('products.json');
-            const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image } = req.body || {};
+            const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image, featured } = req.body || {};
 
             const newProduct = {
                 id: `prod_${crypto.randomUUID().slice(0, 8)}`,
@@ -335,6 +335,7 @@ module.exports = async (req, res) => {
                 gradient: gradient || 'linear-gradient(160deg, #E0F5F0 0%, #C8E6E0 50%, #E8B4B8 100%)',
                 emoji: emoji || '✿',
                 active: active !== 'false' && active !== false,
+                featured: featured === 'true' || featured === true,
                 createdAt: new Date().toISOString(),
             };
 
@@ -354,7 +355,7 @@ module.exports = async (req, res) => {
                 const index = products.findIndex(p => p.id === id);
                 if (index === -1) return res.status(404).json({ error: 'Product not found' });
 
-                const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image } = req.body || {};
+                const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image, featured } = req.body || {};
                 products[index] = {
                     ...products[index],
                     name: name || products[index].name,
@@ -367,6 +368,7 @@ module.exports = async (req, res) => {
                     gradient: gradient || products[index].gradient,
                     emoji: emoji !== undefined ? emoji : products[index].emoji,
                     active: active !== undefined ? (active !== 'false' && active !== false) : products[index].active,
+                    featured: featured !== undefined ? (featured === 'true' || featured === true) : products[index].featured,
                     image: image !== undefined ? image : products[index].image,
                 };
                 await writeData('products.json', products);

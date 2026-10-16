@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Quicksand:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=3">
-    <script src="admin-i18n.js?v=3"></script>
+    <link rel="stylesheet" href="admin.css?v=4">
+    <script src="admin-i18n.js?v=4"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -251,6 +251,13 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="productFeatured">
+                        <span data-i18n="pm.featured">⭐ Feature on homepage</span>
+                        <span class="field-hint" data-i18n="pm.featuredHint">(shows this product in the homepage hero carousel)</span>
+                    </label>
+                </div>
+                <div class="form-group">
                     <label data-i18n="pm.gradient">Background Gradient</label>
                     <input type="text" id="productGradient" placeholder="linear-gradient(160deg, #E0F5F0 0%, #C8E6E0 50%, #E8B4B8 100%)">
                     <div class="gradient-preview" id="gradientPreview"></div>
@@ -291,6 +298,6 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="admin.js?v=3"></script>
+    <script src="admin.js?v=4"></script>
 </body>
 </html>
