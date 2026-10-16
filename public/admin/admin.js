@@ -435,6 +435,7 @@ function openProductModal(product = null) {
         document.getElementById('productEmoji').value = product.emoji || '';
         document.getElementById('productGradient').value = product.gradient || '';
         document.getElementById('productActive').value = product.active ? 'true' : 'false';
+        document.getElementById('productFeatured').checked = !!product.featured;
         document.getElementById('gradientPreview').style.background = product.gradient || '';
     } else {
         title.textContent = t('pm.addTitle', 'Add Product');
@@ -490,6 +491,7 @@ function initForms() {
             emoji: document.getElementById('productEmoji').value,
             gradient: document.getElementById('productGradient').value,
             active: document.getElementById('productActive').value,
+            featured: document.getElementById('productFeatured').checked,
         };
 
         try {

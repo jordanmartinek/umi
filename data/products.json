@@ -14,7 +14,8 @@
     "gradient": "linear-gradient(160deg,#BFE3FF,#FFE29A)",
     "emoji": "🦋",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": true
   },
   {
     "id": "prod_002",
@@ -31,7 +32,8 @@
     "gradient": "linear-gradient(160deg,#CDE7FF,#C9A7F0)",
     "emoji": "🌊",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": true
   },
   {
     "id": "prod_003",
@@ -48,7 +50,8 @@
     "gradient": "linear-gradient(160deg,#FFECD2,#F7A8D8)",
     "emoji": "☀️",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": true
   },
   {
     "id": "prod_004",
@@ -65,7 +68,8 @@
     "gradient": "linear-gradient(160deg,#F7D1C4,#BFE3FF)",
     "emoji": "🐚",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": true
   },
   {
     "id": "prod_005",
@@ -82,7 +86,8 @@
     "gradient": "linear-gradient(160deg,#B8E6DC,#C9A7F0)",
     "emoji": "💍",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": true
   },
   {
     "id": "prod_006",
@@ -99,7 +104,8 @@
     "gradient": "linear-gradient(160deg,#FFD1E8,#F7A8D8)",
     "emoji": "🌸",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": false
   },
   {
     "id": "prod_007",
@@ -116,7 +122,8 @@
     "gradient": "linear-gradient(160deg,#F7A8D8,#FFE29A)",
     "emoji": "🪸",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": false
   },
   {
     "id": "prod_008",
@@ -133,7 +140,8 @@
     "gradient": "linear-gradient(160deg,#C9A7F0,#BFE3FF)",
     "emoji": "🌙",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": false
   },
   {
     "id": "prod_009",
@@ -150,7 +158,8 @@
     "gradient": "linear-gradient(160deg,#FFECD2,#B8E6DC)",
     "emoji": "🌼",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": false
   },
   {
     "id": "prod_010",
@@ -167,7 +176,8 @@
     "gradient": "linear-gradient(160deg,#BFE3FF,#FFD1E8)",
     "emoji": "⭐",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": false
   },
   {
     "id": "prod_011",
@@ -184,7 +194,8 @@
     "gradient": "linear-gradient(160deg,#B8E6DC,#CDE7FF)",
     "emoji": "💧",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": false
   },
   {
     "id": "prod_012",
@@ -201,6 +212,7 @@
     "gradient": "linear-gradient(160deg,#FFD1E8,#C9A7F0)",
     "emoji": "🌷",
     "active": true,
-    "createdAt": "2026-09-01T00:00:00.000Z"
+    "createdAt": "2026-09-01T00:00:00.000Z",
+    "featured": false
   }
 ]
