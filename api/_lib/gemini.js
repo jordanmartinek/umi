@@ -11,8 +11,9 @@
 const https = require('https');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-// Flash is multimodal, fast, and covered by the free tier — ideal for this.
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+// Flash is multimodal, fast, and the current GA model. gemini-2.5-flash was
+// retired for new users; update the default here (overridable via GEMINI_MODEL).
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 const GEMINI_HOST = 'generativelanguage.googleapis.com';
 
 function httpsRequest(options, body) {
