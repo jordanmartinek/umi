@@ -32,6 +32,15 @@
             'hero.shippingBody': "Free shipping on orders over $75. Ships in 2–4 business days. 30-day easy returns — if it's not perfect, we'll make it right. 🤍",
             'hero.polaroid': 'Good things<br>take time',
 
+            // Hero banner (static) + Featured strip
+            'heroBanner.eyebrow': 'Handmade with love',
+            'heroBanner.title': 'Small Details,<br>Big Energy.',
+            'heroBanner.sub': 'Ocean-inspired, hand-beaded jewelry — little pieces of joy made to make you smile.',
+            'heroBanner.cta': 'Shop the Collection',
+            'featured.eyebrow': 'Hand-picked for you',
+            'featured.title': 'Featured',
+            'featured.sub': 'A few of our favorites, chosen just for you.',
+
             // New Releases
             'nr.eyebrow': 'Fresh off the workbench',
             'nr.title': 'New Releases',
@@ -108,6 +117,14 @@
             'hero.shipping': '🚚 Envíos y Devoluciones',
             'hero.shippingBody': 'Envío gratis en pedidos superiores a $75. Se envía en 2–4 días hábiles. Devoluciones fáciles en 30 días: si no es perfecto, lo solucionamos. 🤍',
             'hero.polaroid': 'Las cosas buenas<br>toman tiempo',
+
+            'heroBanner.eyebrow': 'Hecho a mano con amor',
+            'heroBanner.title': 'Pequeños Detalles,<br>Gran Energía.',
+            'heroBanner.sub': 'Joyería artesanal inspirada en el mar — pequeñas dosis de alegría hechas para sacarte una sonrisa.',
+            'heroBanner.cta': 'Ver la Colección',
+            'featured.eyebrow': 'Elegido para ti',
+            'featured.title': 'Destacados',
+            'featured.sub': 'Algunos de nuestros favoritos, elegidos para ti.',
 
             'nr.eyebrow': 'Recién salido del taller',
             'nr.title': 'Novedades',
