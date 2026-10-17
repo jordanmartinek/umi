@@ -324,7 +324,7 @@ function productCard(p, i) {
             <div class="pcard-img" style="background:${p.gradient};">
                 ${badge}
                 ${media}
-                <button class="pcard-add" data-name="${escapeHtml(p.name)}" data-display="${escapeHtml(shown)}" data-price="${p.price}">
+                <button class="pcard-add" data-name="${escapeHtml(p.name)}" data-display="${escapeHtml(shown)}" data-category="${escapeHtml(p.category || '')}" data-price="${p.price}">
                     <span class="cart-ic">🛍️</span> ${escapeHtml(T('cart.quickAdd', 'Quick Add'))}
                 </button>
             </div>
@@ -341,7 +341,7 @@ function productCard(p, i) {
 function wireAddButtons(container) {
     container.querySelectorAll('.pcard-add').forEach(btn => {
         btn.addEventListener('click', () => {
-            addToCart(btn.dataset.name, parseFloat(btn.dataset.price), 1);
+            addToCart(btn.dataset.name, parseFloat(btn.dataset.price), 1, { category: btn.dataset.category || '' });
             const orig = btn.innerHTML;
             btn.classList.add('added');
             btn.innerHTML = '✓';
@@ -460,7 +460,7 @@ function initHeroCarousel() {
             // checkout validation matches products.json regardless of language,
             // but tag the line with the hero id so the cart DISPLAYS the title
             // in the active language (and re-translates on language change).
-            addToCart(p.name || heroCopy(p).title, p.price, qty, { heroId: p.id });
+            addToCart(p.name || heroCopy(p).title, p.price, qty, { heroId: p.id, category: categoryForCartItem(p.name) });
             addBtn.classList.add('added');
             const orig = addBtn.innerHTML;
             addBtn.innerHTML = T('hero.added', '✓ Added to Cart');
@@ -617,7 +617,7 @@ function addToCart(name, price, qty = 1, meta = {}) {
     if (existing) {
         existing.quantity += qty;
     } else {
-        cart.push({ name, price: Number(price), quantity: qty, heroId: meta.heroId || null });
+        cart.push({ name, price: Number(price), quantity: qty, heroId: meta.heroId || null, category: meta.category || '' });
     }
     updateCartUI();
     bumpCart();
@@ -765,13 +765,17 @@ function categoryForCartItem(name) {
     }
     const c = CATALOG.find(x => x.name === name);
     if (c && c.category) return String(c.category).toLowerCase();
+    // Hero curated items carry their category in HERO_PRODUCTS → look it up too.
     return '';
 }
 
-// True when a cart line is a bracelet. Robust to how the category is stored
-// (slug "bracelets", name "Bracelets", singular, etc.) and also falls back to
-// the product name containing "bracelet" so the field reliably appears.
-function itemIsBracelet(name) {
+// True when a cart line is a bracelet. Prefers the category captured ON the
+// cart item at add-time (most reliable), then a catalog lookup, then a
+// name-contains-"bracelet" fallback. Robust to however the category is stored.
+function itemIsBracelet(item) {
+    const name = typeof item === 'string' ? item : (item && item.name) || '';
+    const stored = (typeof item === 'object' && item && item.category) ? String(item.category).toLowerCase() : '';
+    if (stored.indexOf('bracelet') !== -1) return true;
     const cat = categoryForCartItem(name);
     if (cat.indexOf('bracelet') !== -1) return true;
     if (String(name).toLowerCase().indexOf('bracelet') !== -1) return true;
@@ -780,7 +784,7 @@ function itemIsBracelet(name) {
 
 // The wrist measurement is only relevant for bracelets.
 function cartHasBracelet() {
-    return cart.some(i => itemIsBracelet(i.name));
+    return cart.some(i => itemIsBracelet(i));
 }
 
 // Required wrist measurement (cm). Returns a valid number string, or '' if the

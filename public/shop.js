@@ -157,7 +157,7 @@ function renderCollection() {
                 <div class="pcard-img" style="background:${p.gradient};">
                     ${badge}
                     ${media}
-                    <button class="pcard-add" data-name="${escapeHtml(p.name)}" data-display="${escapeHtml(shown)}" data-price="${p.price}">
+                    <button class="pcard-add" data-name="${escapeHtml(p.name)}" data-display="${escapeHtml(shown)}" data-category="${escapeHtml(p.category || '')}" data-price="${p.price}">
                         <span class="cart-ic">🛍️</span> ${escapeHtml(T('cart.quickAdd', 'Quick Add'))}
                     </button>
                 </div>
@@ -175,7 +175,7 @@ function renderCollection() {
 
     grid.querySelectorAll('.pcard-add').forEach(btn => {
         btn.addEventListener('click', () => {
-            addToCart(btn.dataset.name, parseFloat(btn.dataset.price), 1);
+            addToCart(btn.dataset.name, parseFloat(btn.dataset.price), 1, { category: btn.dataset.category || '' });
             const original = btn.innerHTML;
             btn.classList.add('added');
             btn.innerHTML = '✓ Added';
@@ -215,10 +215,10 @@ function initCart() {
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCart(); });
 }
 
-function addToCart(name, price, qty = 1) {
+function addToCart(name, price, qty = 1, meta = {}) {
     const existing = cart.find(i => i.name === name);
     if (existing) existing.quantity += qty;
-    else cart.push({ name, price: Number(price), quantity: qty });
+    else cart.push({ name, price: Number(price), quantity: qty, category: meta.category || '' });
     updateCartUI();
     bumpCart();
 }
@@ -340,9 +340,12 @@ function categoryForCartItem(name) {
     return '';
 }
 
-// True when a cart line is a bracelet. Robust to how the category is stored
-// and also falls back to the product name containing "bracelet".
-function itemIsBracelet(name) {
+// True when a cart line is a bracelet. Prefers the category stored on the cart
+// item at add-time, then a catalog lookup, then a name-contains fallback.
+function itemIsBracelet(item) {
+    const name = typeof item === 'string' ? item : (item && item.name) || '';
+    const stored = (typeof item === 'object' && item && item.category) ? String(item.category).toLowerCase() : '';
+    if (stored.indexOf('bracelet') !== -1) return true;
     const cat = categoryForCartItem(name);
     if (cat.indexOf('bracelet') !== -1) return true;
     if (String(name).toLowerCase().indexOf('bracelet') !== -1) return true;
@@ -351,7 +354,7 @@ function itemIsBracelet(name) {
 
 // The wrist measurement is only relevant for bracelets.
 function cartHasBracelet() {
-    return cart.some(i => itemIsBracelet(i.name));
+    return cart.some(i => itemIsBracelet(i));
 }
 
 // Required wrist measurement (cm), 10–25 range. '' when empty/invalid.
