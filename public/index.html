@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=14">
-    <script src="i18n.js?v=14"></script>
+    <link rel="stylesheet" href="styles.css?v=15">
+    <script src="i18n.js?v=15"></script>
 </head>
 <body>
 
@@ -54,8 +54,8 @@
         </div>
     </nav>
 
-    <!-- Hero: static brand banner -->
-    <section class="hero-banner">
+    <!-- Hero: brand banner + one featured product sharing the same space -->
+    <section class="hero-banner" id="heroBanner">
         <div class="hero-banner-inner">
             <span class="hero-eyebrow"><span class="tw-ink"></span> <span data-i18n="heroBanner.eyebrow">Handmade with love</span> <span class="tw-ink"></span></span>
             <h1 class="hero-banner-title"><span data-i18n="heroBanner.title">Small Details,<br>Big Energy.</span> <span class="blossom-ic" aria-hidden="true"></span></h1>
@@ -64,16 +64,12 @@
                 <a href="shop.html" class="hero-cta"><span data-i18n="heroBanner.cta">Shop the Collection</span> <span>→</span></a>
             </div>
         </div>
-    </section>
-
-    <!-- Featured — real catalog cards (products tagged "featured" in admin) -->
-    <section class="featured" id="featuredSection" style="display:none;">
-        <div class="nr-head">
-            <span class="shop-eyebrow"><span class="tw-ink"></span> <span data-i18n="featured.eyebrow">Hand-picked for you</span> <span class="tw-ink"></span></span>
-            <h2 class="nr-title" data-i18n="featured.title">Featured</h2>
-            <p class="nr-sub" data-i18n="featured.sub">A few of our favorites, chosen just for you.</p>
+        <!-- One featured product (full interactive card), filled by script.js.
+             Hidden until a featured product is available. -->
+        <div class="hero-featured" id="heroFeatured" hidden>
+            <span class="hero-featured-eyebrow" data-i18n="featured.eyebrow">Hand-picked for you</span>
+            <div class="hero-featured-card" id="heroFeaturedCard"><!-- filled by script.js --></div>
         </div>
-        <div class="featured-grid" id="featuredGrid"><!-- filled by script.js --></div>
     </section>
 
     <!-- New Releases carousel -->
@@ -215,6 +211,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=14"></script>
+    <script src="script.js?v=15"></script>
 </body>
 </html>

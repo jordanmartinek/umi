@@ -25,6 +25,7 @@
             'side.badge': 'Admin',
             'side.orders': 'Orders',
             'side.products': 'Products',
+            'side.featured': 'Featured',
             'side.categories': 'Categories',
             'side.settings': 'Settings',
             'side.viewStore': 'View Store',
@@ -73,6 +74,19 @@
             'products.added': 'Product added! 🌊',
             'products.updated': 'Product updated! ✿',
             'products.saveError': 'Error saving product',
+
+            // Featured section
+            'featuredAdmin.title': 'Featured',
+            'featuredAdmin.subtitle': 'Pick the product shown in the homepage hero',
+            'featuredAdmin.add': '+ Add',
+            'featuredAdmin.addPlaceholder': 'Add a product…',
+            'featuredAdmin.note': 'The first product in this list is the one shown in the homepage hero.',
+            'featuredAdmin.empty': 'No featured products yet. Add one above to show it on the homepage.',
+            'featuredAdmin.onHome': '★ Showing on homepage',
+            'featuredAdmin.remove': 'Remove',
+            'featuredAdmin.added': 'Added to Featured ⭐',
+            'featuredAdmin.removed': 'Removed from Featured',
+            'featuredAdmin.error': 'Could not update featured products',
 
             // Categories view
             'categories.title': 'Categories',
@@ -173,6 +187,7 @@
             'side.badge': 'Admin',
             'side.orders': 'Pedidos',
             'side.products': 'Productos',
+            'side.featured': 'Destacados',
             'side.categories': 'Categorías',
             'side.settings': 'Ajustes',
             'side.viewStore': 'Ver Tienda',
@@ -219,6 +234,19 @@
             'products.added': '¡Producto añadido! 🌊',
             'products.updated': '¡Producto actualizado! ✿',
             'products.saveError': 'Error al guardar el producto',
+
+            // Featured section
+            'featuredAdmin.title': 'Destacados',
+            'featuredAdmin.subtitle': 'Elige el producto que aparece en el inicio',
+            'featuredAdmin.add': '+ Añadir',
+            'featuredAdmin.addPlaceholder': 'Añadir un producto…',
+            'featuredAdmin.note': 'El primer producto de esta lista es el que aparece en el inicio.',
+            'featuredAdmin.empty': 'Aún no hay productos destacados. Añade uno arriba para mostrarlo en el inicio.',
+            'featuredAdmin.onHome': '★ En la página de inicio',
+            'featuredAdmin.remove': 'Quitar',
+            'featuredAdmin.added': 'Añadido a Destacados ⭐',
+            'featuredAdmin.removed': 'Quitado de Destacados',
+            'featuredAdmin.error': 'No se pudieron actualizar los destacados',
 
             'categories.title': 'Categorías',
             'categories.subtitle': 'Organiza tus colecciones',

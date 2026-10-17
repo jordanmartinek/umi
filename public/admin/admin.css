@@ -1118,3 +1118,61 @@ body {
     /* Bigger, comfortable tap targets for sidebar links on touch. */
     .sidebar .nav-item { padding: 14px 16px; font-size: 0.95rem; }
 }
+
+/* ============================================
+   Featured section (homepage hero picker)
+   ============================================ */
+.featured-add {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.featured-add select {
+    padding: 10px 14px;
+    border: 1px solid var(--border, #ece7e3);
+    border-radius: var(--radius-md, 12px);
+    font-family: inherit;
+    font-size: 0.9rem;
+    min-width: 200px;
+    background: var(--white, #fff);
+    color: var(--dark-text, #44515a);
+}
+.featured-note {
+    color: var(--medium-gray, #8a8f94);
+    font-size: 0.85rem;
+    margin: 0 0 16px;
+}
+.featured-admin-list { display: flex; flex-direction: column; gap: 10px; }
+.featured-admin-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--border, #ece7e3);
+    border-radius: var(--radius-md, 12px);
+    background: var(--white, #fff);
+}
+.featured-thumb {
+    width: 48px; height: 48px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.featured-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.featured-admin-info { flex: 1; min-width: 0; }
+.featured-admin-info .name { font-weight: 600; color: var(--dark-text, #44515a); }
+.featured-badge-home {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ocean-teal, #2f7a70);
+}
+.featured-rank { font-size: 0.78rem; color: var(--medium-gray, #8a8f94); }
+.featured-remove {
+    background: var(--light-gray, #f3f3f3);
+    color: var(--dark-text, #44515a);
+    flex-shrink: 0;
+}
+.featured-remove:hover { background: #f6dede; color: #c0453f; }

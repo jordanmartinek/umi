@@ -16,8 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
     initAdminLang();
     initAiFill();
     initSidebarToggle();
+    initFeatured();
     document.getElementById('logoutBtn').addEventListener('click', logout);
 });
+
+// Wire the Featured section's "+ Add" button.
+function initFeatured() {
+    const btn = document.getElementById('featuredAddBtn');
+    if (btn) btn.addEventListener('click', addFeatured);
+}
 
 // Mobile sidebar: hamburger opens it, backdrop/nav-tap closes it.
 function initSidebarToggle() {
@@ -293,9 +300,90 @@ async function loadProducts() {
         const res = await fetch('/api/admin/products');
         products = await res.json();
         renderProducts();
+        renderFeaturedAdmin();
     } catch (e) {
         console.error('Failed to load products', e);
     }
+}
+
+// ============================================
+// Featured section (homepage hero picker)
+// ============================================
+
+// List the featured products (with Remove) + populate the "add" dropdown with
+// products that aren't featured yet. Featured state is the product's `featured`
+// flag, toggled via the existing product PUT endpoint — so it stays in sync.
+function renderFeaturedAdmin() {
+    const list = document.getElementById('featuredList');
+    const select = document.getElementById('featuredAddSelect');
+    if (!list) return;
+
+    const featured = products.filter(p => p.featured);
+    const notFeatured = products.filter(p => !p.featured);
+
+    // Dropdown of addable (not-yet-featured) products.
+    if (select) {
+        const current = select.value;
+        select.innerHTML = `<option value="">${t('featuredAdmin.addPlaceholder', 'Add a product…')}</option>` +
+            notFeatured.map(p => `<option value="${p.id}">${escapeHtmlAttr(p.name)}</option>`).join('');
+        if ([...select.options].some(o => o.value === current)) select.value = current;
+    }
+
+    if (featured.length === 0) {
+        list.innerHTML = `<div class="empty-state"><span>⭐</span><p>${t('featuredAdmin.empty', 'No featured products yet. Add one above to show it on the homepage.')}</p></div>`;
+        return;
+    }
+
+    list.innerHTML = featured.map((p, i) => `
+        <div class="featured-admin-row">
+            <div class="featured-thumb" style="background:${p.gradient || 'linear-gradient(160deg,#F7F2F5,#F1ECF3)'};">
+                ${p.image ? `<img src="${escapeHtmlAttr(p.image)}" alt="" onerror="this.style.display='none'">` : (p.emoji || '✿')}
+            </div>
+            <div class="featured-admin-info">
+                <div class="name">${escapeHtmlAttr(p.name)}</div>
+                ${i === 0 ? `<span class="featured-badge-home" data-i18n="featuredAdmin.onHome">★ Showing on homepage</span>` : `<span class="featured-rank">#${i + 1}</span>`}
+            </div>
+            <button class="btn btn-small featured-remove" onclick="removeFeatured('${p.id}')" data-i18n="featuredAdmin.remove">Remove</button>
+        </div>
+    `).join('');
+    // Re-apply translations to the freshly injected nodes.
+    if (window.AdminI18n) AdminI18n.apply();
+}
+
+async function setProductFeatured(id, featured) {
+    const res = await fetch(`/api/admin/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ featured }),
+    });
+    if (!res.ok) {
+        showToast(errorMessage(await safeJson(res), t('featuredAdmin.error', 'Could not update featured products')), 'error');
+        return false;
+    }
+    return true;
+}
+
+async function addFeatured() {
+    const select = document.getElementById('featuredAddSelect');
+    const id = select && select.value;
+    if (!id) return;
+    if (await setProductFeatured(id, true)) {
+        showToast(t('featuredAdmin.added', 'Added to Featured ⭐'));
+        loadProducts();
+    }
+}
+
+async function removeFeatured(id) {
+    if (await setProductFeatured(id, false)) {
+        showToast(t('featuredAdmin.removed', 'Removed from Featured'));
+        loadProducts();
+    }
+}
+
+// Attribute-safe escape (reuse the page's escape; defined once here if missing).
+function escapeHtmlAttr(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 async function loadCategories() {

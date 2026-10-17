@@ -250,40 +250,43 @@ function applySettings(settings) {
 }
 
 // ============================================ Featured strip ============================================
-// Renders products tagged `featured` in the admin as the SAME catalog cards
-// used by New Releases / Find Your Piece — so translations, the bracelet wrist
-// field, delete/hide sync, and quick-add all behave identically with zero
-// special-case code. Hidden when nothing is featured.
+// Renders ONE featured product (the first active product tagged `featured` in
+// the admin) beside the hero banner, as the SAME catalog card used elsewhere —
+// so translations, the bracelet wrist field, delete/hide sync, and quick-add
+// all behave identically with zero special-case code. When nothing is
+// featured, the featured card is hidden and the banner shows full-width.
 function renderFeatured() {
-    const section = document.getElementById('featuredSection');
-    const grid = document.getElementById('featuredGrid');
-    if (!grid) return;
+    const wrap = document.getElementById('heroFeatured');
+    const card = document.getElementById('heroFeaturedCard');
+    const banner = document.getElementById('heroBanner');
+    if (!card) return;
 
-    const featured = (allProducts || []).filter(p => p.active !== false && p.featured);
-    if (!featured.length) {
-        if (section) section.style.display = 'none';
-        grid.innerHTML = '';
+    const featured = (allProducts || []).find(p => p.active !== false && p.featured);
+    if (!featured) {
+        if (wrap) wrap.hidden = true;
+        if (banner) banner.classList.remove('has-featured');
+        card.innerHTML = '';
         return;
     }
 
-    if (section) section.style.display = '';
-    // Reuse the shared card + add-button wiring (quick-add → cart with category).
-    const cards = featured.map(p => ({
-        name: p.name,
-        name_es: p.name_es || '',
-        description: p.description || '',
-        description_es: p.description_es || '',
-        price: Number(p.price),
-        category: (p.category || '').toLowerCase() || 'all',
-        badge: p.badge || '',
-        emoji: p.emoji || '🌸',
-        image: p.image || null,
-        gradient: p.gradient || 'linear-gradient(160deg,#F7F2F5,#F1ECF3)',
-    }));
-    grid.innerHTML = cards.map((p, i) => productCard(p, i)).join('');
-    wireAddButtons(grid);
-    // Gentle reveal (matches other grids).
-    requestAnimationFrame(() => grid.querySelectorAll('.pcard').forEach(el => el.classList.add('in')));
+    if (wrap) wrap.hidden = false;
+    if (banner) banner.classList.add('has-featured');
+
+    const p = {
+        name: featured.name,
+        name_es: featured.name_es || '',
+        description: featured.description || '',
+        description_es: featured.description_es || '',
+        price: Number(featured.price),
+        category: (featured.category || '').toLowerCase() || 'all',
+        badge: featured.badge || '',
+        emoji: featured.emoji || '🌸',
+        image: featured.image || null,
+        gradient: featured.gradient || 'linear-gradient(160deg,#F7F2F5,#F1ECF3)',
+    };
+    card.innerHTML = productCard(p, 0);
+    wireAddButtons(card);
+    requestAnimationFrame(() => card.querySelectorAll('.pcard').forEach(el => el.classList.add('in')));
 }
 
 function initShippingToggle() {
