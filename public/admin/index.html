@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Quicksand:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=6">
-    <script src="admin-i18n.js?v=6"></script>
+    <link rel="stylesheet" href="admin.css?v=7">
+    <script src="admin-i18n.js?v=7"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -51,6 +51,9 @@
                 </a>
                 <a href="#" class="nav-item" data-view="products">
                     <span class="nav-icon">📦</span> <span data-i18n="side.products">Products</span>
+                </a>
+                <a href="#" class="nav-item" data-view="featured">
+                    <span class="nav-icon">⭐</span> <span data-i18n="side.featured">Featured</span>
                 </a>
                 <a href="#" class="nav-item" data-view="categories">
                     <span class="nav-icon">🏷️</span> <span data-i18n="side.categories">Categories</span>
@@ -105,6 +108,26 @@
                     <button class="btn btn-primary" id="addProductBtn" data-i18n="products.add">+ Add Product</button>
                 </div>
                 <div class="products-table" id="productsTable">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Featured View -->
+            <div class="view" id="view-featured">
+                <div class="view-header">
+                    <div>
+                        <h1 data-i18n="featuredAdmin.title">Featured</h1>
+                        <p class="view-subtitle" data-i18n="featuredAdmin.subtitle">Pick the product shown in the homepage hero</p>
+                    </div>
+                    <div class="featured-add">
+                        <select id="featuredAddSelect" aria-label="Add a featured product">
+                            <option value="" data-i18n="featuredAdmin.addPlaceholder">Add a product…</option>
+                        </select>
+                        <button class="btn btn-primary" id="featuredAddBtn" data-i18n="featuredAdmin.add">+ Add</button>
+                    </div>
+                </div>
+                <p class="featured-note" data-i18n="featuredAdmin.note">The first product in this list is the one shown in the homepage hero.</p>
+                <div class="featured-admin-list" id="featuredList">
                     <!-- Populated by JS -->
                 </div>
             </div>
@@ -308,6 +331,6 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="admin.js?v=6"></script>
+    <script src="admin.js?v=7"></script>
 </body>
 </html>

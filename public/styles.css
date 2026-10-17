@@ -135,7 +135,7 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
     border-radius: 9px; display: flex; align-items: center; justify-content: center;
 }
 
-/* ============================================ Hero banner (static) === */
+/* ============================================ Hero (banner + 1 featured) === */
 .hero-banner {
     position: relative;
     text-align: center;
@@ -146,6 +146,21 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
         linear-gradient(120deg, #FBF8F6 0%, #F4F0F5 100%);
     overflow: hidden;
 }
+/* When a featured product is present, lay the banner + product side by side. */
+.hero-banner.has-featured {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 40px;
+    text-align: left;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 40px;
+}
+.hero-banner.has-featured .hero-banner-inner { margin: 0; }
+.hero-banner.has-featured .hero-banner-sub { margin-left: 0; margin-right: 0; }
+.hero-banner.has-featured .hero-banner-actions { justify-content: flex-start; }
+
 .hero-banner-inner { max-width: 760px; margin: 0 auto; }
 .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
@@ -174,16 +189,29 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 }
 .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(232,107,168,0.4); }
 
-/* ============================================ Featured strip ========= */
-.featured { padding: 44px 20px 10px; max-width: 1180px; margin: 0 auto; }
-.featured-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+/* The single featured product beside the banner. */
+.hero-featured { display: flex; flex-direction: column; gap: 10px; }
+.hero-featured-eyebrow {
+    font-family: var(--font-hand); font-size: 1.15rem; color: var(--lav);
+    text-align: center;
 }
-@media (max-width: 1024px) { .featured-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 720px)  { .featured-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
-@media (max-width: 420px)  { .featured-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+.hero-featured-card { max-width: 320px; width: 100%; margin: 0 auto; }
+/* The featured product card is always-visible (no hover-reveal add button). */
+.hero-featured-card .pcard { opacity: 1; transform: none; }
+.hero-featured-card .pcard-add { transform: none; }
+
+/* Stack on mobile: banner on top, featured product below. */
+@media (max-width: 760px) {
+    .hero-banner.has-featured {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 28px;
+        padding: 48px 22px;
+    }
+    .hero-banner.has-featured .hero-banner-inner { margin: 0 auto; }
+    .hero-banner.has-featured .hero-banner-sub { margin-left: auto; margin-right: auto; }
+    .hero-banner.has-featured .hero-banner-actions { justify-content: center; }
+}
 
 /* ============================================ Hero (legacy carousel — markup removed) === */
 .hero {
