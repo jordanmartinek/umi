@@ -74,9 +74,11 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
     display: inline-block; margin: 0 8px;
     width: 0.8em; height: 0.8em; vertical-align: -1px;
     background: #FFF3B0;
+    animation: emojiTwinkle 2.6s ease-in-out infinite;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l1.6 6.8L20 6l-4.8 5.1L22 14l-7-.2L12 22l-3-8.2L2 14l6.8-2.9L4 6l6.4 2.8z'/%3E%3C/svg%3E") center/contain no-repeat;
             mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l1.6 6.8L20 6l-4.8 5.1L22 14l-7-.2L12 22l-3-8.2L2 14l6.8-2.9L4 6l6.4 2.8z'/%3E%3C/svg%3E") center/contain no-repeat;
 }
+.announce p .tw:last-child { animation-delay: 1.3s; }
 
 /* ============================================ Navbar ================== */
 .nav {
@@ -1027,4 +1029,70 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 
 @media (max-width: 900px) {
     .hero-nav { width: 36px; height: 36px; font-size: 1.3rem; }
+}
+
+/* ============================================================
+   Animated emoji toolkit (CSS-only, decorative)
+   Apply these classes to an emoji wrapped in a <span>. Motion is
+   subtle and disabled automatically for prefers-reduced-motion.
+   ============================================================ */
+.emoji {
+    display: inline-block;
+    line-height: 1;
+    will-change: transform;
+    transform-origin: center;
+}
+
+/* Gentle vertical float (butterflies, waves, bubbles) */
+@keyframes emojiFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+}
+.emoji-float { animation: emojiFloat 3.2s ease-in-out infinite; }
+
+/* Twinkle for sparkles ✨ (fade + scale) */
+@keyframes emojiTwinkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    45%      { opacity: 0.55; transform: scale(0.82) rotate(-8deg); }
+}
+.emoji-twinkle { animation: emojiTwinkle 2.4s ease-in-out infinite; }
+
+/* Heartbeat pulse for hearts 🤍♥ */
+@keyframes emojiPulse {
+    0%, 100% { transform: scale(1); }
+    15%      { transform: scale(1.22); }
+    30%      { transform: scale(1); }
+    45%      { transform: scale(1.15); }
+}
+.emoji-pulse { animation: emojiPulse 2s ease-in-out infinite; }
+
+/* Playful wiggle (sun, flowers) */
+@keyframes emojiWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25%      { transform: rotate(-9deg); }
+    75%      { transform: rotate(9deg); }
+}
+.emoji-wiggle { animation: emojiWiggle 3s ease-in-out infinite; }
+
+/* Slow spin (occasional accent, e.g. a flower/star) */
+.emoji-spin { animation: spinSlow 9s linear infinite; }
+
+/* Hover pop — pairs well with buttons/cards */
+.emoji-hover { transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+.emoji-hover:hover,
+*:hover > .emoji-hover { transform: scale(1.25) rotate(-8deg); }
+
+/* Staggered delays so a row of emojis doesn't move in lockstep */
+.emoji-d1 { animation-delay: 0.3s; }
+.emoji-d2 { animation-delay: 0.6s; }
+.emoji-d3 { animation-delay: 0.9s; }
+.emoji-d4 { animation-delay: 1.2s; }
+
+/* Respect users who prefer reduced motion — keep emojis, drop the motion. */
+@media (prefers-reduced-motion: reduce) {
+    .emoji-float, .emoji-twinkle, .emoji-pulse, .emoji-wiggle, .emoji-spin,
+    .nav-flower, .cat {
+        animation: none !important;
+    }
+    .emoji-hover { transition: none; }
 }
