@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umi Umi Accessories — Product</title>
+    <meta name="description" content="Umi Umi Accessories — handmade beaded jewelry for a brighter you.">
+    <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+    <link rel="apple-touch-icon" href="assets/logo-mark.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=18">
+    <script src="i18n.js?v=18"></script>
+</head>
+<body>
+
+    <!-- Announcement Bar -->
+    <div class="announce">
+        <p><span class="tw">✦</span> <span data-i18n="announce.shipping">FREE SHIPPING ON ORDERS OVER $75</span> <span class="tw">✦</span></p>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="brand">
+                <img src="assets/logo-mark.svg" alt="" width="46" height="46">
+                <span class="brand-text">
+                    <span class="brand-name">umi umi</span>
+                    <span class="brand-sub">Accessories</span>
+                </span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                <li><a href="shop.html" data-i18n="nav.shop">Shop</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="lang-toggle" id="langToggle" aria-label="Español">ES</button>
+                <span class="nav-flower blossom-ic" aria-hidden="true"></span>
+                <button class="icon-btn" aria-label="Search">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                </button>
+                <button class="icon-btn" aria-label="Account">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                </button>
+                <button class="icon-btn cart-btn" aria-label="Cart">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <span class="cart-count">0</span>
+                </button>
+                <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <nav class="pdp-breadcrumb">
+        <a href="index.html" data-i18n="nav.home">Home</a>
+        <span aria-hidden="true">›</span>
+        <a href="shop.html" data-i18n="nav.shop">Shop</a>
+        <span aria-hidden="true">›</span>
+        <span class="pdp-crumb-name" id="pdpCrumbName"></span>
+    </nav>
+
+    <!-- Product detail -->
+    <main class="pdp" id="pdp">
+        <div class="pdp-loading" id="pdpLoading" data-i18n="pdp.loading">Loading…</div>
+
+        <section class="pdp-inner" id="pdpInner" hidden>
+            <!-- Media -->
+            <div class="pdp-media">
+                <div class="pdp-photo" id="pdpPhoto"><!-- image or emoji, filled by JS --></div>
+            </div>
+
+            <!-- Details -->
+            <div class="pdp-details">
+                <span class="badge-bestseller" id="pdpBadge" style="display:none;"></span>
+                <h1 class="product-title"><span id="pdpTitle"></span> <span class="blossom-ic" aria-hidden="true"></span></h1>
+                <div class="price-row">
+                    <span class="price" id="pdpPrice"></span>
+                </div>
+                <div class="rating-row">
+                    <span class="stars" aria-label="5 out of 5 stars">
+                        <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                        <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                        <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                        <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                        <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                    </span>
+                    <span class="review-count">(124)</span>
+                </div>
+                <p class="product-desc" id="pdpDesc"></p>
+
+                <div class="buy-row">
+                    <div class="qty">
+                        <button class="qty-btn" id="qtyMinus" aria-label="Decrease">−</button>
+                        <span class="qty-val" id="qtyVal">1</span>
+                        <button class="qty-btn" id="qtyPlus" aria-label="Increase">+</button>
+                    </div>
+                    <button class="add-cart" id="pdpAddToCart">
+                        <span class="cart-ic">🛒</span> <span data-i18n="hero.addToCart">Add to Cart</span>
+                    </button>
+                </div>
+
+                <button class="shipping-toggle" id="shippingToggle">
+                    <span data-i18n="hero.shipping">🚚 Shipping &amp; Returns</span>
+                    <span class="chev">⌄</span>
+                </button>
+                <div class="shipping-body" id="shippingBody" hidden>
+                    <p data-i18n="hero.shippingBody">Free shipping on orders over $75. Ships in 2–4 business days. 30-day easy returns — if it's not perfect, we'll make it right. 🤍</p>
+                </div>
+
+                <a href="shop.html" class="pdp-back" data-i18n="pdp.back">← Back to the collection</a>
+            </div>
+        </section>
+
+        <!-- Not-found fallback -->
+        <div class="pdp-missing" id="pdpMissing" hidden>
+            <span class="emoji emoji-float" aria-hidden="true">🐚</span>
+            <h1 data-i18n="pdp.missingTitle">Product not found</h1>
+            <p data-i18n="pdp.missingBody">We couldn't find that piece. It may have been removed.</p>
+            <a href="shop.html" class="add-cart" data-i18n="pdp.missingCta">Browse the Collection</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="foot">
+        <div class="foot-art"></div>
+        <div class="foot-overlay">
+            <h2 class="foot-headline"><span data-i18n="foot.headline">Handmade<br>Jewelry for<br>a Brighter<br>You.</span> <span class="emoji emoji-pulse" aria-hidden="true">🤍</span></h2>
+            <div class="foot-brand">
+                <img src="assets/logo-mark.svg" alt="" width="70" height="70">
+                <span class="foot-name">umi umi</span>
+                <span class="foot-sub">Accessories</span>
+                <a href="shop.html" class="shop-collection"><span data-i18n="foot.cta">Shop the Collection</span> <span>→</span></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-head">
+            <h3 data-i18n="cart.title">Your Cart 🛍️</h3>
+            <button class="cart-close" id="cartClose">✕</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty"><span>🌸</span><p data-i18n="cart.empty">Your cart is empty</p></div>
+        </div>
+        <div class="cart-foot" id="cartFooter" style="display:none;">
+            <div class="cart-total"><span data-i18n="cart.total">Total</span><span id="cartTotal">$0</span></div>
+            <div class="wrist-field">
+                <label for="wristLength" data-i18n="cart.wristLabel">Wrist size (cm) — so it fits just right 💛</label>
+                <input type="number" id="wristLength" inputmode="decimal" min="10" max="25" step="0.5"
+                       data-i18n-attr="placeholder:cart.wristPlaceholder" placeholder="e.g. 16">
+                <small class="wrist-hint" data-i18n="cart.wristHint">Wrap a tape measure (or a strip of paper) around your wrist. Required.</small>
+                <p class="wrist-error" id="wristError" hidden></p>
+            </div>
+            <div id="paypal-button-container"><div class="paypal-loading" data-i18n="cart.loading">Loading checkout...</div></div>
+            <button class="add-cart btn-full" id="fallbackCheckoutBtn" style="display:none;" data-i18n="cart.fallback">Checkout with PayPal</button>
+            <p class="cart-note" data-i18n="cart.note">✦ Free shipping on orders over $75 ✦</p>
+        </div>
+    </div>
+
+    <!-- Order Confirmation -->
+    <div class="order-confirmation" id="orderConfirmation" style="display:none;">
+        <div class="order-confirmation-content">
+            <span class="order-success-icon">🌸✨</span>
+            <h2 data-i18n="order.title">Thank You!</h2>
+            <p data-i18n="order.body">Your order has been placed successfully.</p>
+            <p class="order-id-display"><span data-i18n="order.id">Order ID:</span> <strong id="confirmOrderId"></strong></p>
+            <p class="order-email-note" data-i18n="order.email">A confirmation email will be sent from PayPal.</p>
+            <button class="add-cart" onclick="closeOrderConfirmation()" data-i18n="order.continue">Continue Shopping</button>
+        </div>
+    </div>
+
+    <script src="product.js?v=18"></script>
+</body>
+</html>

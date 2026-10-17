@@ -102,6 +102,7 @@ async function loadCollection() {
                 'linear-gradient(160deg,#B8E6DC,#C9A7F0)', 'linear-gradient(160deg,#FFD1E8,#F7A8D8)',
             ];
             allProducts = products.map((p, i) => ({
+                id: p.id || '',
                 name: p.name,
                 name_es: p.name_es || '',
                 description: p.description || '',
@@ -152,8 +153,9 @@ function renderCollection() {
         const media = p.image
             ? `<img class="pcard-photo" src="${escapeHtml(p.image)}" alt="${escapeHtml(shown)}" onerror="this.style.display='none'">`
             : `<span class="pcard-emoji" aria-hidden="true">${p.emoji || '🌸'}</span>`;
+        const idAttr = p.id ? ` data-id="${escapeHtml(p.id)}"` : '';
         return `
-            <article class="pcard reveal" style="--i:${i}">
+            <article class="pcard reveal${p.id ? ' pcard-link' : ''}" style="--i:${i}"${idAttr}>
                 <div class="pcard-img" style="background:${p.gradient};">
                     ${badge}
                     ${media}
@@ -174,13 +176,24 @@ function renderCollection() {
     }).join('');
 
     grid.querySelectorAll('.pcard-add').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();   // don't trigger the card's navigate handler
             addToCart(btn.dataset.name, parseFloat(btn.dataset.price), 1, { category: btn.dataset.category || '' });
             const original = btn.innerHTML;
             btn.classList.add('added');
             btn.innerHTML = '✓ Added';
             setTimeout(() => { btn.classList.remove('added'); btn.innerHTML = original; }, 1400);
             showToast(`${btn.dataset.display || btn.dataset.name} ${T('toast.added', 'added')} 🛍️`);
+        });
+    });
+
+    // Make cards navigate to their detail page (except Quick Add clicks).
+    grid.querySelectorAll('.pcard[data-id]').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.pcard-add')) return;
+            const id = card.getAttribute('data-id');
+            if (id) window.location.href = 'product.html?id=' + encodeURIComponent(id);
         });
     });
 

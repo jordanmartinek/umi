@@ -294,6 +294,7 @@ function displayName(p) {
 function workingCatalog() {
     if (allProducts && allProducts.length) {
         return allProducts.map((p, i) => ({
+            id: p.id || '',
             name: p.name,
             name_es: p.name_es || '',
             description: p.description || '',
@@ -320,8 +321,9 @@ function productCard(p, i) {
     const media = p.image
         ? `<img class="pcard-photo" src="${escapeHtml(p.image)}" alt="${escapeHtml(shown)}" onerror="this.style.display='none'">`
         : `<span class="pcard-emoji" aria-hidden="true">${p.emoji || '🌸'}</span>`;
+    const idAttr = p.id ? ` data-id="${escapeHtml(p.id)}"` : '';
     return `
-        <article class="pcard" style="--i:${i}">
+        <article class="pcard${p.id ? ' pcard-link' : ''}" style="--i:${i}"${idAttr}>
             <div class="pcard-img" style="background:${p.gradient};">
                 ${badge}
                 ${media}
@@ -341,13 +343,30 @@ function productCard(p, i) {
 
 function wireAddButtons(container) {
     container.querySelectorAll('.pcard-add').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();   // don't trigger the card's navigate handler
             addToCart(btn.dataset.name, parseFloat(btn.dataset.price), 1, { category: btn.dataset.category || '' });
             const orig = btn.innerHTML;
             btn.classList.add('added');
             btn.innerHTML = '✓';
             setTimeout(() => { btn.classList.remove('added'); btn.innerHTML = orig; }, 1200);
             showToast(`${btn.dataset.display || btn.dataset.name} ${T('toast.added', 'added')} 🛍️`);
+        });
+    });
+    wireCardLinks(container);
+}
+
+// Make product cards navigate to their detail page on click — except when the
+// click is on the Quick Add button (which adds to cart instead).
+function wireCardLinks(container) {
+    container.querySelectorAll('.pcard[data-id]').forEach(card => {
+        if (card._linkBound) return;
+        card._linkBound = true;
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.pcard-add')) return;
+            const id = card.getAttribute('data-id');
+            if (id) window.location.href = 'product.html?id=' + encodeURIComponent(id);
         });
     });
 }
