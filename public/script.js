@@ -706,6 +706,14 @@ function updateCartUI() {
     foot.style.display = 'block';
     if (count) count.textContent = totalQty;
 
+    // Wrist size field only shows when the cart has a bracelet.
+    const wristField = document.querySelector('.wrist-field');
+    if (wristField) {
+        const show = cartHasBracelet();
+        wristField.style.display = show ? '' : 'none';
+        if (!show) showWristError(false);
+    }
+
     renderPayPalButtons();
 }
 
@@ -747,6 +755,25 @@ function cartPayload() {
     return cart.map(i => ({ name: i.name, price: i.price, quantity: i.quantity }));
 }
 
+// Resolve a cart item's category (lowercased) from the live catalog, falling
+// back to the hardcoded CATALOG / HERO_PRODUCTS so it works even before the
+// API responds or for the curated hero items.
+function categoryForCartItem(name) {
+    if (Array.isArray(allProducts)) {
+        const p = allProducts.find(x => x.name === name);
+        if (p && p.category) return String(p.category).toLowerCase();
+    }
+    const c = CATALOG.find(x => x.name === name);
+    if (c && c.category) return String(c.category).toLowerCase();
+    return '';
+}
+
+// The wrist measurement is only relevant for bracelets. True when the cart
+// contains at least one bracelet.
+function cartHasBracelet() {
+    return cart.some(i => categoryForCartItem(i.name) === 'bracelets');
+}
+
 // Required wrist measurement (cm). Returns a valid number string, or '' if the
 // field is empty/invalid. Range 10–25 cm matches the input's min/max.
 function getWristLength() {
@@ -785,10 +812,10 @@ function renderPayPalButtons() {
 
     window.paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'paypal', height: 45 },
-        // Block checkout until a valid wrist length is entered. actions.reject()
-        // stops the PayPal flow (createOrder never fires) if it's missing.
+        // Block checkout until a valid wrist length is entered — but ONLY when
+        // the cart contains a bracelet. actions.reject() stops the PayPal flow.
         onClick: (data, actions) => {
-            if (!getWristLength()) {
+            if (cartHasBracelet() && !getWristLength()) {
                 showWristError(true);
                 const el = document.getElementById('wristLength');
                 if (el) el.focus();

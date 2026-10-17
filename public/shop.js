@@ -280,6 +280,14 @@ function updateCartUI() {
     foot.style.display = 'block';
     if (count) count.textContent = totalQty;
 
+    // Wrist size field only shows when the cart has a bracelet.
+    const wristField = document.querySelector('.wrist-field');
+    if (wristField) {
+        const show = cartHasBracelet();
+        wristField.style.display = show ? '' : 'none';
+        if (!show) showWristError(false);
+    }
+
     renderPayPalButtons();
 }
 
@@ -319,6 +327,24 @@ function cartPayload() {
     return cart.map(i => ({ name: i.name, price: i.price, quantity: i.quantity }));
 }
 
+// Resolve a cart item's category (lowercased) from the loaded collection,
+// falling back to the placeholder list. Used to decide if the wrist field
+// applies (bracelets only).
+function categoryForCartItem(name) {
+    if (Array.isArray(allProducts)) {
+        const p = allProducts.find(x => x.name === name);
+        if (p && p.category) return String(p.category).toLowerCase();
+    }
+    const c = PLACEHOLDER_COLLECTION.find(x => x.name === name);
+    if (c && c.category) return String(c.category).toLowerCase();
+    return '';
+}
+
+// The wrist measurement is only relevant for bracelets.
+function cartHasBracelet() {
+    return cart.some(i => categoryForCartItem(i.name) === 'bracelets');
+}
+
 // Required wrist measurement (cm), 10–25 range. '' when empty/invalid.
 function getWristLength() {
     const el = document.getElementById('wristLength');
@@ -353,9 +379,9 @@ function renderPayPalButtons() {
 
     window.paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'paypal', height: 45 },
-        // Require a valid wrist length before checkout can proceed.
+        // Require a valid wrist length before checkout — bracelets only.
         onClick: (data, actions) => {
-            if (!getWristLength()) {
+            if (cartHasBracelet() && !getWristLength()) {
                 showWristError(true);
                 const el = document.getElementById('wristLength');
                 if (el) el.focus();

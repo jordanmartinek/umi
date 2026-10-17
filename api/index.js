@@ -210,11 +210,21 @@ module.exports = async (req, res) => {
             const { orderID, items, wristLength } = req.body || {};
             if (!orderID) return res.status(400).json({ error: 'No order ID provided' });
 
-            // Normalize + require the wrist measurement (10–25 cm). Validated
-            // BEFORE capture so the buyer is never charged without it.
+            // The wrist measurement is only required when the order contains a
+            // bracelet. Determine that from the catalog (don't trust the client).
+            const catalogProducts = await readData('products.json');
+            const braceletNames = new Set(
+                catalogProducts.filter(p => String(p.category).toLowerCase() === 'bracelets').map(p => p.name)
+            );
+            const orderHasBracelet = Array.isArray(items) && items.some(i => braceletNames.has(i.name));
+
+            // Normalize the wrist measurement; require it (10–25 cm) only when a
+            // bracelet is present. Validated BEFORE capture so the buyer is never
+            // charged without a needed measurement.
             const wrist = parseFloat(wristLength);
-            if (!isFinite(wrist) || wrist < 10 || wrist > 25) {
-                return res.status(400).json({ error: 'A valid wrist size (10–25 cm) is required.' });
+            const wristValid = isFinite(wrist) && wrist >= 10 && wrist <= 25;
+            if (orderHasBracelet && !wristValid) {
+                return res.status(400).json({ error: 'A valid wrist size (10–25 cm) is required for bracelets.' });
             }
 
             const captureData = await captureOrder(orderID);
@@ -229,7 +239,7 @@ module.exports = async (req, res) => {
                     paypalCaptureId: capture?.id || null,
                     status: 'paid',
                     items: items || [],
-                    wristLength: wrist,
+                    wristLength: wristValid ? wrist : null,
                     total: parseFloat(capture?.amount?.value || 0),
                     currency: capture?.amount?.currency_code || 'USD',
                     payer: {
