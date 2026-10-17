@@ -207,8 +207,15 @@ module.exports = async (req, res) => {
         }
 
         if (pathname === '/paypal/capture-order' && method === 'POST') {
-            const { orderID, items } = req.body || {};
+            const { orderID, items, wristLength } = req.body || {};
             if (!orderID) return res.status(400).json({ error: 'No order ID provided' });
+
+            // Normalize + require the wrist measurement (10–25 cm). Validated
+            // BEFORE capture so the buyer is never charged without it.
+            const wrist = parseFloat(wristLength);
+            if (!isFinite(wrist) || wrist < 10 || wrist > 25) {
+                return res.status(400).json({ error: 'A valid wrist size (10–25 cm) is required.' });
+            }
 
             const captureData = await captureOrder(orderID);
 
@@ -222,6 +229,7 @@ module.exports = async (req, res) => {
                     paypalCaptureId: capture?.id || null,
                     status: 'paid',
                     items: items || [],
+                    wristLength: wrist,
                     total: parseFloat(capture?.amount?.value || 0),
                     currency: capture?.amount?.currency_code || 'USD',
                     payer: {
