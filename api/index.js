@@ -212,11 +212,16 @@ module.exports = async (req, res) => {
 
             // The wrist measurement is only required when the order contains a
             // bracelet. Determine that from the catalog (don't trust the client).
+            // Robust to how the category is stored (slug/name, plural/singular)
+            // and falls back to the product name containing "bracelet".
             const catalogProducts = await readData('products.json');
-            const braceletNames = new Set(
-                catalogProducts.filter(p => String(p.category).toLowerCase() === 'bracelets').map(p => p.name)
+            const isBraceletProduct = (p) =>
+                String(p.category || '').toLowerCase().indexOf('bracelet') !== -1 ||
+                String(p.name || '').toLowerCase().indexOf('bracelet') !== -1;
+            const braceletNames = new Set(catalogProducts.filter(isBraceletProduct).map(p => p.name));
+            const orderHasBracelet = Array.isArray(items) && items.some(i =>
+                braceletNames.has(i.name) || String(i.name || '').toLowerCase().indexOf('bracelet') !== -1
             );
-            const orderHasBracelet = Array.isArray(items) && items.some(i => braceletNames.has(i.name));
 
             // Normalize the wrist measurement; require it (10–25 cm) only when a
             // bracelet is present. Validated BEFORE capture so the buyer is never
