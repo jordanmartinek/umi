@@ -97,6 +97,11 @@
             'order.email': 'A confirmation email will be sent from PayPal.',
             'order.continue': 'Continue Shopping',
             'toast.added': 'added',
+            'pdp.loading': 'Loading…',
+            'pdp.back': '← Back to the collection',
+            'pdp.missingTitle': 'Product not found',
+            'pdp.missingBody': "We couldn't find that piece. It may have been removed.",
+            'pdp.missingCta': 'Browse the Collection',
         },
         es: {
             'announce.shipping': 'ENVÍO GRATIS EN PEDIDOS SUPERIORES A $75',
@@ -175,6 +180,11 @@
             'order.email': 'PayPal te enviará un correo de confirmación.',
             'order.continue': 'Seguir Comprando',
             'toast.added': 'añadido',
+            'pdp.loading': 'Cargando…',
+            'pdp.back': '← Volver a la colección',
+            'pdp.missingTitle': 'Producto no encontrado',
+            'pdp.missingBody': 'No pudimos encontrar esa pieza. Puede que se haya eliminado.',
+            'pdp.missingCta': 'Ver la Colección',
         },
     };
 
