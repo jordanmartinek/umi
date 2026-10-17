@@ -768,10 +768,19 @@ function categoryForCartItem(name) {
     return '';
 }
 
-// The wrist measurement is only relevant for bracelets. True when the cart
-// contains at least one bracelet.
+// True when a cart line is a bracelet. Robust to how the category is stored
+// (slug "bracelets", name "Bracelets", singular, etc.) and also falls back to
+// the product name containing "bracelet" so the field reliably appears.
+function itemIsBracelet(name) {
+    const cat = categoryForCartItem(name);
+    if (cat.indexOf('bracelet') !== -1) return true;
+    if (String(name).toLowerCase().indexOf('bracelet') !== -1) return true;
+    return false;
+}
+
+// The wrist measurement is only relevant for bracelets.
 function cartHasBracelet() {
-    return cart.some(i => categoryForCartItem(i.name) === 'bracelets');
+    return cart.some(i => itemIsBracelet(i.name));
 }
 
 // Required wrist measurement (cm). Returns a valid number string, or '' if the
