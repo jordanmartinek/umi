@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=18">
-    <script src="i18n.js?v=18"></script>
+    <link rel="stylesheet" href="styles.css?v=19">
+    <script src="i18n.js?v=19"></script>
 </head>
 <body>
 
@@ -68,9 +68,14 @@
         <div class="pdp-loading" id="pdpLoading" data-i18n="pdp.loading">Loading…</div>
 
         <section class="pdp-inner" id="pdpInner" hidden>
-            <!-- Media -->
+            <!-- Media gallery -->
             <div class="pdp-media">
-                <div class="pdp-photo" id="pdpPhoto"><!-- image or emoji, filled by JS --></div>
+                <div class="pdp-photo-wrap">
+                    <div class="pdp-photo" id="pdpPhoto"><!-- image or emoji, filled by JS --></div>
+                    <button class="pdp-gallery-nav pdp-gallery-prev" id="pdpPrev" aria-label="Previous photo" style="display:none;">‹</button>
+                    <button class="pdp-gallery-nav pdp-gallery-next" id="pdpNext" aria-label="Next photo" style="display:none;">›</button>
+                </div>
+                <div class="pdp-thumbs" id="pdpThumbs" hidden><!-- thumbnails filled by JS --></div>
             </div>
 
             <!-- Details -->
@@ -175,6 +180,6 @@
         </div>
     </div>
 
-    <script src="product.js?v=18"></script>
+    <script src="product.js?v=19"></script>
 </body>
 </html>

@@ -1176,3 +1176,41 @@ body {
     flex-shrink: 0;
 }
 .featured-remove:hover { background: #f6dede; color: #c0453f; }
+
+/* ============================================
+   Product photo gallery (multi-image upload)
+   ============================================ */
+.img-upload-status { margin: 8px 0 0; font-size: 0.82rem; min-height: 1em; }
+.img-status-success { color: #2f8f5b; }
+.img-status-error { color: #c0453f; }
+
+.img-gallery {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+}
+.img-thumb {
+    position: relative;
+    width: 90px; height: 90px;
+    border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border, #ece7e3);
+    background: var(--light-gray, #f3f3f3);
+}
+.img-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.img-main-badge {
+    position: absolute; top: 4px; left: 4px;
+    background: rgba(47,122,112,0.92); color: #fff;
+    font-size: 0.62rem; font-weight: 700;
+    padding: 2px 6px; border-radius: 20px;
+}
+.img-thumb-actions {
+    position: absolute; bottom: 4px; left: 4px; right: 4px;
+    display: flex; gap: 4px; justify-content: flex-end;
+}
+.img-thumb-actions button {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: none; cursor: pointer;
+    background: rgba(255,255,255,0.92); color: var(--dark-text, #44515a);
+    font-size: 0.75rem; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+}
+.img-thumb-actions .img-remove:hover { background: #f6dede; color: #c0453f; }
+.img-thumb-actions .img-move:hover { background: var(--seafoam, #eef7f5); }

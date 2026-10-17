@@ -296,8 +296,10 @@
                     <div class="gradient-preview" id="gradientPreview"></div>
                 </div>
                 <div class="form-group">
-                    <label data-i18n="pm.image">Product Image (optional — overrides gradient)</label>
-                    <input type="file" id="productImage" accept="image/*">
+                    <label><span data-i18n="pm.images">Product Photos</span> <span class="field-hint" data-i18n="pm.imagesHint">(optional — first photo is the main one; drag to reorder)</span></label>
+                    <input type="file" id="productImages" accept="image/*" multiple>
+                    <p class="img-upload-status" id="imgUploadStatus" role="status" aria-live="polite"></p>
+                    <div class="img-gallery" id="imgGallery"><!-- thumbnails filled by JS --></div>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" id="productModalCancel" data-i18n="pm.cancel">Cancel</button>

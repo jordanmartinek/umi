@@ -97,14 +97,8 @@ function renderProduct(p) {
         }
     }
 
-    // Media — real image or gradient + emoji placeholder
-    const photo = document.getElementById('pdpPhoto');
-    if (photo) {
-        photo.style.background = p.gradient || 'linear-gradient(160deg,#F7F2F5,#F1ECF3)';
-        photo.innerHTML = p.image
-            ? `<img class="pdp-photo-img" src="${escapeHtml(p.image)}" alt="${escapeHtml(shown)}" onerror="this.parentNode.innerHTML='<span class=\\'pdp-emoji\\'>${p.emoji || '🌸'}</span>'">`
-            : `<span class="pdp-emoji" aria-hidden="true">${p.emoji || '🌸'}</span>`;
-    }
+    // Media — gallery carousel when multiple photos, else single image/emoji.
+    renderGallery(p, shown);
 
     // Wire Add-to-Cart (re-wire each render; guard against duplicates)
     const addBtn = document.getElementById('pdpAddToCart');
@@ -124,6 +118,78 @@ function renderProduct(p) {
         });
         addBtn._bound = true;
     }
+}
+
+// Render the product media: a swipeable carousel with thumbnails when there's
+// more than one photo, else a single image or the gradient+emoji placeholder.
+let galleryIndex = 0;
+function renderGallery(p, shown) {
+    const photo = document.getElementById('pdpPhoto');
+    const thumbs = document.getElementById('pdpThumbs');
+    if (!photo) return;
+
+    const imgs = Array.isArray(p.images) && p.images.length
+        ? p.images
+        : (p.image ? [p.image] : []);
+    galleryIndex = 0;
+
+    photo.style.background = p.gradient || 'linear-gradient(160deg,#F7F2F5,#F1ECF3)';
+
+    if (!imgs.length) {
+        photo.innerHTML = `<span class="pdp-emoji" aria-hidden="true">${p.emoji || '🌸'}</span>`;
+        if (thumbs) { thumbs.innerHTML = ''; thumbs.hidden = true; }
+        hideGalleryNav();
+        return;
+    }
+
+    const paint = () => {
+        photo.innerHTML = `<img class="pdp-photo-img" src="${escapeHtml(imgs[galleryIndex])}" alt="${escapeHtml(shown)}" onerror="this.parentNode.innerHTML='<span class=\\'pdp-emoji\\'>${p.emoji || '🌸'}</span>'">`;
+        if (thumbs) {
+            thumbs.querySelectorAll('.pdp-thumb').forEach((t, i) => t.classList.toggle('active', i === galleryIndex));
+        }
+    };
+
+    // Thumbnails (only when >1 photo)
+    if (thumbs) {
+        if (imgs.length > 1) {
+            thumbs.hidden = false;
+            thumbs.innerHTML = imgs.map((u, i) =>
+                `<button class="pdp-thumb${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="Photo ${i + 1}"><img src="${escapeHtml(u)}" alt=""></button>`
+            ).join('');
+            thumbs.querySelectorAll('.pdp-thumb').forEach(btn => {
+                btn.addEventListener('click', () => { galleryIndex = parseInt(btn.dataset.idx, 10) || 0; paint(); });
+            });
+        } else {
+            thumbs.innerHTML = '';
+            thumbs.hidden = true;
+        }
+    }
+
+    // Prev/next arrows (only when >1 photo)
+    setupGalleryNav(imgs.length, (dir) => {
+        galleryIndex = (galleryIndex + dir + imgs.length) % imgs.length;
+        paint();
+    });
+
+    paint();
+}
+
+function setupGalleryNav(count, go) {
+    const prev = document.getElementById('pdpPrev');
+    const next = document.getElementById('pdpNext');
+    if (!prev || !next) return;
+    const show = count > 1;
+    prev.style.display = show ? '' : 'none';
+    next.style.display = show ? '' : 'none';
+    if (!show) return;
+    if (!prev._bound) { prev.addEventListener('click', () => go(-1)); prev._bound = true; }
+    if (!next._bound) { next.addEventListener('click', () => go(1)); next._bound = true; }
+}
+function hideGalleryNav() {
+    const prev = document.getElementById('pdpPrev');
+    const next = document.getElementById('pdpNext');
+    if (prev) prev.style.display = 'none';
+    if (next) next.style.display = 'none';
 }
 
 function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
