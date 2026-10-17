@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=15">
-    <script src="i18n.js?v=15"></script>
+    <link rel="stylesheet" href="styles.css?v=16">
+    <script src="i18n.js?v=16"></script>
 </head>
 <body>
 
@@ -54,21 +54,84 @@
         </div>
     </nav>
 
-    <!-- Hero: brand banner + one featured product sharing the same space -->
-    <section class="hero-banner" id="heroBanner">
-        <div class="hero-banner-inner">
-            <span class="hero-eyebrow"><span class="tw-ink"></span> <span data-i18n="heroBanner.eyebrow">Handmade with love</span> <span class="tw-ink"></span></span>
-            <h1 class="hero-banner-title"><span data-i18n="heroBanner.title">Small Details,<br>Big Energy.</span> <span class="blossom-ic" aria-hidden="true"></span></h1>
-            <p class="hero-banner-sub" data-i18n="heroBanner.sub">Ocean-inspired, hand-beaded jewelry — little pieces of joy made to make you smile.</p>
-            <div class="hero-banner-actions">
-                <a href="shop.html" class="hero-cta"><span data-i18n="heroBanner.cta">Shop the Collection</span> <span>→</span></a>
-            </div>
+    <!-- Hero: product feature carousel -->
+    <section class="hero">
+        <!-- Left: interactive product-carousel polaroid on a soft gradient panel -->
+        <div class="hero-art">
+            <div class="art-fill"></div>
+
+            <button class="hero-nav hero-prev" id="heroPrev" aria-label="Previous product">‹</button>
+            <button class="hero-nav hero-next" id="heroNext" aria-label="Next product">›</button>
+
+            <figure class="polaroid" id="heroStage" tabindex="0">
+                <div class="polaroid-photo" id="heroPhoto" style="background:linear-gradient(160deg,#BFE3FF,#FFE29A);">
+                    <img class="polaroid-img" src="assets/product.png" alt="Butterfly Bloom Pendant"
+                         onerror="this.parentNode.innerHTML='<span class=\'pcard-emoji\'>🦋</span>'">
+                </div>
+                <figcaption><span id="heroCaption">Good things<br>take time</span> <span class="heart">♥</span></figcaption>
+                <span class="pin">📌</span>
+            </figure>
+
+            <div class="hero-dots" id="heroDots"></div>
         </div>
-        <!-- One featured product (full interactive card), filled by script.js.
-             Hidden until a featured product is available. -->
-        <div class="hero-featured" id="heroFeatured" hidden>
-            <span class="hero-featured-eyebrow" data-i18n="featured.eyebrow">Hand-picked for you</span>
-            <div class="hero-featured-card" id="heroFeaturedCard"><!-- filled by script.js --></div>
+
+        <!-- Right: product details (driven by the hero carousel) -->
+        <div class="hero-details">
+            <span class="badge-bestseller" id="heroBadge">BEST SELLER</span>
+            <h1 class="product-title"><span id="heroTitle">Butterfly Bloom Pendant</span> <span class="blossom-ic" aria-hidden="true"></span></h1>
+            <p class="product-sub" id="heroSub">Ocean Blue • Sky Cyan • Sunbeam Yellow</p>
+            <div class="price-row">
+                <span class="price" id="productPrice">$32.00</span>
+            </div>
+            <div class="rating-row">
+                <span class="stars" aria-label="5 out of 5 stars">
+                    <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                    <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                    <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                    <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                    <svg viewBox="0 0 24 24" class="star"><path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                </span>
+                <span class="review-count">(124)</span>
+            </div>
+            <p class="product-desc" id="heroDesc">
+                A little burst of joy to carry with you. The Butterfly Bloom Pendant is hand-strung
+                from vibrant blue, cyan, and yellow beads into a cheerful butterfly, finished on a soft
+                adjustable cord — playful, lightweight, and made to make you smile.
+            </p>
+
+            <ul class="features" id="heroFeatures">
+                <li>
+                    <span class="feat-icon">🦋</span>
+                    <div><strong>Hand-Beaded Butterfly</strong><small>Bright blue, cyan &amp; yellow beads</small></div>
+                </li>
+                <li>
+                    <span class="feat-icon">🤍</span>
+                    <div><strong>Handmade with Love</strong><small>Each piece is unique</small></div>
+                </li>
+                <li>
+                    <span class="feat-icon">✨</span>
+                    <div><strong>Adjustable Cord</strong><small>Comfy, durable &amp; one-size-fits-all</small></div>
+                </li>
+            </ul>
+
+            <div class="buy-row">
+                <div class="qty">
+                    <button class="qty-btn" id="qtyMinus" aria-label="Decrease">−</button>
+                    <span class="qty-val" id="qtyVal">1</span>
+                    <button class="qty-btn" id="qtyPlus" aria-label="Increase">+</button>
+                </div>
+                <button class="add-cart" id="addToCart">
+                    <span class="cart-ic">🛒</span> <span data-i18n="hero.addToCart">Add to Cart</span>
+                </button>
+            </div>
+
+            <button class="shipping-toggle" id="shippingToggle">
+                <span data-i18n="hero.shipping">🚚 Shipping &amp; Returns</span>
+                <span class="chev">⌄</span>
+            </button>
+            <div class="shipping-body" id="shippingBody" hidden>
+                <p data-i18n="hero.shippingBody">Free shipping on orders over $75. Ships in 2–4 business days. 30-day easy returns — if it's not perfect, we'll make it right. 🤍</p>
+            </div>
         </div>
     </section>
 
@@ -211,6 +274,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=15"></script>
+    <script src="script.js?v=16"></script>
 </body>
 </html>

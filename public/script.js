@@ -7,11 +7,187 @@ let allProducts = [];
 let cart = []; // { name, price, quantity }
 let paypalLoaded = false;
 
-// NOTE: The old rotating hero carousel (a hardcoded HERO_PRODUCTS array with
-// its own copy, cart path and catalog-sync logic) was removed. The homepage now
-// uses a static brand banner plus a "Featured" strip rendered from the SAME
-// catalog cards as everything else (see renderFeatured), so there is no longer
-// a parallel product system to keep in sync.
+
+// ============================================ Hero carousel products ============================================
+// Each featured product carries EN + ES copy so the whole detail panel can be
+// swapped per slide and re-translated by the language toggle. `photo` uses a
+// pastel gradient + emoji placeholder for now — swap in a real image via `img`.
+const HERO_PRODUCTS = [
+    {
+        id: 'butterfly-bloom', name: 'Butterfly Bloom Pendant', price: 32, img: 'assets/product.png',
+        gradient: 'linear-gradient(160deg,#BFE3FF,#FFE29A)', emoji: '🦋',
+        en: {
+            badge: 'BEST SELLER', title: 'Butterfly Bloom Pendant', sub: 'Ocean Blue • Sky Cyan • Sunbeam Yellow',
+            desc: 'A little burst of joy to carry with you. Hand-strung from vibrant blue, cyan, and yellow beads into a cheerful butterfly, finished on a soft adjustable cord — playful, lightweight, and made to make you smile.',
+            feats: [['🦋', 'Hand-Beaded Butterfly', 'Bright blue, cyan & yellow beads'], ['🤍', 'Handmade with Love', 'Each piece is unique'], ['✨', 'Adjustable Cord', 'Comfy, durable & one-size-fits-all']],
+            caption: 'Good things<br>take time',
+        },
+        es: {
+            badge: 'MÁS VENDIDO', title: 'Colgante Mariposa en Flor', sub: 'Azul Océano • Cian Cielo • Amarillo Sol',
+            desc: 'Una pequeña dosis de alegría para llevar contigo. Tejido a mano con vibrantes cuentas azules, cian y amarillas en forma de una alegre mariposa, rematado con un suave cordón ajustable: divertido, ligero y hecho para sacarte una sonrisa.',
+            feats: [['🦋', 'Mariposa de Cuentas', 'Cuentas azules, cian y amarillas'], ['🤍', 'Hecho a Mano con Amor', 'Cada pieza es única'], ['✨', 'Cordón Ajustable', 'Cómodo, resistente y talla única']],
+            caption: 'Las cosas buenas<br>toman tiempo',
+        },
+    },
+    {
+        id: 'ocean-dream', name: 'Ocean Dream Bracelet', price: 28, img: null,
+        gradient: 'linear-gradient(160deg,#CDE7FF,#C9A7F0)', emoji: '🌊',
+        en: {
+            badge: 'NEW', title: 'Ocean Dream Bracelet', sub: 'Deep Blue • Seafoam • Silver Shimmer',
+            desc: 'Wear a calm little wave on your wrist. Cool blue and seafoam beads flow together with a tiny silver shell, strung on a stretch cord that slips on in a second — your daily dose of seaside serenity.',
+            feats: [['🌊', 'Ocean-Toned Beads', 'Deep blue & soft seafoam'], ['🐚', 'Silver Shell Charm', 'A dainty coastal accent'], ['💧', 'Stretch Fit', 'Slips on — no clasp needed']],
+            caption: 'Made by<br>the sea',
+        },
+        es: {
+            badge: 'NUEVO', title: 'Pulsera Sueño de Mar', sub: 'Azul Profundo • Espuma de Mar • Brillo Plata',
+            desc: 'Lleva una pequeña ola de calma en tu muñeca. Cuentas azules y verde espuma fluyen junto a una diminuta concha plateada, en un cordón elástico que se pone en un segundo: tu dosis diaria de serenidad marina.',
+            feats: [['🌊', 'Cuentas Tono Océano', 'Azul profundo y espuma suave'], ['🐚', 'Dije de Concha Plateada', 'Un delicado acento costero'], ['💧', 'Ajuste Elástico', 'Se desliza — sin broche']],
+            caption: 'Hecho junto<br>al mar',
+        },
+    },
+    {
+        id: 'sunbeam-charm', name: 'Sunbeam Charm Bracelet', price: 26, img: null,
+        gradient: 'linear-gradient(160deg,#FFECD2,#F7A8D8)', emoji: '☀️',
+        en: {
+            badge: '', title: 'Sunbeam Charm Bracelet', sub: 'Golden Honey • Warm Coral • Cream',
+            desc: 'Sunshine you can wear. Warm honey-gold beads and a tiny sun charm bring a cozy glow to any outfit — the little pick-me-up your wrist has been waiting for.',
+            feats: [['☀️', 'Sun Charm', 'Gold-toned & cheerful'], ['🍯', 'Honey-Gold Beads', 'Warm, glowing tones'], ['🤍', 'Handmade with Love', 'Each piece is unique']],
+            caption: 'A little<br>sunshine',
+        },
+        es: {
+            badge: '', title: 'Pulsera Rayo de Sol', sub: 'Miel Dorada • Coral Cálido • Crema',
+            desc: 'Sol que puedes llevar puesto. Cálidas cuentas color miel y un pequeño dije de sol aportan un brillo acogedor a cualquier atuendo: el pequeño mimo que tu muñeca estaba esperando.',
+            feats: [['☀️', 'Dije de Sol', 'Tono dorado y alegre'], ['🍯', 'Cuentas Miel-Oro', 'Tonos cálidos y radiantes'], ['🤍', 'Hecho a Mano con Amor', 'Cada pieza es única']],
+            caption: 'Un poquito<br>de sol',
+        },
+    },
+    {
+        id: 'seashell-whisper', name: 'Seashell Whisper Pendant', price: 34, img: null,
+        gradient: 'linear-gradient(160deg,#F7D1C4,#BFE3FF)', emoji: '🐚',
+        en: {
+            badge: '', title: 'Seashell Whisper Pendant', sub: 'Blush Pink • Pearl • Sky',
+            desc: 'A soft secret from the shore. A hand-picked shell rests among blush and pearl beads, hung on a delicate chain — quiet, romantic, and endlessly wearable.',
+            feats: [['🐚', 'Real Shell Accent', 'Each one naturally unique'], ['🩷', 'Blush & Pearl Beads', 'Soft, romantic tones'], ['✨', 'Delicate Chain', 'Gold-filled & long lasting']],
+            caption: 'Whispers<br>of the shore',
+        },
+        es: {
+            badge: '', title: 'Colgante Susurro de Concha', sub: 'Rosa Suave • Perla • Cielo',
+            desc: 'Un dulce secreto de la orilla. Una concha elegida a mano descansa entre cuentas rosadas y perladas, colgada de una cadena delicada: discreto, romántico e infinitamente combinable.',
+            feats: [['🐚', 'Acento de Concha Real', 'Cada una naturalmente única'], ['🩷', 'Cuentas Rosa y Perla', 'Tonos suaves y románticos'], ['✨', 'Cadena Delicada', 'Chapada en oro y duradera']],
+            caption: 'Susurros<br>de la orilla',
+        },
+    },
+    {
+        id: 'tide-pool-ring', name: 'Tide Pool Ring', price: 22, img: null,
+        gradient: 'linear-gradient(160deg,#B8E6DC,#C9A7F0)', emoji: '💍',
+        en: {
+            badge: 'NEW', title: 'Tide Pool Ring', sub: 'Cyan • Lavender • Glass Bead',
+            desc: 'Tiny treasures from a tide pool, wrapped around your finger. Cyan and lavender glass beads on a bendy wire band that adjusts to any finger — a playful stack-it-up favorite.',
+            feats: [['💍', 'Adjustable Band', 'Fits any finger'], ['🫧', 'Glass Beads', 'Cyan & lavender shimmer'], ['🌿', 'Stackable', 'Mix, match & layer']],
+            caption: 'Tiny<br>treasures',
+        },
+        es: {
+            badge: 'NUEVO', title: 'Anillo Poza de Marea', sub: 'Cian • Lavanda • Cuenta de Vidrio',
+            desc: 'Pequeños tesoros de una poza de marea, envueltos en tu dedo. Cuentas de vidrio cian y lavanda sobre una banda de alambre flexible que se ajusta a cualquier dedo: un favorito juguetón para apilar.',
+            feats: [['💍', 'Banda Ajustable', 'Se adapta a cualquier dedo'], ['🫧', 'Cuentas de Vidrio', 'Brillo cian y lavanda'], ['🌿', 'Apilable', 'Combina y superpone']],
+            caption: 'Pequeños<br>tesoros',
+        },
+    },
+];
+
+let heroIndex = 0;
+let heroAutoTimer = null;
+
+// The hero is driven by the live catalog: products the owner tags "featured"
+// in the admin appear here. For each one we use the richest copy available —
+// the curated hand-written HERO_PRODUCTS panel when the name matches, otherwise
+// a clean panel synthesized from the product's own catalog data. Until the
+// catalog loads (or if the API fails / nothing is featured), we fall back to
+// the curated set so the hero is never empty.
+let activeHeroProducts = HERO_PRODUCTS.slice();
+
+// Look up a curated HERO_PRODUCTS entry by canonical English name.
+function curatedHeroFor(name) {
+    return HERO_PRODUCTS.find(h => h.name === name) || null;
+}
+
+// Human-friendly category label (e.g. "pendants" -> "Pendants") using the
+// finder i18n keys when available so it's translated too.
+function categoryLabel(slug) {
+    if (!slug) return '';
+    const key = 'find.style.' + String(slug).toLowerCase();
+    const translated = T(key, '');
+    if (translated && translated !== key) return translated;
+    return String(slug).charAt(0).toUpperCase() + String(slug).slice(1);
+}
+
+// Build a full hero "copy" object (en/es + top-level fields) for a catalog
+// product that has no curated panel. Feature bullets + caption are synthesized
+// from existing translated strings so the panel never looks empty.
+function synthHeroProduct(p) {
+    const catEn = categoryLabel(p.category);
+    const mk = (title, desc, sub) => ({
+        badge: (p.badge || '').toUpperCase(),
+        title: title || p.name,
+        sub: sub || catEn || '',
+        desc: desc || '',
+        feats: [
+            ['🤍', T('hero.feat2.t', 'Handmade with Love'), T('hero.feat2.s', 'Each piece is unique')],
+            ['✨', T('hero.feat3.t', 'Adjustable Cord'), T('hero.feat3.s', 'Comfy, durable & one-size-fits-all')],
+            ['🌊', T('band.f3', 'Inspired by Nature').replace(/<br>/g, ' '), T('nr.eyebrow', 'Fresh off the workbench')],
+        ],
+        caption: T('hero.polaroid', 'Good things<br>take time'),
+    });
+    // Resolve EN/ES display strings from the catalog product.
+    const enCopy = mk(p.name, p.description, catEn);
+    const esCopy = mk(p.name_es || p.name, p.description_es || p.description, catEn);
+    return {
+        id: 'cat-' + p.name,
+        name: p.name,
+        name_es: p.name_es || '',
+        price: Number(p.price) || 0,
+        img: p.image || null,
+        gradient: p.gradient || 'linear-gradient(160deg,#F7F2F5,#F1ECF3)',
+        emoji: p.emoji || '🌸',
+        en: enCopy,
+        es: esCopy,
+        _synth: true,
+    };
+}
+
+// Rebuild activeHeroProducts from the loaded catalog. Products flagged
+// `featured` (and active) are shown; each uses its curated panel if one exists,
+// else a synthesized one. Matches by canonical English name (the cart key).
+function syncHeroWithCatalog() {
+    if (Array.isArray(allProducts) && allProducts.length) {
+        const featured = allProducts.filter(p => p.active !== false && p.featured);
+        if (featured.length) {
+            activeHeroProducts = featured.map(p => {
+                const curated = curatedHeroFor(p.name);
+                if (curated) {
+                    // Keep the rich curated copy, but let the live price win.
+                    return Object.assign({}, curated, { price: Number(p.price) || curated.price });
+                }
+                return synthHeroProduct(p);
+            });
+            return;
+        }
+        // Nothing tagged featured → fall back to curated items that still exist
+        // and are active, so the homepage hero is never empty.
+        const activeNames = new Set(allProducts.filter(p => p.active !== false).map(p => p.name));
+        const stillThere = HERO_PRODUCTS.filter(p => activeNames.has(p.name));
+        activeHeroProducts = stillThere.length ? stillThere : HERO_PRODUCTS.slice();
+    } else {
+        // No catalog data (empty store or API error) — keep the curated set.
+        activeHeroProducts = HERO_PRODUCTS.slice();
+    }
+}
+
+// Current hero product's copy in the active language
+function heroCopy(p) {
+    const lang = (window.UmiI18n && window.UmiI18n.getLang) ? window.UmiI18n.getLang() : 'en';
+    return p[lang] || p.en;
+}
 
 // Placeholder catalog for New Releases + Find Your Piece (used when the API
 // has no products). Each item carries category (style) + color for filtering.
@@ -34,6 +210,7 @@ let finderStyle = 'all';
 let finderColor = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
+    initHeroCarousel();
     initShippingToggle();
     initCart();
     initNewReleases();
@@ -74,7 +251,7 @@ function initOwnerAccess() {
 
 // Re-render dynamic bits + refresh open cart when the language switches
 document.addEventListener('umi:langchange', () => {
-    renderFeatured();
+    renderHeroCarousel();
     renderNewReleases();
     renderFinder();
     if (cart.length) updateCartUI();
@@ -99,7 +276,7 @@ async function loadStoreData() {
         console.error('Failed to load store data:', e);
         allProducts = [];
     }
-    renderFeatured();
+    renderHeroCarousel();
     renderNewReleases();
     renderFinder();
 }
@@ -249,45 +426,167 @@ function applySettings(settings) {
     }
 }
 
-// ============================================ Featured strip ============================================
-// Renders ONE featured product (the first active product tagged `featured` in
-// the admin) beside the hero banner, as the SAME catalog card used elsewhere —
-// so translations, the bracelet wrist field, delete/hide sync, and quick-add
-// all behave identically with zero special-case code. When nothing is
-// featured, the featured card is hidden and the banner shows full-width.
-function renderFeatured() {
-    const wrap = document.getElementById('heroFeatured');
-    const card = document.getElementById('heroFeaturedCard');
-    const banner = document.getElementById('heroBanner');
-    if (!card) return;
+// ============================================ Hero product carousel ============================================
+function initHeroCarousel() {
+    const stage = document.getElementById('heroStage');
+    if (!stage) return; // hero markup not present
 
-    const featured = (allProducts || []).find(p => p.active !== false && p.featured);
-    if (!featured) {
-        if (wrap) wrap.hidden = true;
-        if (banner) banner.classList.remove('has-featured');
-        card.innerHTML = '';
-        return;
+    // Dots + slide are (re)built here and again after the catalog loads.
+    renderHeroCarousel();
+
+    // Arrows
+    const prev = document.getElementById('heroPrev');
+    const next = document.getElementById('heroNext');
+    if (prev) prev.addEventListener('click', () => goHero(heroIndex - 1, true));
+    if (next) next.addEventListener('click', () => goHero(heroIndex + 1, true));
+
+    // Qty stepper
+    const val = document.getElementById('qtyVal');
+    const minus = document.getElementById('qtyMinus');
+    const plus = document.getElementById('qtyPlus');
+    if (val && minus && plus) {
+        const setQ = q => { val.textContent = Math.max(1, q); };
+        minus.addEventListener('click', () => setQ((parseInt(val.textContent, 10) || 1) - 1));
+        plus.addEventListener('click', () => setQ((parseInt(val.textContent, 10) || 1) + 1));
     }
 
-    if (wrap) wrap.hidden = false;
-    if (banner) banner.classList.add('has-featured');
+    // Add current product to cart
+    const addBtn = document.getElementById('addToCart');
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            const p = activeHeroProducts[heroIndex];
+            if (!p) return;
+            const qty = parseInt(document.getElementById('qtyVal').textContent, 10) || 1;
+            // Add under the canonical (English) catalog name so server-side
+            // checkout validation matches products.json regardless of language,
+            // but tag the line with the hero id so the cart DISPLAYS the title
+            // in the active language (and re-translates on language change).
+            addToCart(p.name || heroCopy(p).title, p.price, qty, { heroId: p.id, category: categoryForCartItem(p.name) });
+            addBtn.classList.add('added');
+            const orig = addBtn.innerHTML;
+            addBtn.innerHTML = T('hero.added', '✓ Added to Cart');
+            setTimeout(() => { addBtn.classList.remove('added'); addBtn.innerHTML = orig; }, 1500);
+            openCart();
+        });
+    }
 
-    const p = {
-        name: featured.name,
-        name_es: featured.name_es || '',
-        description: featured.description || '',
-        description_es: featured.description_es || '',
-        price: Number(featured.price),
-        category: (featured.category || '').toLowerCase() || 'all',
-        badge: featured.badge || '',
-        emoji: featured.emoji || '🌸',
-        image: featured.image || null,
-        gradient: featured.gradient || 'linear-gradient(160deg,#F7F2F5,#F1ECF3)',
-    };
-    card.innerHTML = productCard(p, 0);
-    wireAddButtons(card);
-    requestAnimationFrame(() => card.querySelectorAll('.pcard').forEach(el => el.classList.add('in')));
+    // Swipe on the polaroid
+    let startX = null;
+    stage.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener('touchend', e => {
+        if (startX === null) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) goHero(heroIndex + (dx < 0 ? 1 : -1), true);
+        startX = null;
+    });
+
+    // Gentle auto-rotate, paused on hover/focus
+    const startAuto = () => { stopAuto(); heroAutoTimer = setInterval(() => goHero(heroIndex + 1, false), 6000); };
+    const stopAuto = () => { if (heroAutoTimer) { clearInterval(heroAutoTimer); heroAutoTimer = null; } };
+    stage.addEventListener('mouseenter', stopAuto);
+    stage.addEventListener('mouseleave', startAuto);
+    stage.addEventListener('focusin', stopAuto);
+    document.querySelector('.hero-details')?.addEventListener('mouseenter', stopAuto);
+    document.querySelector('.hero-details')?.addEventListener('mouseleave', startAuto);
+
+    startAuto();
 }
+
+// (Re)build the hero: filter against the live catalog, rebuild the dots, hide
+// the whole section if nothing remains, and repaint the current slide. Safe to
+// call repeatedly (on init, after the catalog loads, and on language change).
+function renderHeroCarousel() {
+    syncHeroWithCatalog();
+
+    const section = document.querySelector('.hero');
+    const n = activeHeroProducts.length;
+
+    // Edge case: every curated hero product was deleted/hidden → hide the hero.
+    if (section) section.style.display = n ? '' : 'none';
+    if (!n) { stopHeroAuto(); return; }
+
+    // Keep heroIndex in range after the set shrinks.
+    if (heroIndex >= n) heroIndex = 0;
+
+    // Rebuild dot indicators to match the active set.
+    const dots = document.getElementById('heroDots');
+    if (dots) {
+        dots.innerHTML = activeHeroProducts.map((_, i) =>
+            `<button class="hero-dot${i === heroIndex ? ' active' : ''}" data-idx="${i}" aria-label="Product ${i + 1}"></button>`
+        ).join('');
+        dots.querySelectorAll('.hero-dot').forEach(d =>
+            d.addEventListener('click', () => goHero(parseInt(d.dataset.idx, 10), true)));
+    }
+
+    renderHeroSlide();
+}
+
+function stopHeroAuto() { if (heroAutoTimer) { clearInterval(heroAutoTimer); heroAutoTimer = null; } }
+
+// Navigate the hero carousel (wraps around). userInitiated resets the timer.
+function goHero(idx, userInitiated) {
+    const n = activeHeroProducts.length;
+    if (!n) return;
+    heroIndex = ((idx % n) + n) % n;
+    renderHeroSlide(true);
+    if (userInitiated && heroAutoTimer) {
+        clearInterval(heroAutoTimer);
+        heroAutoTimer = setInterval(() => goHero(heroIndex + 1, false), 6000);
+    }
+}
+
+// Paint the current hero product into the polaroid + detail panel
+function renderHeroSlide(animate) {
+    const p = activeHeroProducts[heroIndex];
+    if (!p) return;
+    const c = heroCopy(p);
+
+    // Polaroid photo (real image or gradient+emoji placeholder)
+    const photo = document.getElementById('heroPhoto');
+    if (photo) {
+        photo.style.background = p.gradient;
+        photo.innerHTML = p.img
+            ? `<img class="polaroid-img" src="${escapeHtml(p.img)}" alt="${escapeHtml(c.title)}" onerror="this.parentNode.innerHTML='<span class=\\'pcard-emoji\\'>${p.emoji}</span>'">`
+            : `<span class="pcard-emoji" aria-hidden="true">${p.emoji}</span>`;
+    }
+    const cap = document.getElementById('heroCaption');
+    if (cap) cap.innerHTML = c.caption;
+
+    // Detail panel
+    const badge = document.getElementById('heroBadge');
+    if (badge) { badge.textContent = c.badge; badge.style.display = c.badge ? '' : 'none'; }
+    setText('heroTitle', c.title);
+    setText('heroSub', c.sub);
+    setText('productPrice', `$${p.price.toFixed(2)}`);
+    setHTML('heroDesc', c.desc);
+
+    const feats = document.getElementById('heroFeatures');
+    if (feats) {
+        feats.innerHTML = c.feats.map(f => `
+            <li>
+                <span class="feat-icon">${f[0]}</span>
+                <div><strong>${escapeHtml(f[1])}</strong><small>${escapeHtml(f[2])}</small></div>
+            </li>`).join('');
+    }
+
+    // Dots
+    document.querySelectorAll('.hero-dot').forEach((d, i) => d.classList.toggle('active', i === heroIndex));
+
+    // Slide/fade animation
+    if (animate) {
+        const stage = document.getElementById('heroStage');
+        const panel = document.querySelector('.hero-details');
+        [stage, panel].forEach(el => {
+            if (!el) return;
+            el.classList.remove('hero-swap');
+            void el.offsetWidth;
+            el.classList.add('hero-swap');
+        });
+    }
+}
+
+function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+function setHTML(id, v) { const el = document.getElementById(id); if (el) el.innerHTML = v; }
 
 function initShippingToggle() {
     const toggle = document.getElementById('shippingToggle');
@@ -318,16 +617,23 @@ function addToCart(name, price, qty = 1, meta = {}) {
     if (existing) {
         existing.quantity += qty;
     } else {
-        cart.push({ name, price: Number(price), quantity: qty, category: meta.category || '' });
+        cart.push({ name, price: Number(price), quantity: qty, heroId: meta.heroId || null, category: meta.category || '' });
     }
     updateCartUI();
     bumpCart();
 }
 
-// Resolve what to SHOW for a cart line in the current language. Hero items look
-// Resolve the cart line's display name: in Spanish, show the product's Spanish
-// name from the live catalog; otherwise the canonical English name.
+// Resolve the cart line's display name in the active language. Hero-carousel
+// items resolve their translated title from HERO_PRODUCTS; catalog items use
+// their Spanish name from the live catalog; otherwise the English name.
 function cartDisplayName(item) {
+    if (item.heroId) {
+        const hp = HERO_PRODUCTS.find(p => p.id === item.heroId);
+        if (hp) {
+            const title = heroCopy(hp).title;
+            if (title) return title;
+        }
+    }
     const lang = (window.UmiI18n && window.UmiI18n.getLang) ? window.UmiI18n.getLang() : 'en';
     if (lang === 'es' && allProducts && allProducts.length) {
         const prod = allProducts.find(p => p.name === item.name);
