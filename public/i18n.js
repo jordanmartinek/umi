@@ -81,11 +81,11 @@
 
             // Cart + checkout
             'cart.title': 'Your Cart 🛍️',
-            'cart.empty': 'Your cart is empty',
+            'cart.empty': 'Your cart is empty 🐚',
             'cart.total': 'Total',
             'cart.loading': 'Loading checkout...',
             'cart.fallback': 'Checkout with PayPal',
-            'cart.note': '✦ Free shipping on orders over $75 ✦',
+            'cart.note': '✦ Free shipping on orders over $75 🚚✨ ✦',
             'cart.quickAdd': 'Quick Add',
             'cart.wristLabel': 'Wrist size (cm) — so it fits just right 💛',
             'cart.wristPlaceholder': 'e.g. 16',
@@ -159,11 +159,11 @@
             'shop.sub': 'Pequeñas dosis de alegría: colgantes, pulseras, anillos y más, cada uno hecho para sacarte una sonrisa.',
 
             'cart.title': 'Tu Carrito 🛍️',
-            'cart.empty': 'Tu carrito está vacío',
+            'cart.empty': 'Tu carrito está vacío 🐚',
             'cart.total': 'Total',
             'cart.loading': 'Cargando el pago...',
             'cart.fallback': 'Pagar con PayPal',
-            'cart.note': '✦ Envío gratis en pedidos superiores a $75 ✦',
+            'cart.note': '✦ Envío gratis en pedidos superiores a $75 🚚✨ ✦',
             'cart.quickAdd': 'Añadir',
             'cart.wristLabel': 'Medida de muñeca (cm) — para que quede perfecta 💛',
             'cart.wristPlaceholder': 'ej. 16',
