@@ -747,6 +747,27 @@ function cartPayload() {
     return cart.map(i => ({ name: i.name, price: i.price, quantity: i.quantity }));
 }
 
+// Required wrist measurement (cm). Returns a valid number string, or '' if the
+// field is empty/invalid. Range 10–25 cm matches the input's min/max.
+function getWristLength() {
+    const el = document.getElementById('wristLength');
+    if (!el) return '';
+    const v = parseFloat(el.value);
+    if (!isFinite(v) || v < 10 || v > 25) return '';
+    return String(v);
+}
+
+// Show/clear the inline validation message under the wrist field.
+function showWristError(show) {
+    const el = document.getElementById('wristError');
+    const input = document.getElementById('wristLength');
+    if (el) {
+        el.textContent = show ? T('cart.wristRequired', 'Please enter your wrist size (10–25 cm) so we can fit your bracelet.') : '';
+        el.hidden = !show;
+    }
+    if (input) input.classList.toggle('invalid', !!show);
+}
+
 function renderPayPalButtons() {
     if (!paypalLoaded || !window.paypal) return;
     const container = document.getElementById('paypal-button-container');
@@ -755,12 +776,31 @@ function renderPayPalButtons() {
     container.innerHTML = '';
     if (cart.length === 0) return;
 
+    // Clear the error as soon as the customer types a valid value.
+    const wristInput = document.getElementById('wristLength');
+    if (wristInput && !wristInput._wristBound) {
+        wristInput.addEventListener('input', () => { if (getWristLength()) showWristError(false); });
+        wristInput._wristBound = true;
+    }
+
     window.paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'paypal', height: 45 },
+        // Block checkout until a valid wrist length is entered. actions.reject()
+        // stops the PayPal flow (createOrder never fires) if it's missing.
+        onClick: (data, actions) => {
+            if (!getWristLength()) {
+                showWristError(true);
+                const el = document.getElementById('wristLength');
+                if (el) el.focus();
+                return actions.reject();
+            }
+            showWristError(false);
+            return actions.resolve();
+        },
         createOrder: async () => {
             const res = await fetch('/api/paypal/create-order', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ items: cartPayload() }),
+                body: JSON.stringify({ items: cartPayload(), wristLength: getWristLength() }),
             });
             const data = await res.json().catch(() => ({}));
             console.log('[create-order]', res.status, data);
@@ -773,7 +813,7 @@ function renderPayPalButtons() {
         onApprove: async (data) => {
             const res = await fetch('/api/paypal/capture-order', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderID: data.orderID, items: cartPayload() }),
+                body: JSON.stringify({ orderID: data.orderID, items: cartPayload(), wristLength: getWristLength() }),
             });
             const result = await res.json().catch(() => ({}));
             console.log('[capture-order]', res.status, result);

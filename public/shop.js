@@ -318,6 +318,25 @@ function showFallbackCheckout() {
 function cartPayload() {
     return cart.map(i => ({ name: i.name, price: i.price, quantity: i.quantity }));
 }
+
+// Required wrist measurement (cm), 10–25 range. '' when empty/invalid.
+function getWristLength() {
+    const el = document.getElementById('wristLength');
+    if (!el) return '';
+    const v = parseFloat(el.value);
+    if (!isFinite(v) || v < 10 || v > 25) return '';
+    return String(v);
+}
+function showWristError(show) {
+    const el = document.getElementById('wristError');
+    const input = document.getElementById('wristLength');
+    if (el) {
+        el.textContent = show ? T('cart.wristRequired', 'Please enter your wrist size (10–25 cm) so we can fit your bracelet.') : '';
+        el.hidden = !show;
+    }
+    if (input) input.classList.toggle('invalid', !!show);
+}
+
 function renderPayPalButtons() {
     if (!paypalLoaded || !window.paypal) return;
     const container = document.getElementById('paypal-button-container');
@@ -326,12 +345,29 @@ function renderPayPalButtons() {
     container.innerHTML = '';
     if (cart.length === 0) return;
 
+    const wristInput = document.getElementById('wristLength');
+    if (wristInput && !wristInput._wristBound) {
+        wristInput.addEventListener('input', () => { if (getWristLength()) showWristError(false); });
+        wristInput._wristBound = true;
+    }
+
     window.paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'paypal', height: 45 },
+        // Require a valid wrist length before checkout can proceed.
+        onClick: (data, actions) => {
+            if (!getWristLength()) {
+                showWristError(true);
+                const el = document.getElementById('wristLength');
+                if (el) el.focus();
+                return actions.reject();
+            }
+            showWristError(false);
+            return actions.resolve();
+        },
         createOrder: async () => {
             const r = await fetch('/api/paypal/create-order', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ items: cartPayload() }),
+                body: JSON.stringify({ items: cartPayload(), wristLength: getWristLength() }),
             });
             const data = await r.json();
             if (!r.ok) throw new Error(data.error || 'Failed to create order');
@@ -340,7 +376,7 @@ function renderPayPalButtons() {
         onApprove: async (data) => {
             const r = await fetch('/api/paypal/capture-order', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderID: data.orderID, items: cartPayload() }),
+                body: JSON.stringify({ orderID: data.orderID, items: cartPayload(), wristLength: getWristLength() }),
             });
             const result = await r.json();
             if (result.success) { cart = []; updateCartUI(); closeCart(); showOrderConfirmation(result.orderId); }

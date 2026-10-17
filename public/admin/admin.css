@@ -854,6 +854,12 @@ body {
     margin-top: 2px;
 }
 
+.order-wrist {
+    margin-top: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ocean-teal, #2f7a70);
+}
 .order-items-cell {
     font-size: 0.78rem;
     color: var(--medium-gray);

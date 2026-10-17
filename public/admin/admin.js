@@ -766,7 +766,10 @@ function renderOrders(ordersToRender) {
                     <div class="order-customer">${order.payer?.name || '—'}</div>
                     <div class="order-email">${order.payer?.email || ''}</div>
                 </div>
-                <div class="order-items-cell" title="${itemNames}">${itemNames}</div>
+                <div class="order-items-cell" title="${itemNames}">
+                    ${itemNames}
+                    ${order.wristLength ? `<div class="order-wrist">📏 ${t('orders.wrist', 'Wrist')}: ${order.wristLength} cm</div>` : ''}
+                </div>
                 <div class="order-total">$${(order.total || 0).toFixed(2)}</div>
                 <div>
                     <span class="order-status ${statusClass}">${statusLabel}</span>

@@ -514,6 +514,27 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .cart-total { display: flex; justify-content: space-between; font-weight: 700; color: var(--ink); margin-bottom: 14px; }
 .cart-total span:last-child { font-family: var(--font-round); font-size: 1.2rem; color: var(--pink); }
 .cart-note { text-align: center; font-size: 0.72rem; color: var(--ink-soft); margin-top: 12px; }
+
+/* Required wrist-size field in the cart footer */
+.wrist-field { margin-bottom: 14px; }
+.wrist-field label {
+    display: block; font-weight: 700; font-size: 0.82rem; color: var(--ink); margin-bottom: 6px;
+}
+.wrist-field input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--lav-soft);
+    border-radius: 14px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--white);
+    transition: border-color 0.2s;
+}
+.wrist-field input:focus { outline: none; border-color: var(--lav); }
+.wrist-field input.invalid { border-color: var(--pink); background: var(--pink-bg); }
+.wrist-hint { display: block; font-size: 0.72rem; color: var(--ink-soft); margin-top: 5px; }
+.wrist-error { font-size: 0.75rem; color: var(--pink); font-weight: 600; margin-top: 6px; }
 .paypal-loading { text-align: center; padding: 12px; font-size: 0.8rem; color: var(--ink-soft); }
 #paypal-button-container { margin: 12px 0 4px; min-height: 46px; }
 
