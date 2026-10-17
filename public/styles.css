@@ -486,18 +486,26 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .cart-overlay.open { opacity: 1; pointer-events: all; }
 .cart-drawer {
     position: fixed; top: 0; right: 0; bottom: 0; width: 380px; max-width: 90vw;
+    /* Use the dynamic viewport height so mobile browser chrome (address bar)
+       never clips the drawer; fall back to 100vh on older browsers. */
+    height: 100vh;
+    height: 100dvh;
     background: var(--cream); z-index: 2001; transform: translateX(100%);
     transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
     display: flex; flex-direction: column;
     box-shadow: -8px 0 40px rgba(107,91,119,0.18);
     border-top-left-radius: 24px; border-bottom-left-radius: 24px;
+    overflow: hidden; /* children manage their own scrolling */
 }
 .cart-drawer.open { transform: translateX(0); }
 .cart-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid var(--lav-soft); }
 .cart-head h3 { font-family: var(--font-round); font-weight: 700; color: var(--pink); font-size: 1.2rem; }
 .cart-close { font-size: 1.1rem; color: var(--ink-soft); width: 34px; height: 34px; border-radius: 50%; transition: background 0.2s; }
 .cart-close:hover { background: var(--lav-bg); }
-.cart-items { flex: 1; overflow-y: auto; padding: 20px 24px; }
+/* Items list: scrolls, but may shrink so the footer (total + wrist field +
+   checkout button) always stays reachable. min-height:0 is required for a
+   flex child to be allowed to shrink below its content size. */
+.cart-items { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 20px 24px; -webkit-overflow-scrolling: touch; }
 .cart-empty { text-align: center; padding: 60px 20px; color: var(--ink-soft); }
 .cart-empty span { font-size: 2.4rem; display: block; margin-bottom: 10px; }
 .cart-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--lav-soft); }
@@ -510,7 +518,17 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 .cart-qc button:hover { background: var(--lav-bg); }
 .cart-item-remove { color: var(--ink-soft); font-size: 0.95rem; padding: 4px 8px; border-radius: 6px; transition: background 0.2s; }
 .cart-item-remove:hover { background: var(--pink-bg); color: var(--pink); }
-.cart-foot { padding: 22px 24px; border-top: 1px solid var(--lav-soft); }
+/* Footer: never taller than ~65% of the drawer; scrolls internally if its
+   contents (total + wrist field + PayPal button + note) don't fit, so every
+   field stays reachable on short screens. */
+.cart-foot {
+    flex-shrink: 0;
+    padding: 22px 24px;
+    border-top: 1px solid var(--lav-soft);
+    max-height: 65%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
 .cart-total { display: flex; justify-content: space-between; font-weight: 700; color: var(--ink); margin-bottom: 14px; }
 .cart-total span:last-child { font-family: var(--font-round); font-size: 1.2rem; color: var(--pink); }
 .cart-note { text-align: center; font-size: 0.72rem; color: var(--ink-soft); margin-top: 12px; }
