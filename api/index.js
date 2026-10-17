@@ -8,6 +8,7 @@ const { getAuth, verifyPassword, hashPassword, createToken } = require('./_lib/a
 const { readData, writeData, readSettings, writeSettings, isPersistent } = require('./_lib/db');
 const { createOrder, captureOrder } = require('./_lib/paypal');
 const { analyzeProductImage } = require('./_lib/gemini');
+const { uploadImage } = require('./_lib/blob');
 
 module.exports = async (req, res) => {
     // ---- Resolve the route (robust across local dev + Vercel rewrites) ----
@@ -103,6 +104,7 @@ module.exports = async (req, res) => {
             storageBackend: isPersistent ? 'upstash-redis (persistent)' : 'json-files (ephemeral on Vercel!)',
             redisConfigured: !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN),
             aiConfigured: !!process.env.GEMINI_API_KEY,
+            blobConfigured: !!process.env.BLOB_READ_WRITE_TOKEN,
         });
     }
 
@@ -123,6 +125,7 @@ module.exports = async (req, res) => {
                 storageBackend: isPersistent ? 'upstash-redis (persistent)' : 'json-files (ephemeral on Vercel!)',
                 redisConfigured: !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN),
                 aiConfigured: !!process.env.GEMINI_API_KEY,
+                blobConfigured: !!process.env.BLOB_READ_WRITE_TOKEN,
             });
         }
 
@@ -334,6 +337,27 @@ module.exports = async (req, res) => {
             }
         }
 
+        // Admin: upload a product photo to Vercel Blob → returns its public URL.
+        // Body: { image: "<base64 or data URL>", mimeType, name } → { url }
+        if (pathname === '/admin/upload-image' && method === 'POST') {
+            if (!auth) return res.status(401).json({ error: 'Unauthorized' });
+
+            let image = (req.body && req.body.image) || '';
+            const mimeType = (req.body && req.body.mimeType) || 'image/jpeg';
+            const nameHint = (req.body && req.body.name) || '';
+            const comma = image.indexOf('base64,');
+            if (comma !== -1) image = image.slice(comma + 7);
+            if (!image) return res.status(400).json({ error: 'No image provided' });
+
+            try {
+                const url = await uploadImage(image, mimeType, nameHint);
+                return res.status(200).json({ ok: true, url });
+            } catch (e) {
+                const status = e.code === 'BLOB_NOT_CONFIGURED' ? 503 : (e.code === 'BLOB_TOO_LARGE' ? 413 : 500);
+                return res.status(status).json({ error: e.message || 'Upload failed', code: e.code });
+            }
+        }
+
         // Admin: Products
         if (pathname === '/admin/products' && method === 'GET') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
@@ -343,7 +367,13 @@ module.exports = async (req, res) => {
         if (pathname === '/admin/products' && method === 'POST') {
             if (!auth) return res.status(401).json({ error: 'Unauthorized' });
             const products = await readData('products.json');
-            const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image, featured } = req.body || {};
+            const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image, images, featured } = req.body || {};
+
+            // Normalize the image gallery to an array of URL strings. `image`
+            // (single) is kept as the first gallery image for backward compat
+            // with cards/hero that read `image`.
+            const gallery = Array.isArray(images) ? images.filter(u => typeof u === 'string' && u) : [];
+            const primary = gallery[0] || image || null;
 
             const newProduct = {
                 id: `prod_${crypto.randomUUID().slice(0, 8)}`,
@@ -354,7 +384,8 @@ module.exports = async (req, res) => {
                 price: parseFloat(price) || 0,
                 category: category || '',
                 badge: badge || '',
-                image: image || null,
+                image: primary,
+                images: gallery,
                 gradient: gradient || 'linear-gradient(160deg, #E0F5F0 0%, #C8E6E0 50%, #E8B4B8 100%)',
                 emoji: emoji || '✿',
                 active: active !== 'false' && active !== false,
@@ -378,7 +409,16 @@ module.exports = async (req, res) => {
                 const index = products.findIndex(p => p.id === id);
                 if (index === -1) return res.status(404).json({ error: 'Product not found' });
 
-                const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image, featured } = req.body || {};
+                const { name, name_es, description, description_es, price, category, badge, gradient, emoji, active, image, images, featured } = req.body || {};
+                // When an images[] array is provided, it replaces the gallery and
+                // its first entry becomes the primary `image`. Otherwise both are
+                // left untouched.
+                const nextImages = Array.isArray(images)
+                    ? images.filter(u => typeof u === 'string' && u)
+                    : (products[index].images || []);
+                const nextPrimary = Array.isArray(images)
+                    ? (nextImages[0] || null)
+                    : (image !== undefined ? image : products[index].image);
                 products[index] = {
                     ...products[index],
                     name: name || products[index].name,
@@ -392,7 +432,8 @@ module.exports = async (req, res) => {
                     emoji: emoji !== undefined ? emoji : products[index].emoji,
                     active: active !== undefined ? (active !== 'false' && active !== false) : products[index].active,
                     featured: featured !== undefined ? (featured === 'true' || featured === true) : products[index].featured,
-                    image: image !== undefined ? image : products[index].image,
+                    image: nextPrimary,
+                    images: nextImages,
                 };
                 await writeData('products.json', products);
                 return res.status(200).json(products[index]);

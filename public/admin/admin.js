@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAiFill();
     initSidebarToggle();
     initFeatured();
+    initImageGallery();
     document.getElementById('logoutBtn').addEventListener('click', logout);
 });
 
@@ -24,6 +25,88 @@ document.addEventListener('DOMContentLoaded', () => {
 function initFeatured() {
     const btn = document.getElementById('featuredAddBtn');
     if (btn) btn.addEventListener('click', addFeatured);
+}
+
+// ============================================
+// Product photo gallery (multi-image upload via Vercel Blob)
+// ============================================
+
+let galleryImages = []; // array of public image URLs for the product being edited
+
+function initImageGallery() {
+    const input = document.getElementById('productImages');
+    if (!input) return;
+    input.addEventListener('change', async () => {
+        const files = Array.from(input.files || []);
+        input.value = ''; // allow re-selecting the same file later
+        for (const file of files) {
+            await uploadGalleryImage(file);
+        }
+    });
+}
+
+function setImgStatus(msg, kind) {
+    const el = document.getElementById('imgUploadStatus');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.className = 'img-upload-status' + (kind ? ' img-status-' + kind : '');
+}
+
+async function uploadGalleryImage(file) {
+    if (!file) return;
+    if (!/^image\//.test(file.type)) { setImgStatus(t('pm.imgType', 'Please choose image files only.'), 'error'); return; }
+    setImgStatus(t('pm.imgUploading', 'Uploading photo…'));
+    try {
+        const base64 = await fileToBase64(file);
+        const res = await fetch('/api/admin/upload-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: base64, mimeType: file.type, name: file.name }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            const msg = data.code === 'BLOB_NOT_CONFIGURED'
+                ? t('pm.imgNotConfigured', 'Photo uploads aren’t set up yet. Add Vercel Blob storage and redeploy.')
+                : (data.error || t('pm.imgError', 'Could not upload the photo.'));
+            setImgStatus(msg, 'error');
+            return;
+        }
+        galleryImages.push(data.url);
+        renderGallery();
+        setImgStatus(t('pm.imgDone', '✓ Photo added.'), 'success');
+    } catch (e) {
+        setImgStatus(t('pm.imgError', 'Could not upload the photo.'), 'error');
+    }
+}
+
+function renderGallery() {
+    const wrap = document.getElementById('imgGallery');
+    if (!wrap) return;
+    wrap.innerHTML = galleryImages.map((url, i) => `
+        <div class="img-thumb">
+            <img src="${escapeHtmlAttr(url)}" alt="">
+            ${i === 0 ? `<span class="img-main-badge" data-i18n="pm.imgMain">★ Main</span>` : ''}
+            <div class="img-thumb-actions">
+                ${i > 0 ? `<button type="button" class="img-move" onclick="moveGalleryImage(${i},-1)" title="Move left">←</button>` : ''}
+                ${i < galleryImages.length - 1 ? `<button type="button" class="img-move" onclick="moveGalleryImage(${i},1)" title="Move right">→</button>` : ''}
+                <button type="button" class="img-remove" onclick="removeGalleryImage(${i})" title="Remove">✕</button>
+            </div>
+        </div>
+    `).join('');
+    if (window.AdminI18n) AdminI18n.apply();
+}
+
+function removeGalleryImage(i) {
+    galleryImages.splice(i, 1);
+    renderGallery();
+}
+function moveGalleryImage(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= galleryImages.length) return;
+    const tmp = galleryImages[i];
+    galleryImages[i] = galleryImages[j];
+    galleryImages[j] = tmp;
+    renderGallery();
 }
 
 // Mobile sidebar: hamburger opens it, backdrop/nav-tap closes it.
@@ -538,6 +621,7 @@ function openProductModal(product = null) {
     document.getElementById('productId').value = '';
     document.getElementById('gradientPreview').style.background = '';
     resetAiFill();
+    setImgStatus('');
 
     if (product) {
         title.textContent = t('pm.editTitle', 'Edit Product');
@@ -554,9 +638,15 @@ function openProductModal(product = null) {
         document.getElementById('productActive').value = product.active ? 'true' : 'false';
         document.getElementById('productFeatured').checked = !!product.featured;
         document.getElementById('gradientPreview').style.background = product.gradient || '';
+        // Load the existing gallery (fall back to the legacy single image).
+        galleryImages = Array.isArray(product.images) && product.images.length
+            ? product.images.slice()
+            : (product.image ? [product.image] : []);
     } else {
         title.textContent = t('pm.addTitle', 'Add Product');
+        galleryImages = [];
     }
+    renderGallery();
 
     modal.classList.add('open');
 }
@@ -609,6 +699,7 @@ function initForms() {
             gradient: document.getElementById('productGradient').value,
             active: document.getElementById('productActive').value,
             featured: document.getElementById('productFeatured').checked,
+            images: galleryImages.slice(),
         };
 
         try {
